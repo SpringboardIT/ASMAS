@@ -1,0 +1,117 @@
+﻿@model Tuple<SITSAS.Models.UserToRoleModel, SITSAS.Models.AccessRights>
+
+<h4>Users in Role: @Model.Item1.Role.RoleName</h4>
+
+
+
+
+@if (Model.Item2.CanView == true)
+{
+    if (Model.Item1.RoleUsers.Count == 0)
+    {
+        <div class="alert alert-info" role="alert">
+            No Users Found
+        </div>
+
+    }
+    else
+    {
+
+        <table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+            <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Account Name
+                    </th>
+                    <th>
+                        User Principal Name
+                    </th>
+                    <th id="grid_Edit">
+
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Item1 != null)
+                {
+                    foreach (SITSAS.Models.DirectoryUser User in Model.Item1.RoleUsers.OrderBy(x => x.Name).ToList())
+                    {
+                        <tr>
+                            <td>
+                                @if (!String.IsNullOrEmpty(User.Name))
+                            {
+                                    @User.Name
+                                }
+
+                            </td>
+                            <td>
+                                @if (!String.IsNullOrEmpty(User.SamAccountName))
+                            {
+                                    @User.SamAccountName
+                                }
+                            </td>
+                            <td>
+                                @if (!String.IsNullOrEmpty(User.UserPrincipalName))
+                            {
+                                    @User.UserPrincipalName
+                                }
+                            </td>
+                            <td>
+                                @if (Model.Item2.CanEdit == true)
+                            {
+                                    <form id="form1" action="~/Roles/RemoveUserFromRole" method="post" onsubmit="return">
+                                        @if (!String.IsNullOrEmpty(User.SN))
+                                        {
+                                            <input type="hidden" name="RoleID" value="@Model.Item1.Role.RoleID" />
+                                            <input name="UserID" type="hidden" value="@User.SN" />
+                                            <button class="image-button success" onclick="$('#submit').trigger('click');"><span class="icon mif-user-minus"></span> Remove</button>
+                                        }
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+
+            </tbody>
+        </table>
+        <br />
+
+
+
+        <table></table>
+    }
+    <form id="form0" action="~/Roles/AddUserToRole" method="post">
+        <table style="width:100%;">
+            <tr>
+                <td width="60%;">
+                    <h3>Add User To Role </h3>
+                    <input type="hidden" name="RoleID" value="@Model.Item1.Role.RoleID" />
+                    <div class="input-control" style="width:100%;">
+                        @*<span id="ddl" class="mif-expand-more prepend-icon"></span>*@
+                        <select name="UserID">
+                            @foreach (SITSAS.Models.DirectoryUser usr in Model.Item1.AllUsers.OrderBy(x => x.Name).ToList())
+                            {
+                                <option value="@usr.SN">@usr.Name</option>
+                            }
+
+                        </select>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                @if (Model.Item2.CanAdd == true)
+                {
+                    <td width="40%;">
+                        <button class="image-button success" onclick="$('#submit').trigger('click');"><span class="icon mif-plus"></span> Add</button>
+                    </td>
+                }
+            </tr>
+        </table>
+
+    </form>
+} 
+

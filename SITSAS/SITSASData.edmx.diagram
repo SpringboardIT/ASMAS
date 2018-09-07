@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="c577c4854e6f4ebe8831c416969fb7a3" Name="Diagram1">
+        <EntityTypeShape EntityType="SITSASModel.Answer_Operators" Width="1.5" PointX="5.25" PointY="2" />
+        <EntityTypeShape EntityType="SITSASModel.Answer_ScoreMappings" Width="1.5" PointX="7.5" PointY="5.75" />
+        <EntityTypeShape EntityType="SITSASModel.Answer" Width="1.5" PointX="5.25" PointY="5.5" />
+        <EntityTypeShape EntityType="SITSASModel.CalculationModel" Width="1.5" PointX="0.75" PointY="13" />
+        <EntityTypeShape EntityType="SITSASModel.Category" Width="1.5" PointX="1.5" PointY="19.5" />
+        <EntityTypeShape EntityType="SITSASModel.DataMapping" Width="1.5" PointX="13" PointY="12.125" />
+        <EntityTypeShape EntityType="SITSASModel.DataMappingType" Width="1.5" PointX="10.75" PointY="12.375" />
+        <EntityTypeShape EntityType="SITSASModel.IncidentType" Width="1.5" PointX="3" PointY="12.875" />
+        <EntityTypeShape EntityType="SITSASModel.Location" Width="1.5" PointX="3" PointY="0.75" />
+        <EntityTypeShape EntityType="SITSASModel.PermissionGroup" Width="1.5" PointX="9.75" PointY="5.125" />
+        <EntityTypeShape EntityType="SITSASModel.PermissionGroup_User_Mapping" Width="1.5" PointX="12" PointY="5.125" />
+        <EntityTypeShape EntityType="SITSASModel.QuestionnaireGroup" Width="1.5" PointX="3" PointY="16" />
+        <EntityTypeShape EntityType="SITSASModel.Questionnaire" Width="1.5" PointX="0.75" PointY="8.625" />
+        <EntityTypeShape EntityType="SITSASModel.Question" Width="1.5" PointX="3" PointY="6.625" />
+        <EntityTypeShape EntityType="SITSASModel.Result_Answers" Width="1.5" PointX="13.5" PointY="8.125" />
+        <EntityTypeShape EntityType="SITSASModel.Result_Answers_Fixings" Width="1.5" PointX="10.5" PointY="8.125" />
+        <EntityTypeShape EntityType="SITSASModel.Result_Headers" Width="1.5" PointX="8.25" PointY="10.125" />
+        <EntityTypeShape EntityType="SITSASModel.Result_Headers_Fixings" Width="1.5" PointX="5.25" PointY="10.125" />
+        <EntityTypeShape EntityType="SITSASModel.Role_Permissions" Width="1.5" PointX="10" PointY="1.125" />
+        <EntityTypeShape EntityType="SITSASModel.Role_User_PermissionMapping" Width="1.5" PointX="12.75" PointY="0.875" />
+        <EntityTypeShape EntityType="SITSASModel.Role" Width="1.5" PointX="7.75" PointY="1.375" />
+        <EntityTypeShape EntityType="SITSASModel.StalenessProfile" Width="1.5" PointX="0.75" PointY="4.875" />
+        <EntityTypeShape EntityType="SITSASModel.SubCategory" Width="1.5" PointX="0.75" PointY="15.625" />
+        <EntityTypeShape EntityType="SITSASModel.SystemSetting" Width="1.5" PointX="14.75" PointY="0.875" />
+        <EntityTypeShape EntityType="SITSASModel.vFixingResult" Width="1.5" PointX="14.75" PointY="3.875" />
+        <EntityTypeShape EntityType="SITSASModel.vQuestionnaireAnswer" Width="1.5" PointX="5.75" PointY="14.875" />
+        <AssociationConnector Association="SITSASModel.FK_Answer_ScoreMappings_Answer_Operators" />
+        <AssociationConnector Association="SITSASModel.FK_Answer_ScoreMappings_Answers" />
+        <AssociationConnector Association="SITSASModel.FK_Answers_Questions" />
+        <AssociationConnector Association="SITSASModel.FK_Result_Answers_Answers" />
+        <AssociationConnector Association="SITSASModel.FK_Result_Answers_Fixings_Answers" />
+        <AssociationConnector Association="SITSASModel.FK_Questions_CalculationModels" />
+        <AssociationConnector Association="SITSASModel.FK_DashboardCategories_AssessedRiskCategories" />
+        <AssociationConnector Association="SITSASModel.FK_DataMappings_DataMappingTypes" />
+        <AssociationConnector Association="SITSASModel.FK_IncidentTypes_Questionnaires" />
+        <AssociationConnector Association="SITSASModel.FK_Result_Headers_Fixings_IncidentTypes" />
+        <AssociationConnector Association="SITSASModel.FK_Result_Headers_IncidentTypes" />
+        <AssociationConnector Association="SITSASModel.FK_Result_Headers_Fixings_Ports" />
+        <AssociationConnector Association="SITSASModel.FK_Result_Headers_Ports" />
+        <AssociationConnector Association="SITSASModel.FK_PermissionGroup_User_Mapping_PermissionGroup" />
+        <AssociationConnector Association="SITSASModel.FK_QuestionnaireGroups_Questionnaires" />
+        <AssociationConnector Association="SITSASModel.FK_Questions_Questionnaires" />
+        <AssociationConnector Association="SITSASModel.FK_Result_Headers_Fixings_Questionnaires" />
+        <AssociationConnector Association="SITSASModel.FK_Result_Headers_Questionnaires" />
+        <AssociationConnector Association="SITSASModel.FK_Questions_DashboardCategories" />
+        <AssociationConnector Association="SITSASModel.FK_Questions_StalenessProfile" />
+        <AssociationConnector Association="SITSASModel.FK_Result_Answers_Result_Headers" />
+        <AssociationConnector Association="SITSASModel.FK_Result_Answers_Fixings_Result_Headers_Fixings" />
+        <AssociationConnector Association="SITSASModel.FK_Result_Headers_Result_Headers" />
+        <AssociationConnector Association="SITSASModel.FK_Result_Headers_Fixings_Result_Headers_Fixings" />
+        <AssociationConnector Association="SITSASModel.FK_Permissions_Permissions" />
+        <EntityTypeShape EntityType="SITSASModel.Area" Width="1.5" PointX="0.75" PointY="1" />
+        <AssociationConnector Association="SITSASModel.FK_Location_Area" />
+        <EntityTypeShape EntityType="SITSASModel.FrequencyProfile" Width="1.5" PointX="0.75" PointY="22.875" />
+        <AssociationConnector Association="SITSASModel.FK_Questionnaires_FrequencyProfile" />
+        <EntityTypeShape EntityType="SITSASModel.FrequencyProfile_Dates" Width="1.5" PointX="3.375" PointY="23.25" />
+        <EntityTypeShape EntityType="SITSASModel.Task" Width="1.5" PointX="11" PointY="16" />
+        <EntityTypeShape EntityType="SITSASModel.TaskStatu" Width="1.5" PointX="8.75" PointY="16.5" />
+        <AssociationConnector Association="SITSASModel.FK_FrequencyProfile_Dates_FrequencyProfile" />
+        <AssociationConnector Association="SITSASModel.FK_Tasks_TaskStatus" />
+        <EntityTypeShape EntityType="SITSASModel.Page" Width="1.5" PointX="15.375" PointY="12.75" />
+        <EntityTypeShape EntityType="SITSASModel.Page_Role_Mappings" Width="1.5" PointX="13.375" PointY="15.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

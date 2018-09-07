@@ -1,0 +1,21 @@
+﻿@model List<SITSAS.Page>
+
+@foreach (var item in Model.OrderBy(x => x.DisplayOrder).ToList())
+{
+    if (Request.Url.AbsolutePath == item.Link)
+    {
+        @Html.Raw("<li class='active'>")
+    }
+    else
+    {
+        @Html.Raw("<li>")
+    }
+    <a href="@item.Link">
+        <span class="mif-@item.Icon icon"></span>
+        <span class="title">@Html.Raw(item.DisplayName)</span>
+        @*<span class="counter">0</span>*@
+    </a>
+    @Html.Raw("</li>")
+}
+
+

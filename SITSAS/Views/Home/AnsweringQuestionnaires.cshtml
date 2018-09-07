@@ -1,0 +1,51 @@
+﻿<hr class="thin bg-grayLighter">
+<div class="wizard" id="wizard">
+    <div class="steps">
+        <div class="step">Page 1</div>
+        <div class="step">Page 2</div>
+        <div class="step">Page 3</div>
+    </div>
+</div>
+<script>
+    $(function () {
+        $('#wizard').wizard({
+            buttons: {
+                cancel: {
+                    show: true,
+                    title: "Close",
+                    cls: "warning",
+                    group: "right"
+                },
+                prior: {
+                    show: true,
+                    title: "Previous",
+                    group: "left",
+                    cls: "warning"
+                },
+                next: {
+                    show: true,
+                    title: "Next",
+                    group: "left",
+                    cls: "warning"
+                },
+                finish: {
+                    show: true,
+                    title: "Save & Finish",
+                    group: "left",
+                    cls: "warning"
+                }
+            },
+
+            // Buttons click methods, page change events
+            //onCancel: function(page, wiz){...},
+            //onHelp: function(page, wiz){...},
+            //onPrior: function(page, wiz){...},
+            //onNext: function(page, wiz){...},
+            onFinish: function(page, wiz){ alert('Happy Days');},
+            //onPage: function(page, wiz){...},
+            //onStepClick: function(step){...}
+            //https://metroui.org.ua/v2/wizard.html
+        });
+    });
+
+</script>

@@ -1,0 +1,48 @@
+﻿@model SITSAS.Models.AreaModel
+<script>
+    function NewArea() {
+        @Html.Raw("$.ajax({ url: '/Home/CreateUpdateArea?', data: 'json', type: 'GET', data: 'IsPart=true', cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
+        @Html.Raw("metroDialog.open('#popUp');")
+    }
+    function EditArea(id) {
+        @Html.Raw("$.ajax({ url: '/Home/CreateUpdateArea?', data: 'json', type: 'GET', data: 'ID=' + id + '&IsPart=true', cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
+        @Html.Raw("metroDialog.open('#popUp');")
+    }
+</script>
+<h1 class="text-light">Areas<span class="mif-location-city place-left" style="padding-right:5px;"></span></h1>
+<hr class="thin bg-grayLighter">
+@if (Model.rights.CanAdd)
+{
+    <a class="image-button warning" onclick="NewArea();"><span class="icon mif-plus"></span> Create</a>
+}
+<hr class="thin bg-grayLighter">
+<hr class="thin bg-grayLighter">
+<table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+    <thead>
+        <tr>
+            <td style="width: 46.25%" class="sortable-column">Name</td>
+            <td style="width: 7.5%" class="sortable-column"></td>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.rights.CanView)
+        {
+            foreach (var area in Model.ExistingAreas)
+            {
+                <tr>
+                    <td>@area.Value</td>
+                    <td>
+                        @if (Model.rights.CanEdit)
+                        {
+                            <a class="image-button warning" onclick="EditArea('@area.Key')"><span class="icon mif-pencil"></span> Edit</a>
+                        }
+                        @*<a class="image-button alert"><span class="icon mif-bin"></span> Delete</a>*@
+                    </td>
+                </tr>
+            }
+        }
+
+
+
+    </tbody>
+</table>

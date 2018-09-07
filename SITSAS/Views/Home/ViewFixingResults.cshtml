@@ -1,0 +1,28 @@
+﻿@model List<SITSAS.Result_Answers_Fixings>
+
+<h2>Selected Date: @Model.FirstOrDefault().Result_Headers_Fixings.SelectedDate.ToString("d MMM yy")</h2>
+<hr class="thin bg-grayLighter">
+
+<table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+    <thead>
+        <tr>
+            <td class="sortable-column">Port</td>
+            <td class="sortable-column">Question</td>
+            <td class="sortable-column">Raw Answer</td>
+            <td class="sortable-column">Raw Score</td>
+            <td class="sortable-column">Staleness Multiplier</td>
+            <td class="sortable-column">Weighted Multiplier</td>
+        </tr>
+    </thead>
+    @foreach (var Header in Model)
+    {
+        <tr>
+            <td> @Header.Result_Headers_Fixings.Port.Name</td>
+            <td> @Header.Answer.Question.Name</td>
+            <td> @Header.RawAnswer</td>
+            <td> @Header.RawScore</td>
+            <td> @Header.StalenessScore</td>
+            <td> @Header.WeightedScore  </td>
+        </tr>
+    }
+</table>

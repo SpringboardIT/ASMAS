@@ -1,0 +1,58 @@
+﻿@model SITSAS.Models.FrequencyProfileModel
+<script>
+    function NewFrequencyProfile() {
+        @Html.Raw("$.ajax({ url: '/Home/CreateUpdateFrequencyProfile?', data: 'json', type: 'GET', data: 'IsPart=true', cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
+        @Html.Raw("metroDialog.open('#popUp');")
+    }
+    function EditFrequencyProfile(id) {
+        @Html.Raw("$.ajax({ url: '/Home/CreateUpdateFrequencyProfile?', data: 'json', type: 'GET', data: 'ID=' + id + '&IsPart=true', cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
+        @Html.Raw("metroDialog.open('#popUp');")
+    }
+</script>
+<h1 class="text-light">Frequency Profiles<span class="mif-calendar place-left" style="padding-right:5px;"></span></h1>
+<hr class="thin bg-grayLighter">
+@if (Model.rights.CanAdd)
+{
+    <a class="image-button warning" onclick="NewFrequencyProfile();"><span class="icon mif-plus"></span> Create</a>
+}
+<hr class="thin bg-grayLighter">
+<hr class="thin bg-grayLighter">
+<table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+    <thead>
+        <tr>
+            <td style="width: 46.25%" class="sortable-column">Name</td>
+            <td style="width: 46.25%" class="sortable-column">Next Date To Complete</td>
+            <td style="width: 7.5%" class="sortable-column"></td>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.rights.CanView)
+        {
+            foreach (var FrequencyProfile in Model.ExistingFrequencyProfiles)
+            {
+                <tr>
+                    <td>@FrequencyProfile.Name</td>
+                    @if (FrequencyProfile.NextDateToComplete.HasValue)
+                    {
+                        <td>@FrequencyProfile.NextDateToComplete.Value.ToString("d MMM yy")</td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+           
+                    <td>
+                        @if (Model.rights.CanEdit)
+                        {
+                            <a class="image-button warning" onclick="EditFrequencyProfile('@FrequencyProfile.ID')"><span class="icon mif-pencil"></span> Edit</a>
+                        }
+                        @*<a class="image-button alert"><span class="icon mif-bin"></span> Delete</a>*@
+                    </td>
+                </tr>
+            }
+        }
+
+
+
+    </tbody>
+</table>

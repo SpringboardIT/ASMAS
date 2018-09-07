@@ -1,0 +1,54 @@
+﻿@model SITSAS.Models.CategoriesModel
+<script>
+    function NewCategory() {
+            @Html.Raw("$.ajax({ url: '/Home/CreateUpdateCategory?', data: 'json', type: 'GET', data: 'IsPart=true', cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
+                        @Html.Raw("metroDialog.open('#popUp');")
+    }
+    function EditCategory(id) {
+        @Html.Raw("$.ajax({ url: '/Home/CreateUpdateCategory?', data: 'json', type: 'GET', data: 'ID=' + id + '&IsPart=true', cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
+                    @Html.Raw("metroDialog.open('#popUp');")
+    }
+</script>
+<h1 class="text-light">Categories<span class="mif-paragraph-justify place-left" style="padding-right:5px;"></span></h1>
+<hr class="thin bg-grayLighter">
+@if (Model.rights.CanAdd)
+{
+<a class="image-button warning" onclick="NewCategory();"><span class="icon mif-plus"></span> Create</a>
+}
+@if (Model.rights.CanView)
+{
+<a class="image-button warning" href="~/Home/RetiredCategories"><span class="icon mif-undo"></span> Retired Categories</a>
+<a class="image-button warning" href="~/Home/FutureCategories"><span class="icon mif-redo"></span> Future Categories</a>
+}
+<hr class="thin bg-grayLighter">
+<hr class="thin bg-grayLighter">
+<table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+    <thead>
+        <tr>
+            <td style="width: 46.25%" class="sortable-column">Name</td>
+            <td style="width: 46.25%" class="sortable-column">Display Name</td>
+            <td style="width: 7.5%" class="sortable-column"></td>
+        </tr>
+    </thead>
+    <tbody>
+@if (Model.rights.CanView)
+{
+        foreach (var rCategories in Model.ExistingCategories)
+        {
+            <tr>
+                <td>@rCategories.Name</td>
+                <td>@rCategories.DisplayName</td>
+                <td>
+@if (Model.rights.CanEdit)
+{
+                    <a class="image-button warning" onclick="EditCategory('@rCategories.ID')"><span class="icon mif-pencil"></span> Edit</a>
+}
+                    @*<a class="image-button alert"><span class="icon mif-bin"></span> Delete</a>*@
+                </td>
+            </tr>
+        }
+}
+
+
+    </tbody>
+</table>

@@ -1,0 +1,409 @@
+﻿@using SITSAS.Models
+@model  Tuple<PermissionGroupNewModel, AccessRights>
+
+
+<script>
+    $(function () {
+
+        $('#AllQuestionnairesOverride').change(function () {
+            if ($('#AllQuestionnairesOverride').is(':checked')) {
+                $('#HideQuestionnairesControls').fadeOut();
+            }
+            else {
+                $("#HideQuestionnairesControls").fadeIn();
+
+            }
+        });
+   
+
+
+        $('#AllLocationsOverride').change(function () {
+            if ($('#AllLocationsOverride').is(':checked')) {
+                $('#HideLocationControls').fadeOut();
+        }
+        else {
+                $("#HideLocationControls").fadeIn();
+
+        }
+        });
+
+        $('#AllAreasOverride').change(function () {
+            if ($('#AllAreasOverride').is(':checked')) {
+                $('#HideAreaControls').fadeOut();
+            }
+            else {
+                $("#HideAreaControls").fadeIn();
+
+            }
+        });
+
+
+    });
+</script>
+
+<script>
+    $(function () {
+        if ($('#AllQuestionnairesOverride').is(':checked')) {
+            $('#HideQuestionnairesControls').fadeOut();
+        }
+        else {
+            $("#HideQuestionnairesControls").fadeIn();
+
+        }
+    });
+
+    $(function () {
+        if ($('#AllLocationsOverride').is(':checked')) {
+            $('#HideLocationControls').fadeOut();
+        }
+        else {
+            $("#HideLocationControls").fadeIn();
+
+        }
+    });
+
+    $(function () {
+        if ($('#AllAreasOverride').is(':checked')) {
+            $('#HideAreaControls').fadeOut();
+        }
+        else {
+            $("#HideAreaControls").fadeIn();
+
+        }
+    });
+</script>
+
+
+
+
+@if (Model.Item2.CanView == true)
+{
+
+    <form id="form0" action="~/Roles/CreateNewPermissionGroup" method="post">
+        <div id="div_loading" style="display: none;">
+            <img src="@Url.Content("~/Images/loading.gif")" alt="" />
+        </div>
+        <div class="panel" style="margin:20px;">
+            <div class="heading" style="background-color:#36CAB2;">
+                <span class="icon mif-users" style="background-color:#1F1C53;"></span>
+                @if (Model.Item1.PermissionGroupExists)
+                {
+                    <span class="title">Update Permission Group</span>
+                }
+                else
+                {
+                    <span class="title">
+                        Create New Permission Group
+                    </span>
+                }
+
+</div>
+            <div class="content" style="background-color:#d7f4ef;padding:40px;">
+                <table style="width: 50%;">
+                    <tr style="height: 40px;">
+                        <td style="width: 30%;">
+                            <label>Group Name:</label>
+                        </td>
+                        <td style="width: 70%;">
+                            @if (Model.Item1.PermissionGroupExists)
+                            {
+                                <input type="text" name="PermissionGroupName" id="PermissionGroupName" value="@Model.Item1.ExistingPermissionGroup.GroupName" style="width: 50%;" />
+                            }
+                            else
+                            {
+                                <input type="text" name="PermissionGroupName" id="PermissionGroupName" style="width: 50%;" />
+                            }
+
+                        </td>
+                    </tr>
+                    @if (Model.Item1.PermissionGroupExists)
+                {
+                        <input type="hidden" name="ExistingPermissionGroupID" id="ExistingPermissionGroupID" value="@Model.Item1.ExistingPermissionGroup.ID" style="width: 50%;" />
+                    }
+                    else
+                    {
+                        <input type="hidden" name="ExistingPermissionGroupID" id="ExistingPermissionGroupID" value="0" style="width: 50%;" />
+                    }
+                    <tr>
+                        <td style="width: 30%;">
+                            <label>View All Questionnaires  </label>
+                        </td>
+                        <td style="width: 70%;">
+                            <label class="switch-original">
+
+                                @if (!Model.Item1.PermissionGroupExists)
+                                {
+                                    <input type="checkbox" style="margin-left:20px" name="AllQuestionnairesOverride" id="AllQuestionnairesOverride" checked="checked" />
+                                }
+                                else
+                                {
+                                    if (Model.Item1.AllQuestionnairesOverride)
+                                    {
+                                        <input type="checkbox" style="margin-left:20px" name="AllQuestionnairesOverride" id="AllQuestionnairesOverride" checked="checked" />
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" style="margin-left:20px" name="AllQuestionnairesOverride" id="AllQuestionnairesOverride" />
+                                    }
+                                }
+                                <span class="check"></span>
+                            </label>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 30%;">
+                            <label>View All Locations  </label>
+                        </td>
+                        <td style="width: 70%;">
+                            <label class="switch-original">
+                                @if (!Model.Item1.PermissionGroupExists)
+                                {
+                                    <input type="checkbox" style="margin-left:20px" name="AllLocationsOverride" id="AllLocationsOverride" checked="checked" />
+                                }
+                                else
+                                {
+                                    if (Model.Item1.AllLocationsOverride)
+                                    {
+                                        <input type="checkbox" style="margin-left:20px" name="AllLocationsOverride" id="AllLocationsOverride" checked="checked" />
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" style="margin-left:20px" name="AllLocationsOverride" id="AllLocationsOverride" />
+                                    }
+                                }
+                                <span class="check"></span>
+                            </label>
+
+</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 30%;">
+                            <label>View All Areas  </label>
+                        </td>
+                        <td style="width: 70%;">
+                            <label class="switch-original">
+                                @if (!Model.Item1.PermissionGroupExists)
+                                {
+                                    <input type="checkbox" style="margin-left:20px" name="AllAreasOverride" id="AllAreasOverride" checked="checked" />
+                                }
+                                else
+                                {
+                                    if (Model.Item1.AllAreasOverride)
+                                    {
+                                        <input type="checkbox" style="margin-left:20px" name="AllAreasOverride" id="AllAreasOverride" checked="checked" />
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" style="margin-left:20px" name="AllAreasOverride" id="AllAreasOverride" />
+                                    }
+                                }
+                                <span class="check"></span>
+                            </label>
+</td>
+                    </tr>
+                </table>
+                <br />
+                <button class="image-button success" onclick="$('#submit').trigger('click');"><span class="icon mif-plus"></span> Save</button>
+            </div>
+    </form>
+    <br />
+    if (Model.Item1.PermissionGroupExists)
+    {
+        if (Model.Item1.AllQuestionnaires != null)
+        {
+            if (Model.Item2.CanEdit)
+            {
+
+                <div id="HideQuestionnairesControls">
+                    <div class="panel" style="margin:20px;">
+                        <div class="heading" >
+                            <span class="icon mif-question"></span>
+                            <span class="title">Questionnaires</span>
+                        </div>
+                        <div class="content" style="padding:40px;">
+                            <form action="~/Roles/AddQuestionnaireToGroup" method="post">
+                                <table style="width:100%;">
+                                    <tr>
+                                        <td width="60%;">
+                                            <label>Questionnaire:</label>
+                                            <div class="input-control" style="width:100%;">
+                                                @*<span id="ddl" class="mif-expand-more prepend-icon"></span>*@
+                                                <select id="QuestionnaireID" name="QuestionnaireID" style="width: 100%;">
+
+                                                    @foreach (var rCategory in Model.Item1.AllQuestionnaires.OrderBy(x => x.Name))
+                            {
+                                                        <option value="@rCategory.ID">@rCategory.Name</option>
+                                                    }
+
+                                                </select>
+                                                <input type="hidden" id="GroupID" name="GroupID" value="@Model.Item1.ExistingPermissionGroup.ID" style="width: 100%;">
+                                            </div>
+                                        </td>
+                                        <td width="40%;">
+                                            <button class="image-button success" onclick="$('#submit').trigger('click');"><span class="icon mif-plus"></span> Add</button>
+                                        </td>
+                                    </tr>
+                                </table>
+
+
+
+                            </form>
+
+                            <table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+                                <thead>
+                                    <tr>
+                                        <td style="width: 46.25%" class="sortable-column">Name of Questionnaire</td>
+                                        <td style="width: 7.5%" class="sortable-column"></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var questionnaire in Model.Item1.AssignedQuestionnaires)
+                            {
+                                        <tr>
+                                            <td>@questionnaire.Name</td>
+                                            <td>
+                                                <a class="image-button warning" href="~/Roles/RemoveMapping?SecondaryID=@questionnaire.ID&PrimaryID=@Model.Item1.ExistingPermissionGroup.ID"><span class="icon mif-pencil"></span> Remove</a>
+                                                @*<a class="image-button alert"><span class="icon mif-bin"></span> Delete</a>*@
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
+        if (Model.Item1.AllLocations != null)
+        {
+            if (Model.Item2.CanEdit)
+            {
+                <div id="HideLocationControls">
+                    <div class="panel" style="margin:20px;">
+                        <div class="heading">
+                            <span class="icon mif-question"></span>
+                            <span class="title">Locations</span>
+                        </div>
+                        <div class="content" style="padding:40px;">
+                            <form action="~/Roles/AddLocationToGroup" method="post">
+                                <table style="width:100%;">
+                                    <tr>
+                                        <td width="60%;">
+                                            <label>Location:</label>
+                                            <div class="input-control" style="width:100%;">
+                                                @*<span id="ddl" class="mif-expand-more prepend-icon"></span>*@
+                                                <select id="LocationID" name="LocationID" style="width: 100%;">
+
+                                                    @foreach (var rCategory in Model.Item1.AllLocations.OrderBy(x => x.Name))
+                            {
+                                                        <option value="@rCategory.ID">@rCategory.Name</option>
+                                                    }
+
+                                                </select>
+                                                <input type="hidden" id="GroupID" name="GroupID" value="@Model.Item1.ExistingPermissionGroup.ID" style="width: 100%;">
+                                            </div>
+                                        </td>
+                                        <td width="40%;">
+                                            <button class="image-button success" onclick="$('#submit').trigger('click');"><span class="icon mif-plus"></span> Add</button>
+                                        </td>
+                                    </tr>
+                                </table>
+
+
+
+                            </form>
+
+                            <table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+                                <thead>
+                                    <tr>
+                                        <td style="width: 46.25%" class="sortable-column">Name of Location</td>
+                                        <td style="width: 7.5%" class="sortable-column"></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var location in Model.Item1.AssignedLocations)
+                            {
+                                        <tr>
+                                            <td>@location.Name</td>
+                                            <td>
+                                                <a class="image-button warning" href="~/Roles/RemoveMapping?SecondaryID=@location.ID&PrimaryID=@Model.Item1.ExistingPermissionGroup.ID"><span class="icon mif-pencil"></span> Remove</a>
+                                                @*<a class="image-button alert"><span class="icon mif-bin"></span> Delete</a>*@
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        if (Model.Item1.AllAreas != null)
+        {
+            if (Model.Item2.CanEdit)
+            {
+                <div id="HideAreaControls">
+                    <div class="panel" style="margin:20px;">
+                        <div class="heading">
+                            <span class="icon mif-question"></span>
+                            <span class="title">Areas</span>
+                        </div>
+                        <div class="content" style="padding:40px;">
+                            <form action="~/Roles/AddAreaToGroup" method="post">
+                                <table style="width:100%;">
+                                    <tr>
+                                        <td width="60%;">
+                                            <label>Area:</label>
+                                            <div class="input-control" style="width:100%;">
+                                                @*<span id="ddl" class="mif-expand-more prepend-icon"></span>*@
+                                                <select id="AreaID" name="AreaID" style="width: 100%;">
+
+                                                    @foreach (var rCategory in Model.Item1.AllAreas.OrderBy(x => x.Name))
+                            {
+                                                        <option value="@rCategory.ID">@rCategory.Name</option>
+                                                    }
+
+                                                </select>
+                                                <input type="hidden" id="GroupID" name="GroupID" value="@Model.Item1.ExistingPermissionGroup.ID" style="width: 100%;">
+                                            </div>
+                                        </td>
+                                        <td width="40%;">
+                                            <button class="image-button success" onclick="$('#submit').trigger('click');"><span class="icon mif-plus"></span> Add</button>
+                                        </td>
+                                    </tr>
+                                </table>
+
+
+
+                            </form>
+
+                            <table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+                                <thead>
+                                    <tr>
+                                        <td style="width: 46.25%" class="sortable-column">Name</td>
+                                        <td style="width: 7.5%" class="sortable-column"></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var Area in Model.Item1.AssignedAreas)
+                            {
+                                        <tr>
+                                            <td>@Area.Name</td>
+                                            <td>
+                                                <a class="image-button warning" href="~/Roles/RemoveMapping?SecondaryID=@Area.ID&PrimaryID=@Model.Item1.ExistingPermissionGroup.ID"><span class="icon mif-pencil"></span> Remove</a>
+                                                @*<a class="image-button alert"><span class="icon mif-bin"></span> Delete</a>*@
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    }
+
+}

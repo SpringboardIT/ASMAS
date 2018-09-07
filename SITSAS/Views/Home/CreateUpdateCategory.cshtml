@@ -1,0 +1,202 @@
+﻿@model  SITSAS.Models.CreateUpdateCategoryModel
+<button class="image-button warning" onclick="$('#submit').trigger('click');"><span class="icon mif-floppy-disk"></span> Save</button>
+@if (Model.CategoryExists)
+{
+    if (Model.AllowEdit)
+    {
+        <a class="image-button warning" href="~/Home/DeleteCategory?ID=@Model.ExistingCategory.ID" onclick="return confirm('Are you sure you want to delete this item?')"><span class="icon mif-bin"></span> Delete</a>
+    }
+    else
+    {
+        <button class="image-button bg-lightGray fg-white" onclick="return alert('You are unable to make changes to this Category as it has assosicated Questions that have been answered. Please retired it')"><span class="icon mif-bin"></span> Delete</button>
+
+    }
+
+}
+<hr class="thin bg-grayLighter">
+
+<div class="panel">
+    <div class="heading" style="background-color:#36CAB2;">
+        <span class="icon mif-paragraph-justify" style="background-color:#1F1C53;"></span>
+
+        @if (Model.CategoryExists)
+        {
+            <span class="title">Update Category</span>
+
+        }
+        else
+        {
+            <span class="title">Create New Category</span>
+        }
+
+
+    </div>
+    <div class="content" style="background-color:#d7f4ef;">
+        <form id="form0" action="/Home/SaveCategory" method="post">
+            <input type="submit" id="submit" style="display:none;" />
+            <br />
+            <br />
+            <table style="width: 80%;" align="center">
+                <tr>
+                    <td style="width: 100%;">
+                        <label>Name</label>
+                        <div class="input-control text" style="width:100%;">
+                            @if (Model.CategoryExists)
+                            {
+                                if (Model.AllowEdit)
+                                {
+                                    <input type="text" name="Name" id="Name" value="@Model.ExistingCategory.Name" style="width: 100%;" required />
+                                }
+                                else
+                                {
+                                    <input type="text" name="Name" id="Name" value="@Model.ExistingCategory.Name" style="width: 100%;" disabled />
+                                }
+                                <input type="hidden" name="ExistingCategoryID" id="ExistingCategoryID" value="@Model.ExistingCategory.ID" />
+
+                            }
+                            else
+                            {
+                                <input type="text" name="Name" id="Name" style="width: 100%;" required />
+                                <input type="hidden" name="ExistingCategoryID" id="ExistingCategoryID" value="0" />
+                            }
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 100%;">
+                        <label>Display Name</label>
+                        <div class="input-control text" style="width:100%;">
+                            @if (Model.CategoryExists)
+                            {
+                                if (Model.AllowEdit)
+                                {
+                                    <input type="text" name="DisplayName" id="DisplayName" value="@Model.ExistingCategory.DisplayName" style="width: 100%;" required />
+                                }
+                                else
+                                {
+                                    <input type="text" name="DisplayName" id="DisplayName" value="@Model.ExistingCategory.DisplayName" style="width: 100%;" disabled />
+                                }
+
+
+                            }
+                            else
+                            {
+                                <input type="text" name="DisplayName" id="DisplayName" style="width: 100%;" required />
+                              
+                            }
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 100%;">
+                        <label>Start Date</label>
+                        <div class="input-control text" style="width:100%;">
+
+                            @if (Model.CategoryExists)
+                            {
+                                if (Model.AllowEdit)
+                                {
+                                    <div class="input-control text" data-role="datepicker" data-format="d mmmm yy">
+                                        <input type="text" name="StartDate" id="StartDate" value="@Model.ExistingCategory.StartDate.Value.ToString("d MMM yy")" style="width: 100%;" />
+                                        <button class="button"><span class="mif-calendar"></span></button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="input-control text" data-role="datepicker" data-format="d mmmm yy">
+                                        <input type="text" name="StartDate" id="StartDate" value="@Model.ExistingCategory.StartDate.Value.ToString("d MMM yy")" style="width: 100%;" disabled />
+                                    </div>
+                                }
+
+                            }
+                            else
+                            {
+                                <div class="input-control text" data-role="datepicker" data-format="d mmmm yy">
+                                    <input type="text" name="StartDate" id="StartDate" value="@DateTime.Now.ToString("d MMM yy")" style="width: 100%;" />
+                                    <button class="button"><span class="mif-calendar"></span></button>
+                                </div>
+                            }
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 100%;">
+                        <label>End Date</label>
+                        <div class="input-control text" style="width:100%;">
+                            @if (Model.CategoryExists)
+                            {
+                                if (Model.ExistingCategory.EndDate > DateTime.Now)
+                                {
+                                    <div class="input-control text" data-role="datepicker" data-format="d mmmm yy">
+                                        <input type="text" name="EndDate" id="EndDate" value="@Model.ExistingCategory.EndDate.Value.ToString("d MMM yy")" style="width: 100%;" required />
+                                        <button class="button"><span class="mif-calendar"></span></button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="input-control text" data-role="datepicker" data-format="d mmmm yy">
+                                        <input type="text" name="EndDate" id="EndDate" value="@Model.ExistingCategory.EndDate.Value.ToString("d MMM yy")" style="width: 100%;" disabled />
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="input-control text" data-role="datepicker" data-format="d mmmm yy">
+                                    <input type="text" name="EndDate" id="EndDate" value="@DateTime.MaxValue.ToString("d MMM yy")" style="width: 100%;" />
+                                    <button class="button"><span class="mif-calendar"></span></button>
+                                </div>
+                            }
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 100%;">
+                        <label>Special Case</label><br /><br />
+                        @if (Model.CategoryExists)
+                        {
+                            <label class="switch-original">
+                                @if (Model.ExistingCategory.SpecialCase)
+                                {
+                                    if (Model.AllowEdit)
+                                    {
+                                        <input type="checkbox" name="SpecialCase" checked>
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" name="SpecialCase" checked disabled>
+                                    }
+                                }
+                                else
+                                {
+                                    if (Model.AllowEdit)
+                                    {
+                                        <input type="checkbox" name="SpecialCase">
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" name="SpecialCase" disabled>
+                                    }
+                                }
+
+                                <span class="check"></span>
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="switch-original">
+                                <input type="checkbox" name="SpecialCase">
+                                <span class="check"></span>
+                            </label>
+
+                        }
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <br />
+        <br />
+
+    </div>
+
+</div>
+

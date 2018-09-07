@@ -1,0 +1,40 @@
+﻿@model SITSAS.Models.LocationsModel
+<script>
+    function NewLocation() {
+            @Html.Raw("$.ajax({ url: '/Home/CreateUpdateLocation?', data: 'json', type: 'GET', data: 'IsPart=true', cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
+                        @Html.Raw("metroDialog.open('#popUp');")
+    }
+    function EditLocation(id) {
+        @Html.Raw("$.ajax({ url: '/Home/CreateUpdateLocation?', data: 'json', type: 'GET', data: 'ID=' + id + '&IsPart=true', cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
+                    @Html.Raw("metroDialog.open('#popUp');")
+    }
+</script>
+<h1 class="text-light">Locations<span class="mif-location place-left" style="padding-right:5px;"></span></h1>
+<hr class="thin bg-grayLighter">
+<a class="image-button warning" onclick="NewLocation();"><span class="icon mif-plus"></span> Create</a>
+<hr class="thin bg-grayLighter">
+<hr class="thin bg-grayLighter">
+<table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+    <thead>
+        <tr>
+            <td style="width: 46.25%" class="sortable-column">Name</td>
+            <td style="width: 46.25%" class="sortable-column">Area</td>
+            <td style="width: 7.5%" class="sortable-column"></td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var location in Model.ExistingLocations)
+        {
+            <tr>
+                <td>@location.Name</td>
+                <td>@location.AreaName</td>
+                <td>
+                    <a class="image-button warning" onclick="EditLocation('@location.ID');"><span class="icon mif-pencil"></span> Edit</a>
+                    @*<a class="image-button alert"><span class="icon mif-bin"></span> Delete</a>*@
+                </td>
+            </tr>
+        }
+
+
+    </tbody>
+</table>

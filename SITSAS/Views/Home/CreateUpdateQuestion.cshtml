@@ -1,0 +1,619 @@
+﻿@model  SITSAS.Models.CreateUpdateQuestionModel
+@{bool AllowSave = true; bool Retired = false; }
+@if (Model.QuestionExists)
+{
+    if (Model.ExistingQuestion.Answers.Count > 0)
+    {
+        if (Model.ExistingQuestion.Answers.Where(x => x.Result_Answers.Count > 0).ToList().Count > 0)
+        {
+            //if has been answered!!!!
+            AllowSave = false;
+        }
+    }
+    if (Model.ExistingQuestion.EndDate < DateTime.Now)
+    {
+        AllowSave = false;
+        Retired = true;
+    }
+}
+<button class="image-button warning" onclick="$('#submit').trigger('click');"><span class="icon mif-floppy-disk"></span> Save</button>
+@if (Model.QuestionExists)
+{
+    if (AllowSave)
+    {
+
+        <a class="image-button warning" href="~/Home/DeleteQuestion?ID=@Model.ExistingQuestion.ID" onclick="return confirm('Are you sure you want to delete this item?')"><span class="icon mif-bin"></span> Delete</a>
+
+    }
+    else
+    {
+        <button class="image-button bg-lightGray fg-white" onclick="return alert('You are unable to make changes to this Question as it has been answered. Please retired it')"><span class="icon mif-bin"></span> Delete</button>
+    }
+}
+
+<hr class="thin bg-grayLighter">
+
+<div class="panel">
+    <div class="heading" style="background-color:#36CAB2;">
+        <span class="icon mif-question" style="background-color:#1F1C53;"></span>
+
+        @if (Model.QuestionExists)
+        {
+            <span class="title">Update Question</span>
+
+        }
+        else
+        {
+            <span class="title">Create New Question</span>
+        }
+
+
+    </div>
+    <div class="content" style="background-color:#d7f4ef;">
+        <form id="form0" action="/Home/SaveQuestion" method="post">
+            <input type="submit" id="submit" style="display:none;" />
+            <br />
+            <br />
+            <table style="width: 80%;" align="center">
+                <tr>
+                    <td style="width: 100%;">
+                        <label>Name of Question</label>
+                        <div class="input-control text" style="width:100%;">
+                            @if (Model.QuestionExists)
+                            {
+                                if (AllowSave)
+                                {
+                                    <input type="text" name="Name" id="Name" value="@Model.ExistingQuestion.Name" style="width: 100%;" required />
+                                }
+                                else
+                                {
+                                    <input type="text" name="Name" id="Name" value="@Model.ExistingQuestion.Name" style="width: 100%;" required disabled />
+                                }
+
+                                <input type="hidden" name="ExistingQuestionID" id="ExistingQuestionID" value="@Model.ExistingQuestion.ID" />
+
+                            }
+                            else
+                            {
+                                <input type="text" name="Name" id="Name" style="width: 100%;" required />
+                                <input type="hidden" name="ExistingQuestionID" id="ExistingQuestionID" value="0" />
+                            }
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 100%;">
+                        <label>Calculation Model</label>
+                        <div class="input-control text" style="width:100%;">
+                            @*<span class="mif-expand-more prepend-icon"></span>*@
+                            @if (AllowSave)
+                            {
+                                <select id='calcModelID' name='CalculationModelID' style='width: 100%;'>
+
+                                    @foreach (var rCategory in Model.AllCalculationModels.OrderBy(x => x.Name))
+                                    {
+                                        if (Model.QuestionExists)
+                                        {
+                                            if (Model.ExistingQuestion.CalculationModelID == rCategory.ID)
+                                            {
+
+                                                <option value="@rCategory.ID" selected="selected">@rCategory.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@rCategory.ID">@rCategory.Name</option>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <option value="@rCategory.ID">@rCategory.Name</option>
+                                        }
+
+                                    }
+
+                                </select>
+                            }
+                            else
+                            {
+                                <select id='calcModelID' name='CalculationModelID' style='width: 100%;' disabled>
+
+
+                                    @foreach (var rCategory in Model.AllCalculationModels.OrderBy(x => x.Name))
+                                    {
+                                        if (Model.QuestionExists)
+                                        {
+                                            if (Model.ExistingQuestion.CalculationModelID == rCategory.ID)
+                                            {
+
+                                                <option value="@rCategory.ID" selected="selected">@rCategory.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@rCategory.ID">@rCategory.Name</option>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <option value="@rCategory.ID">@rCategory.Name</option>
+                                        }
+
+                                    }
+
+                                </select>
+                            }
+                        </div>
+                        <script>
+                            $('#calcModelID').on('change', function () {
+                                if (this.value == "9f013142-465b-4113-921e-35d8252fc921") {
+                                    $("#QuestionnaireRow").fadeIn();
+                                }
+                                else {
+                                    $("#QuestionnaireRow").fadeOut();
+                                }
+                            });
+                        </script>
+                    </td>
+                </tr>
+                <tr style="display:none;">
+                    <td style="width: 100%;">
+                        <label>Weighting</label>
+                        <div class="input-control text" style="width:100%;">
+                            @if (Model.QuestionExists)
+                            {
+                                if (AllowSave)
+                                {
+                                    <input type="number" min="1" max="4" name="Weighting" id="Weighting" value="1" style="width: 100%;" required />
+                                }
+                                else
+                                {
+                                    <input type="number" min="1" max="4" name="Weighting" id="Weighting" value="1" style="width: 100%;" disabled />
+                                }
+
+                            }
+                            else
+                            {
+                                <input type="number" min="1" max="4" name="Weighting" id="Weighting" value="1" style="width: 100%;" required />
+                            }
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 100%;">
+                        <label>Sub Category</label>
+                        <div class="input-control text" style="width:100%;">
+                            @*<span class="mif-expand-more prepend-icon"></span>*@
+                            @if (AllowSave)
+                            {
+                                <select name="SubCategoryID" style="width: 100%;">
+                                    @foreach (var rCategory in Model.AllSubCategories.OrderBy(x => x.Name))
+                                    {
+                                        if (Model.QuestionExists)
+                                        {
+                                            if (Model.ExistingQuestion.SubCategoryID == rCategory.ID)
+                                            {
+                                                <option value="@rCategory.ID" selected="selected">@rCategory.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@rCategory.ID">@rCategory.Name</option>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <option value="@rCategory.ID">@rCategory.Name</option>
+                                        }
+
+                                    }
+
+                                </select>
+                            }
+                            else
+                            {
+                                <select name="SubCategoryID" style="width: 100%;" disabled>
+                                    @foreach (var rCategory in Model.AllSubCategories.OrderBy(x => x.Name))
+                                    {
+                                        if (Model.QuestionExists)
+                                        {
+                                            if (Model.ExistingQuestion.SubCategoryID == rCategory.ID)
+                                            {
+                                                <option value="@rCategory.ID" selected="selected">@rCategory.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@rCategory.ID">@rCategory.Name</option>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <option value="@rCategory.ID">@rCategory.Name</option>
+                                        }
+
+                                    }
+
+                                </select>
+                            }
+
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 100%;">
+                        <label>Start Date</label>
+                        <div class="input-control text" style="width:100%;">
+
+                            @if (Model.QuestionExists)
+                            {
+                                if (AllowSave)
+                                {
+                                    <div class="input-control text" data-role="datepicker" data-format="d mmmm yy">
+                                        <input type="text" name="StartDate" id="StartDate" value="@Model.ExistingQuestion.StartDate.ToString("d MMM yy")" style="width: 100%;" />
+                                        <button class="button"><span class="mif-calendar"></span></button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="input-control text">
+                                        <input type="text" name="StartDate" id="StartDate" value="@Model.ExistingQuestion.StartDate.ToString("d MMM yy")" style="width: 100%;" disabled />
+
+                                    </div>
+                                }
+
+                            }
+                            else
+                            {
+                                <div class="input-control text" data-role="datepicker" data-format="d mmmm yy">
+                                    <input type="text" name="StartDate" id="StartDate" value="@DateTime.Now.ToString("d MMM yy")" style="width: 100%;" />
+                                    <button class="button"><span class="mif-calendar"></span></button>
+                                </div>
+                            }
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 100%;">
+                        <label>End Date</label>
+                        <div class="input-control text" style="width:100%;">
+                            @if (Model.QuestionExists)
+                            {
+                                if (!Retired)
+                                {
+                                    <div class="input-control text" data-role="datepicker" data-format="d mmmm yy">
+                                        <input type="text" name="EndDate" id="EndDate" value="@Model.ExistingQuestion.EndDate.Value.ToString("d MMM yy")" style="width: 100%;" />
+                                        <button class="button"><span class="mif-calendar"></span></button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="input-control text" data-format="d mmmm yy">
+                                        <input type="text" name="EndDate" id="EndDate" value="@Model.ExistingQuestion.EndDate.Value.ToString("d MMM yy")" style="width: 100%;" disabled />
+
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="input-control text" data-role="datepicker" data-format="d mmmm yy">
+                                    <input type="text" name="EndDate" id="EndDate" value="@DateTime.MaxValue.ToString("d MMM yy")" style="width: 100%;" />
+                                    <button class="button"><span class="mif-calendar"></span></button>
+                                </div>
+                            }
+                        </div>
+                    </td>
+                </tr>
+             
+                <tr>
+                    <td style="width: 100%;">
+                        <label>Answer Can Be Not Applicable</label><br /><br />
+                        @if (Model.QuestionExists)
+                        {
+                            <label class="switch-original">
+                                @if (Model.ExistingQuestion.CanBeNA)
+                                {
+                                    if (AllowSave)
+                                    {
+                                        <input type="checkbox" name="CanBeNA" checked>
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" name="CanBeNA" checked disabled>
+                                    }
+                                }
+                                else
+                                {
+                                    if (AllowSave)
+                                    {
+                                        <input type="checkbox" name="CanBeNA">
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" name="CanBeNA" disabled>
+                                    }
+                                }
+
+                                <span class="check"></span>
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="switch-original">
+                                <input type="checkbox" name="CanBeNA">
+                                <span class="check"></span>
+                            </label>
+
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 100%;">
+                        <label>Answer Can Be Not Entered</label><br /><br />
+                        @if (Model.QuestionExists)
+                        {
+                            <label class="switch-original">
+                                @if (Model.ExistingQuestion.CanBeNotAnswered)
+                                {
+                                    if (AllowSave)
+                                    {
+                                        <input type="checkbox" name="CanBeNAns" checked>
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" name="CanBeNAns" checked disabled>
+                                    }
+                                }
+                                else
+                                {
+                                    if (AllowSave)
+                                    {
+                                        <input type="checkbox" name="CanBeNAns">
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" name="CanBeNAns" disabled>
+                                    }
+                                }
+
+                                <span class="check"></span>
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="switch-original">
+                                <input type="checkbox" name="CanBeNAns">
+                                <span class="check"></span>
+                            </label>
+
+                        }
+                    </td>
+                </tr>
+                @if (Model.QuestionExists)
+                {
+                    if (Model.ExistingQuestion.CalculationModel.eNumMapping == 4)
+                    {
+                        @Html.Raw(" <tr id='QuestionnaireRow'>")
+                    }
+                    else
+                    {
+                        @Html.Raw(" <tr id='QuestionnaireRow' style='display: none;'>")
+                    }
+                }
+                else
+                {
+                    @Html.Raw(" <tr id='QuestionnaireRow' style='display: none;'>")
+                }
+
+                <td style="width: 100%;">
+                    <br />
+                    <label>Sub Questionnaire</label>
+                    <div class="input-control text" style="width:100%;">
+                        @*<span class="mif-expand-more prepend-icon"></span>*@
+                        @if (AllowSave)
+                        {
+                            <select name="SubQuestionnaireID" style="width: 100%;">
+                                @foreach (var rCategory in Model.AllQuestionnaires.OrderBy(x => x.Name))
+                                {
+                                    if (Model.QuestionExists)
+                                    {
+                                        if (Model.ExistingQuestion.SubQuestionnaireID == rCategory.ID)
+                                        {
+                                            <option value="@rCategory.ID" selected="selected">@rCategory.Name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@rCategory.ID">@rCategory.Name</option>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <option value="@rCategory.ID">@rCategory.Name</option>
+                                    }
+
+                                }
+
+                            </select>
+                        }
+                        else
+                        {
+                            <select name="SubQuestionnaireID" style="width: 100%;" disabled>
+                                @foreach (var rCategory in Model.AllQuestionnaires.OrderBy(x => x.Name))
+                                {
+                                    if (Model.QuestionExists)
+                                    {
+                                        if (Model.ExistingQuestion.SubQuestionnaireID == rCategory.ID)
+                                        {
+                                            <option value="@rCategory.ID" selected="selected">@rCategory.Name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@rCategory.ID">@rCategory.Name</option>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <option value="@rCategory.ID">@rCategory.Name</option>
+                                    }
+
+                                }
+
+                            </select>
+                        }
+                    </div>
+                    <br />
+                    <br />
+                    <label>Ask Multiple Times?</label><br /><br />
+                    @if (Model.QuestionExists)
+                    {
+
+                        <label class="switch-original">
+                            @if (Model.ExistingQuestion.SubQuestionnaireMultipleTimes)
+                            {
+                                if (AllowSave)
+                                {
+                                    <input type="checkbox" name="SubQuestionnaireMultipleTimes" checked>
+                                }
+                                else
+                                {
+                                    <input type="checkbox" name="SubQuestionnaireMultipleTimes" checked disabled>
+                                }
+                            }
+                            else
+                            {
+                                if (AllowSave)
+                                {
+                                    <input type="checkbox" name="SubQuestionnaireMultipleTimes">
+                                }
+                                else
+                                {
+                                    <input type="checkbox" name="SubQuestionnaireMultipleTimes" disabled>
+                                }
+                            }
+
+                            <span class="check"></span>
+                        </label>
+                    }
+                    else
+                    {
+                        <label class="switch-original">
+                            <input type="checkbox" name="SubQuestionnaireMultipleTimes">
+                            <span class="check"></span>
+                        </label>
+
+                    }
+
+                </td>
+                </tr>
+                @if (Model.ShowStalenessProfile)
+                {
+                    <tr>
+                        <td style="width: 100%;">
+                            <label>Staleness Profile</label>
+                            <div class="input-control text" style="width:100%;">
+                                @*<span class="mif-expand-more prepend-icon"></span>*@
+                                @if (AllowSave)
+                                {
+                                    <select name="StalenessProfileID" style="width: 100%;">
+                                        @foreach (var rCategory in Model.AllStalenessProfiles.OrderBy(x => x.Name))
+                                        {
+                                            if (Model.QuestionExists)
+                                            {
+                                                if (Model.ExistingQuestion.StalenessProfileID == rCategory.ProfileID)
+                                                {
+                                                    <option value="@rCategory.ProfileID" selected="selected">@rCategory.Name</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@rCategory.ProfileID">@rCategory.Name</option>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <option value="@rCategory.ProfileID">@rCategory.Name</option>
+                                            }
+
+                                        }
+
+                                    </select>
+                                }
+                                else
+                                {
+                                    <select name="StalenessProfileID" style="width: 100%;" disabled>
+                                        @foreach (var rCategory in Model.AllStalenessProfiles.OrderBy(x => x.Name))
+                                        {
+                                            if (Model.QuestionExists)
+                                            {
+                                                if (Model.ExistingQuestion.StalenessProfileID == rCategory.ProfileID)
+                                                {
+                                                    <option value="@rCategory.ProfileID" selected="selected">@rCategory.Name</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@rCategory.ProfileID">@rCategory.Name</option>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <option value="@rCategory.ProfileID">@rCategory.Name</option>
+                                            }
+
+                                        }
+
+                                    </select>
+                                }
+
+                            </div>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <tr style="display:none;">
+                        <td><input type="hidden" name="StalenessProfileID" style="width: 100%;" value="@Model.DefaultStalenessID"> </td>
+                    </tr>
+                }
+
+                <tr>
+                    <td style="width: 100%;">
+                        <label>Default Score</label>
+                        <div class="input-control text" style="width:100%;">
+                            @if (Model.QuestionExists)
+                            {
+                                if (AllowSave)
+                                {
+                                    <input type="number" min="1" max="10" name="DefaultValue" id="DefaultValue" value="@Model.ExistingQuestion.DefaultValue" style="width: 100%;" required />
+                                }
+                                else
+                                {
+                                    <input type="number" min="1" max="10" name="DefaultValue" id="DefaultValue" value="@Model.ExistingQuestion.DefaultValue" style="width: 100%;" disabled />
+                                }
+
+                            }
+                            else
+                            {
+                                <input type="number" min="1" max="10" name="DefaultValue" id="DefaultValue" value="10" style="width: 100%;" required />
+                            }
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @if (!Model.QuestionExists)
+                        {
+                            <br />
+                            <label>Please note: you can only assign Answers once a question is Saved</label>
+                        }
+                        else
+                        {
+                            <br />
+                            <label>Please note: you will not be able to Delete this question once it has been answered</label>
+                        }
+                    </td>
+                </tr>
+
+            </table>
+        </form>
+
+        <br />
+        <br />
+
+    </div>
+</div>
+

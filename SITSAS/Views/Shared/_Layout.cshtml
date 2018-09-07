@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Metro, a sleek, intuitive, and powerful framework for faster and easier web development for Windows Metro Style.">
+    <meta name="keywords" content="HTML, CSS, JS, JavaScript, framework, metro, front-end, frontend, web development">
+    <meta name="author" content="Sergey Pimenov and Metro UI CSS contributors">
+    <link rel='shortcut icon' type='image/x-icon' href='../favicon.ico' />
+    <title>Milestones Trust: SAS</title>
+    <link href="~/css/main.css" rel="stylesheet" />
+    <link href="~/css/metro.css" rel="stylesheet" />
+    <link href="~/css/metro-icons.css" rel="stylesheet">
+    <link href="~/css/metro-responsive.css" rel="stylesheet">
+    <script src="~/js/jquery-2.1.3.min.js"></script>
+    <script src="~/js/jquery-ui.js"></script>
+    <script src="~/js/jquery.dataTables.min.js"></script>
+    <script src="~/js/metro.js"></script>
+    <script>
+        function pushMessage(t) {
+            var mes = 'Info|Implement independently';
+            $.Notify({
+                caption: mes.split("|")[0],
+                content: mes.split("|")[1],
+                type: t
+            });
+        }
+
+        $(function () {
+            $('.sidebar').on('click', 'li', function () {
+                if (!$(this).hasClass('active')) {
+                    $('.sidebar li').removeClass('active');
+                    $(this).addClass('active');
+                }
+            })
+        })
+    </script>
+</head>
+<body class="bg-white">
+    <div class="app-bar fixed-top darcula" data-role="appbar" style="background-color:#1e1b52;">
+        <a class="app-bar-element branding  no-responsive-future" href="~/"><img src="~/images/MilestonesTrust.PNG" style="padding-bottom:5px; height:55px; margin-right:16px;" /></a>
+        <span class="app-bar-divider" style="padding-right: 50px;background-color:#1e1b52;"></span>
+        @*<ul class="app-bar-menu">
+                <li></li>
+                <li>   CORIS v1.0</li>
+            </ul>*@
+        <div class="app-bar-element place-right" style="background-color:#1e1b52;">
+            <span>
+                @if (Request.IsAuthenticated)
+                {
+                    <div style="padding-right:50px;padding-bottom:5px;color:#ffffff;">Current user: @User.Identity.Name.Substring(User.Identity.Name.LastIndexOf(@"\") + 1, (User.Identity.Name.Length - User.Identity.Name.LastIndexOf(@"\")) - 1)</div>
+                }
+                else
+                {
+                    <ul></ul>
+                }
+            </span>
+        </div>
+    </div>
+    <div class="page-content">
+
+        <div class="flex-grid no-responsive-future" style="height: 100%;">
+            <div class="row" style="height: 100%">
+                <div class="cell size-x200" id="cell-sidebar" style="background-color: #36cab2; height: 100%">
+                    <ul class="sidebar">
+                        @{Html.RenderAction("MyTasks", "Home"); }
+                        @{Html.RenderAction("partSideMenu", "Home"); }
+
+
+                    </ul>
+                </div>
+                <div class="cell auto-size padding20 bg-white" id="cell-content">
+                    @RenderBody()
+
+                    <div class="padding20 dialog" style="overflow: auto;" data-role="dialog" id="popUp" data-height="100%" data-width="75%" data-place="top-center" data-closeButton="true" data-overlay-click-close="true" data-overlay-color="op-dark" data-overlay="true" data-close-button="true">
+                        <div id="popUpItem"></div>
+                    </div>
+
+                    <div class="padding20 dialog" style="overflow: auto;" data-role="dialog" id="popUpTwo" data-height="75%" data-width="75%" data-place="center" data-closeButton="true" data-overlay-click-close="true" data-overlay-color="op-dark" data-overlay="true" data-close-button="true">
+                        <div id="popUpItemTwo"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

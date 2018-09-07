@@ -1,0 +1,47 @@
+﻿@model List<SITSAS.Page>
+@*@if (!Model.IsPart)
+    {
+        <h1 class="text-light">My Jobs<span class="mif-clipboard place-left" style="padding-right:5px;"></span></h1>
+    }*@
+
+<h1 class="text-light">Permissions<span class="mif-unlock place-left" style="padding-right:5px;"></span></h1>
+
+<div class="grid" style="width:75%;margin:auto">
+    <div class="row">
+        <div class="cell auto-size">
+            <div class="accordion" data-role="accordion" data-on-frame-opened="loadJobAccordionData(frame.find('.internalHeading').text())">
+                @foreach (var page in Model.OrderBy(x => x.DisplayOrder).ToList())
+                {
+                    <div class="frame">
+                        <div class="heading" style="background-color:#36cab2;color:#fff;">@page.PageName</div>
+                        <div class="internalHeading" style="display:none;">@page.ID</div>
+                        <div id="permissions-@page.ID" class="content">
+
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function loadJobAccordionData(formName) {
+        if (formName != '') {
+
+
+
+            //if has customer or worker or whatever - filter here!!!!!  Guid? CustomerID = null, Guid? SiteID = null, Guid? WorkerID = null
+            @{ string URL = string.Empty;
+
+                URL = "$.ajax({ url: '/Home/GetRolePermissions?', data: 'json', type: 'GET', data: 'PageID=' + formName, cache: false }).success(function (result) { $('#permissions-' + formName).empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });";
+            }
+            @Html.Raw(URL)
+        }
+    }
+
+</script>
+
+
+

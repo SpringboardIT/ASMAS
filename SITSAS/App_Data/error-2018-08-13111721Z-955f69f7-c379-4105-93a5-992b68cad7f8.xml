@@ -1,0 +1,174 @@
+﻿<error errorId="955f69f7-c379-4105-93a5-992b68cad7f8" application="/LM/W3SVC/2/ROOT" host="MVC" type="System.InvalidOperationException" message="The view 'Tasks' or its master was not found or no view engine supports the searched locations. The following locations were searched:&#xD;&#xA;~/Views/Home/Tasks.aspx&#xD;&#xA;~/Views/Home/Tasks.ascx&#xD;&#xA;~/Views/Shared/Tasks.aspx&#xD;&#xA;~/Views/Shared/Tasks.ascx&#xD;&#xA;~/Views/Home/Tasks.cshtml&#xD;&#xA;~/Views/Home/Tasks.vbhtml&#xD;&#xA;~/Views/Shared/Tasks.cshtml&#xD;&#xA;~/Views/Shared/Tasks.vbhtml" source="System.Web.Mvc" detail="System.InvalidOperationException: The view 'Tasks' or its master was not found or no view engine supports the searched locations. The following locations were searched:&#xD;&#xA;~/Views/Home/Tasks.aspx&#xD;&#xA;~/Views/Home/Tasks.ascx&#xD;&#xA;~/Views/Shared/Tasks.aspx&#xD;&#xA;~/Views/Shared/Tasks.ascx&#xD;&#xA;~/Views/Home/Tasks.cshtml&#xD;&#xA;~/Views/Home/Tasks.vbhtml&#xD;&#xA;~/Views/Shared/Tasks.cshtml&#xD;&#xA;~/Views/Shared/Tasks.vbhtml&#xD;&#xA;   at System.Web.Mvc.ViewResult.FindView(ControllerContext context)&#xD;&#xA;   at System.Web.Mvc.ViewResultBase.ExecuteResult(ControllerContext context)&#xD;&#xA;   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResult(ControllerContext controllerContext, ActionResult actionResult)&#xD;&#xA;   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResultFilterRecursive(IList`1 filters, Int32 filterIndex, ResultExecutingContext preContext, ControllerContext controllerContext, ActionResult actionResult)&#xD;&#xA;   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResultFilterRecursive(IList`1 filters, Int32 filterIndex, ResultExecutingContext preContext, ControllerContext controllerContext, ActionResult actionResult)&#xD;&#xA;   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResultWithFilters(ControllerContext controllerContext, IList`1 filters, ActionResult actionResult)&#xD;&#xA;   at System.Web.Mvc.Async.AsyncControllerActionInvoker.&lt;&gt;c__DisplayClass3_6.&lt;BeginInvokeAction&gt;b__3()&#xD;&#xA;   at System.Web.Mvc.Async.AsyncControllerActionInvoker.&lt;&gt;c__DisplayClass3_1.&lt;BeginInvokeAction&gt;b__5(IAsyncResult asyncResult)&#xD;&#xA;   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`1.CallEndDelegate(IAsyncResult asyncResult)&#xD;&#xA;   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()&#xD;&#xA;   at System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeAction(IAsyncResult asyncResult)&#xD;&#xA;   at System.Web.Mvc.Controller.&lt;&gt;c.&lt;BeginExecuteCore&gt;b__152_1(IAsyncResult asyncResult, ExecuteCoreState innerState)&#xD;&#xA;   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)&#xD;&#xA;   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()&#xD;&#xA;   at System.Web.Mvc.Controller.EndExecuteCore(IAsyncResult asyncResult)&#xD;&#xA;   at System.Web.Mvc.Controller.&lt;&gt;c.&lt;BeginExecute&gt;b__151_2(IAsyncResult asyncResult, Controller controller)&#xD;&#xA;   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)&#xD;&#xA;   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()&#xD;&#xA;   at System.Web.Mvc.Controller.EndExecute(IAsyncResult asyncResult)&#xD;&#xA;   at System.Web.Mvc.Controller.System.Web.Mvc.Async.IAsyncController.EndExecute(IAsyncResult asyncResult)&#xD;&#xA;   at System.Web.Mvc.MvcHandler.&lt;&gt;c.&lt;BeginProcessRequest&gt;b__20_1(IAsyncResult asyncResult, ProcessRequestState innerState)&#xD;&#xA;   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)&#xD;&#xA;   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()&#xD;&#xA;   at System.Web.Mvc.MvcHandler.EndProcessRequest(IAsyncResult asyncResult)&#xD;&#xA;   at System.Web.Mvc.MvcHandler.System.Web.IHttpAsyncHandler.EndProcessRequest(IAsyncResult result)&#xD;&#xA;   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()&#xD;&#xA;   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean&amp; completedSynchronously)" user="MVC\Springboard" time="2018-08-13T11:17:21.2970815Z">
+  <serverVariables>
+    <item name="ALL_HTTP">
+      <value string="HTTP_CACHE_CONTROL:max-age=0&#xD;&#xA;HTTP_CONNECTION:keep-alive&#xD;&#xA;HTTP_ACCEPT:text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8&#xD;&#xA;HTTP_ACCEPT_ENCODING:gzip, deflate, br&#xD;&#xA;HTTP_ACCEPT_LANGUAGE:en-US,en;q=0.9&#xD;&#xA;HTTP_COOKIE:.ASPXAUTH=593CD0BECAC98B32AADA8606614ACCAFFC929A9501C3243AFD5687DA69362421E41D6FE6FB318553D6FE87FE922B26E27ADFA86CF0894082AF57DE957DD8D95394BFDB4C0E4BCB440337116AA5594455D7CFFDE826495B9CF460794EE6219A3B5B11FC79C77EE33EC78BA02885C76B7E069FDCF417A290209518B9DF73ECE48139A7AC229D4892A63CB3A42DA79ABDBF10A12CA52BD32F0090DDBC7444D52376; VGEncryptedToken=0x9A0A29B9CF2FFB73E77A285ADCAC10C024A9AE562F3569815E787EF8FE400FB808F47DEDC468640DE99AA3BF2F6D8CEFB43F582A972699EE8579AF5EE0203B6230A8CF44A8D9E52551238ED1EFC50FDFE51A9DFDDE6836A7E865F375FC6C575DA773E10F3115BDCF0F61EAD246626931A1F6A69277B570A0F7EDBBC17DDB063172B62D4AE02406CEB1F6B93C6ACFD8714C4B67F26C80FD84B8B642B0FA04360F2A94E5CFDBAEC51894E5B85A5143E1545891B34AD36094CDFF344AFED7ADDB898404837099E75AC5ACD65EDEAF6EDD72C4B3A0DC695E9A7D1D960209FC14D944C28F2DA8ADA4498DE85571562FF04FBB317120845731435A4794FEAC2F363B384F97297BE1B2C9015FCD5116C755644E18F3DBF2E344F1820A7B6268A59C308F51FD567CC89982E25FBC6D8233940F167C112049FFFF9042F6C924228559A8DECA9E86F2B0C98E7841DD1FBEE9E7C9CC66C1112F2685405026206F8C7B69C87FEC7791AB2183A7C3BE75EF3E86518820D0FF1797BBD9BCD0F45F2C34DF58F8309ACBA56B3BE86DA4A1E3CD375B033CDAB987551641732749A287B1EA7C0598A432BDB10CCA32A8B3CE575818CB7ACFB4594B22A15D9A52F61C678481C14A576ACAF0933076C8B6038CCD95B3643FD991A0FBF667595A2B0C53D89CF5288F5F76&#xD;&#xA;HTTP_HOST:localhost:54213&#xD;&#xA;HTTP_REFERER:http://localhost:54213/Home/CreateUpdateTask&#xD;&#xA;HTTP_USER_AGENT:Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36&#xD;&#xA;HTTP_UPGRADE_INSECURE_REQUESTS:1&#xD;&#xA;" />
+    </item>
+    <item name="ALL_RAW">
+      <value string="Cache-Control: max-age=0&#xD;&#xA;Connection: keep-alive&#xD;&#xA;Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8&#xD;&#xA;Accept-Encoding: gzip, deflate, br&#xD;&#xA;Accept-Language: en-US,en;q=0.9&#xD;&#xA;Cookie: .ASPXAUTH=593CD0BECAC98B32AADA8606614ACCAFFC929A9501C3243AFD5687DA69362421E41D6FE6FB318553D6FE87FE922B26E27ADFA86CF0894082AF57DE957DD8D95394BFDB4C0E4BCB440337116AA5594455D7CFFDE826495B9CF460794EE6219A3B5B11FC79C77EE33EC78BA02885C76B7E069FDCF417A290209518B9DF73ECE48139A7AC229D4892A63CB3A42DA79ABDBF10A12CA52BD32F0090DDBC7444D52376; VGEncryptedToken=0x9A0A29B9CF2FFB73E77A285ADCAC10C024A9AE562F3569815E787EF8FE400FB808F47DEDC468640DE99AA3BF2F6D8CEFB43F582A972699EE8579AF5EE0203B6230A8CF44A8D9E52551238ED1EFC50FDFE51A9DFDDE6836A7E865F375FC6C575DA773E10F3115BDCF0F61EAD246626931A1F6A69277B570A0F7EDBBC17DDB063172B62D4AE02406CEB1F6B93C6ACFD8714C4B67F26C80FD84B8B642B0FA04360F2A94E5CFDBAEC51894E5B85A5143E1545891B34AD36094CDFF344AFED7ADDB898404837099E75AC5ACD65EDEAF6EDD72C4B3A0DC695E9A7D1D960209FC14D944C28F2DA8ADA4498DE85571562FF04FBB317120845731435A4794FEAC2F363B384F97297BE1B2C9015FCD5116C755644E18F3DBF2E344F1820A7B6268A59C308F51FD567CC89982E25FBC6D8233940F167C112049FFFF9042F6C924228559A8DECA9E86F2B0C98E7841DD1FBEE9E7C9CC66C1112F2685405026206F8C7B69C87FEC7791AB2183A7C3BE75EF3E86518820D0FF1797BBD9BCD0F45F2C34DF58F8309ACBA56B3BE86DA4A1E3CD375B033CDAB987551641732749A287B1EA7C0598A432BDB10CCA32A8B3CE575818CB7ACFB4594B22A15D9A52F61C678481C14A576ACAF0933076C8B6038CCD95B3643FD991A0FBF667595A2B0C53D89CF5288F5F76&#xD;&#xA;Host: localhost:54213&#xD;&#xA;Referer: http://localhost:54213/Home/CreateUpdateTask&#xD;&#xA;User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36&#xD;&#xA;Upgrade-Insecure-Requests: 1&#xD;&#xA;" />
+    </item>
+    <item name="APPL_MD_PATH">
+      <value string="/LM/W3SVC/2/ROOT" />
+    </item>
+    <item name="APPL_PHYSICAL_PATH">
+      <value string="C:\SITProjects2015\SITSAS\SITSAS\" />
+    </item>
+    <item name="AUTH_TYPE">
+      <value string="Negotiate" />
+    </item>
+    <item name="AUTH_USER">
+      <value string="MVC\Springboard" />
+    </item>
+    <item name="AUTH_PASSWORD">
+      <value string="*****" />
+    </item>
+    <item name="LOGON_USER">
+      <value string="MVC\Springboard" />
+    </item>
+    <item name="REMOTE_USER">
+      <value string="MVC\Springboard" />
+    </item>
+    <item name="CERT_COOKIE">
+      <value string="" />
+    </item>
+    <item name="CERT_FLAGS">
+      <value string="" />
+    </item>
+    <item name="CERT_ISSUER">
+      <value string="" />
+    </item>
+    <item name="CERT_KEYSIZE">
+      <value string="" />
+    </item>
+    <item name="CERT_SECRETKEYSIZE">
+      <value string="" />
+    </item>
+    <item name="CERT_SERIALNUMBER">
+      <value string="" />
+    </item>
+    <item name="CERT_SERVER_ISSUER">
+      <value string="" />
+    </item>
+    <item name="CERT_SERVER_SUBJECT">
+      <value string="" />
+    </item>
+    <item name="CERT_SUBJECT">
+      <value string="" />
+    </item>
+    <item name="CONTENT_LENGTH">
+      <value string="0" />
+    </item>
+    <item name="CONTENT_TYPE">
+      <value string="" />
+    </item>
+    <item name="GATEWAY_INTERFACE">
+      <value string="CGI/1.1" />
+    </item>
+    <item name="HTTPS">
+      <value string="off" />
+    </item>
+    <item name="HTTPS_KEYSIZE">
+      <value string="" />
+    </item>
+    <item name="HTTPS_SECRETKEYSIZE">
+      <value string="" />
+    </item>
+    <item name="HTTPS_SERVER_ISSUER">
+      <value string="" />
+    </item>
+    <item name="HTTPS_SERVER_SUBJECT">
+      <value string="" />
+    </item>
+    <item name="INSTANCE_ID">
+      <value string="2" />
+    </item>
+    <item name="INSTANCE_META_PATH">
+      <value string="/LM/W3SVC/2" />
+    </item>
+    <item name="LOCAL_ADDR">
+      <value string="::1" />
+    </item>
+    <item name="PATH_INFO">
+      <value string="/Home/Tasks" />
+    </item>
+    <item name="PATH_TRANSLATED">
+      <value string="C:\SITProjects2015\SITSAS\SITSAS\Home\Tasks" />
+    </item>
+    <item name="QUERY_STRING">
+      <value string="" />
+    </item>
+    <item name="REMOTE_ADDR">
+      <value string="::1" />
+    </item>
+    <item name="REMOTE_HOST">
+      <value string="::1" />
+    </item>
+    <item name="REMOTE_PORT">
+      <value string="50473" />
+    </item>
+    <item name="REQUEST_METHOD">
+      <value string="GET" />
+    </item>
+    <item name="SCRIPT_NAME">
+      <value string="/Home/Tasks" />
+    </item>
+    <item name="SERVER_NAME">
+      <value string="localhost" />
+    </item>
+    <item name="SERVER_PORT">
+      <value string="54213" />
+    </item>
+    <item name="SERVER_PORT_SECURE">
+      <value string="0" />
+    </item>
+    <item name="SERVER_PROTOCOL">
+      <value string="HTTP/1.1" />
+    </item>
+    <item name="SERVER_SOFTWARE">
+      <value string="Microsoft-IIS/10.0" />
+    </item>
+    <item name="URL">
+      <value string="/Home/Tasks" />
+    </item>
+    <item name="HTTP_CACHE_CONTROL">
+      <value string="max-age=0" />
+    </item>
+    <item name="HTTP_CONNECTION">
+      <value string="keep-alive" />
+    </item>
+    <item name="HTTP_ACCEPT">
+      <value string="text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8" />
+    </item>
+    <item name="HTTP_ACCEPT_ENCODING">
+      <value string="gzip, deflate, br" />
+    </item>
+    <item name="HTTP_ACCEPT_LANGUAGE">
+      <value string="en-US,en;q=0.9" />
+    </item>
+    <item name="HTTP_COOKIE">
+      <value string=".ASPXAUTH=593CD0BECAC98B32AADA8606614ACCAFFC929A9501C3243AFD5687DA69362421E41D6FE6FB318553D6FE87FE922B26E27ADFA86CF0894082AF57DE957DD8D95394BFDB4C0E4BCB440337116AA5594455D7CFFDE826495B9CF460794EE6219A3B5B11FC79C77EE33EC78BA02885C76B7E069FDCF417A290209518B9DF73ECE48139A7AC229D4892A63CB3A42DA79ABDBF10A12CA52BD32F0090DDBC7444D52376; VGEncryptedToken=0x9A0A29B9CF2FFB73E77A285ADCAC10C024A9AE562F3569815E787EF8FE400FB808F47DEDC468640DE99AA3BF2F6D8CEFB43F582A972699EE8579AF5EE0203B6230A8CF44A8D9E52551238ED1EFC50FDFE51A9DFDDE6836A7E865F375FC6C575DA773E10F3115BDCF0F61EAD246626931A1F6A69277B570A0F7EDBBC17DDB063172B62D4AE02406CEB1F6B93C6ACFD8714C4B67F26C80FD84B8B642B0FA04360F2A94E5CFDBAEC51894E5B85A5143E1545891B34AD36094CDFF344AFED7ADDB898404837099E75AC5ACD65EDEAF6EDD72C4B3A0DC695E9A7D1D960209FC14D944C28F2DA8ADA4498DE85571562FF04FBB317120845731435A4794FEAC2F363B384F97297BE1B2C9015FCD5116C755644E18F3DBF2E344F1820A7B6268A59C308F51FD567CC89982E25FBC6D8233940F167C112049FFFF9042F6C924228559A8DECA9E86F2B0C98E7841DD1FBEE9E7C9CC66C1112F2685405026206F8C7B69C87FEC7791AB2183A7C3BE75EF3E86518820D0FF1797BBD9BCD0F45F2C34DF58F8309ACBA56B3BE86DA4A1E3CD375B033CDAB987551641732749A287B1EA7C0598A432BDB10CCA32A8B3CE575818CB7ACFB4594B22A15D9A52F61C678481C14A576ACAF0933076C8B6038CCD95B3643FD991A0FBF667595A2B0C53D89CF5288F5F76" />
+    </item>
+    <item name="HTTP_HOST">
+      <value string="localhost:54213" />
+    </item>
+    <item name="HTTP_REFERER">
+      <value string="http://localhost:54213/Home/CreateUpdateTask" />
+    </item>
+    <item name="HTTP_USER_AGENT">
+      <value string="Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36" />
+    </item>
+    <item name="HTTP_UPGRADE_INSECURE_REQUESTS">
+      <value string="1" />
+    </item>
+    <item name="HTTP_APPLICATIONINSIGHTS_REQUESTTRACKINGTELEMETRYMODULE_ROOTREQUEST_ID">
+      <value string="a96b665f-98bc-42d5-aee8-b7f9a554e015" />
+    </item>
+  </serverVariables>
+  <cookies>
+    <item name=".ASPXAUTH">
+      <value string="593CD0BECAC98B32AADA8606614ACCAFFC929A9501C3243AFD5687DA69362421E41D6FE6FB318553D6FE87FE922B26E27ADFA86CF0894082AF57DE957DD8D95394BFDB4C0E4BCB440337116AA5594455D7CFFDE826495B9CF460794EE6219A3B5B11FC79C77EE33EC78BA02885C76B7E069FDCF417A290209518B9DF73ECE48139A7AC229D4892A63CB3A42DA79ABDBF10A12CA52BD32F0090DDBC7444D52376" />
+    </item>
+    <item name="VGEncryptedToken">
+      <value string="0x9A0A29B9CF2FFB73E77A285ADCAC10C024A9AE562F3569815E787EF8FE400FB808F47DEDC468640DE99AA3BF2F6D8CEFB43F582A972699EE8579AF5EE0203B6230A8CF44A8D9E52551238ED1EFC50FDFE51A9DFDDE6836A7E865F375FC6C575DA773E10F3115BDCF0F61EAD246626931A1F6A69277B570A0F7EDBBC17DDB063172B62D4AE02406CEB1F6B93C6ACFD8714C4B67F26C80FD84B8B642B0FA04360F2A94E5CFDBAEC51894E5B85A5143E1545891B34AD36094CDFF344AFED7ADDB898404837099E75AC5ACD65EDEAF6EDD72C4B3A0DC695E9A7D1D960209FC14D944C28F2DA8ADA4498DE85571562FF04FBB317120845731435A4794FEAC2F363B384F97297BE1B2C9015FCD5116C755644E18F3DBF2E344F1820A7B6268A59C308F51FD567CC89982E25FBC6D8233940F167C112049FFFF9042F6C924228559A8DECA9E86F2B0C98E7841DD1FBEE9E7C9CC66C1112F2685405026206F8C7B69C87FEC7791AB2183A7C3BE75EF3E86518820D0FF1797BBD9BCD0F45F2C34DF58F8309ACBA56B3BE86DA4A1E3CD375B033CDAB987551641732749A287B1EA7C0598A432BDB10CCA32A8B3CE575818CB7ACFB4594B22A15D9A52F61C678481C14A576ACAF0933076C8B6038CCD95B3643FD991A0FBF667595A2B0C53D89CF5288F5F76" />
+    </item>
+  </cookies>
+</error>

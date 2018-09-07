@@ -1,0 +1,30 @@
+﻿@model SITSAS.Models.Results
+
+<h2>Questionnaire: @Model.questionnaire.Name</h2>
+<hr class="thin bg-grayLighter">
+<a class="image-button warning" href="~/Home/Questionnaires"><span class="icon mif-move-down"></span> Questionnaires</a>
+<hr class="thin bg-grayLighter">
+
+    <table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+        <thead>
+            <tr>
+                <td style="width: 24%" class="sortable-column">Completed By</td>
+                <td style="width: 25%" class="sortable-column">Country</td>
+                <td style="width: 15%" class="sortable-column">Completed Date</td>
+                <td style="width: 15%" class="sortable-column">Selected Date</td>
+                <td style="width: 13%" class="sortable-column"></td>
+                <td style="width: 13%" class="sortable-column"></td>
+            </tr>
+            </thead>
+        @foreach (var Header in Model.Header)
+        {
+            <tr>
+            <td> @Header.CompletedBy</td>
+            <td> @Header.Location.Name</td>
+            <td> @Header.CreatedDate.ToString("d MMM yy")</td>
+            <td> @Header.SelectedDate.ToString("d MMM yy")</td>
+            <td><a class="image-button warning" href="~/Home/ShowQuestionnaireResults?HeaderID=@Header.ID"><span class="icon mif-file-text"></span> Details</a></td>
+            <td><a class="image-button warning" href="~/Home/PrintResults?ResultHeaderID=@Header.ID"><span class="icon mif-file-text"></span> Print</a></td></tr>
+            
+        }
+    </table>

@@ -1,0 +1,86 @@
+﻿@model SITSAS.Models.Results
+
+<h2>Questionnaire: @Model.questionnaire.Name</h2>
+<hr class="thin bg-grayLighter">
+<a class="image-button warning" href="~/Home/ShowResults?QuestionnaireID=@Model.questionnaire.ID"><span class="icon mif-file-text"></span> Results</a>
+<hr class="thin bg-grayLighter">
+@foreach (var Header in Model.Header)
+{
+    <br />
+    <br />
+    <table>
+        <tr><td>Answered By: </td><td> @Header.CompletedBy</td></tr>
+        <tr><td>Country: </td><td> @Header.Location.Name</td></tr>
+        <tr><td>Submitted: </td><td> @Header.CreatedDate.ToString("d MMM yy")</td></tr>
+        <tr><td>For Date: </td><td> @Header.SelectedDate.ToString("d MMM yy")</td></tr>
+    </table>
+
+
+
+
+
+
+    <table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+        <thead>
+            <tr>
+                <td>Question</td>
+                <td>Raw Answer</td>
+                <td>Raw Score</td>
+                <td>Weighted Score</td>
+                <td>Comments</td>
+                @*<td>Staleness Score</td>*@
+                @*<td></td>*@
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var answer in Header.Result_Answers)
+            {
+                <tr>
+
+                    <td>
+                        @answer.Answer.Question.Name
+                    </td>
+                    <td>
+                        @answer.RawAnswer
+
+                    </td>
+                    @if (answer.RawScore != null)
+                    {
+                        <td>
+                            @answer.RawScore
+                        </td>
+                        <td>
+                            @{decimal res = 0; res = (answer.RawScore.Value * answer.WeightedScore.Value);}
+                            @res
+                        </td>
+                        <td></td>
+                        @*<td>
+                                @{decimal res2 = 0; res2 = (answer.RawScore.Value * answer.StalenessScore.Value);}
+                                @res2
+                            </td>*@
+                                @*<td>
+                                        @if (answer.Answer.Question.CalculationModel.eNumMapping == (int)SITSAS.Models.eCalculationModels.QuestionnaireResult)
+                                    {
+
+                                            <a class="image-button warning" href="~/Home/ShowQuestionnaireResults?HeaderID=@answer.HeaderID&SubQuestionnaireID=@answer.Answer.Question.SubQuestionnaireID"><span class="icon mif-file-text"></span> Details</a>
+                                        }
+                                    </td>*@
+                                }
+                                else
+
+                                {
+                                    <td></td>
+                                    <td></td>
+                                    <td>@answer.Comments</td>
+                                    @*<td></td>
+                                        <td></td>
+                                        <td></td>*@
+                                }
+
+                </tr>
+                                }
+        </tbody>
+    </table>
+
+
+                                }

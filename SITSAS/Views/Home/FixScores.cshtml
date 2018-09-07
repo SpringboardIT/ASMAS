@@ -1,0 +1,71 @@
+﻿@model SITSAS.Models.FixScoresModel
+<h1 class="text-light">Fix Scores<span class="mif-clipboard place-left" style="padding-right:5px;"></span></h1>
+<hr class="thin bg-grayLighter">
+@if (Model.rights.CanEdit)
+{
+<form id="form1" action="/Home/FixCountryScores" method="post" onsubmit="return confirm('Are you sure you want to fix the scores to this date?');">
+    <div class="input-control text" data-role="datepicker" data-format="d mmmm yy">
+        <input type="text" name="FixDate" value="@DateTime.Now.Date.ToString("d MMM yy")" style="width: 100%;" />
+        <button class="button"><span class="mif-calendar"></span></button>
+    </div>
+    
+    <hr class="thin bg-grayLighter">
+    <input type="submit" id="submit" style="display:none;" />
+    <button class="image-button warning" @*onclick="$('#submit').trigger('click');"*@><span class="icon mif-checkmark"></span> Fix Seleted Scores</button>
+    @*<a class="image-button warning" href="~/Home/FixScoresForDate"><span class="icon mif-checkmark"></span> Fix All Scores</a>*@
+    <script>
+        function toggle(source) {
+            var inputs = document.getElementsByTagName('input');
+
+            for (var i = 0; i < inputs.length; i++) {
+                if (inputs[i].type.toLowerCase() == 'checkbox') {
+                    inputs[i].checked = source.checked;
+                }
+            }
+        }
+    </script>
+    <label class="input-control checkbox small-check">
+        <input type="checkbox" onClick="toggle(this)" /> Toggle All
+        <span class="check"></span>
+    </label>
+ 
+    <hr class="thin bg-grayLighter">
+    <table id="grid" class="border bordered">
+        <thead>
+            <tr>
+                <td style="width: 7.5%"></td>
+                <td style="width: 46.25%" class="sortable-column">Name</td>
+            </tr>
+        </thead>
+        <tbody>
+@if (Model.rights.CanView)
+{
+    foreach (var port in Model.AllPorts)
+    {
+                <tr>
+                    <td>
+                        <label class="input-control checkbox small-check">
+                            <input name="@port.ID" type="checkbox">
+                            <span class="check"></span>
+                        </label>
+                    </td>
+                    <td>@port.Name</td>
+                </tr>
+    }
+}
+
+
+        </tbody>
+    </table>
+    <script>
+        $(document).ready(function () {
+            $('#grid').DataTable({
+                "order": [[1, "asc"]],
+                "lengthMenu": [[-1], ["All"]]
+            });
+        });
+    </script>
+
+   
+</form>
+}

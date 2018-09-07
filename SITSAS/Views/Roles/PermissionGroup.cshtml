@@ -1,0 +1,69 @@
+﻿@using SITSAS.Models
+@model  Tuple<PermissionGroupModel, AccessRights>
+<h1 class="text-light">Permission Groups<span class="mif-users place-left" style="padding-right:5px;"></span></h1>
+<hr class="thin bg-grayLighter">
+@if (Model.Item2.CanAdd == true)
+    {
+<a class="image-button warning" href="~/Roles/PermissionGroupCreateNewScreen"><span class="icon mif-plus"></span> Create</a>
+}
+<hr class="thin bg-grayLighter">
+<hr class="thin bg-grayLighter">
+
+@if (Model.Item2.CanView == true)
+{
+   
+    if (Model.Item1.ExistingPermissionGroups.Count == 0)
+    {
+        <div class="alert alert-info" role="alert">
+            No Existing Permission Groups, please create one.
+        </div>
+
+    }
+    else
+    {
+
+        <table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+            <thead>
+                <tr>
+                    <th>
+                        Group Name
+                    </th>
+                    <th>
+
+                    </th>
+                    <th>
+
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var ExistingPermissionGroup in Model.Item1.ExistingPermissionGroups)
+                {
+                    <tr>
+                        <td>
+                            @ExistingPermissionGroup.GroupName
+                        </td>
+                        <td>
+                            @if (Model.Item2.CanEdit == true)
+                            {
+                                <a class="image-button warning" href="~/Roles/AddUsersToGroup?GroupID=@ExistingPermissionGroup.ID"><span class="icon mif-user-plus"></span> Add Users</a>
+                            }
+                        </td>
+                        <td>
+                            @if (Model.Item2.CanEdit == true)
+                            {
+                                <a class="image-button warning" href="~/Roles/PermissionGroupCreateNewScreen?ID=@ExistingPermissionGroup.ID"><span class="icon mif-pencil"></span> Edit</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br />
+
+
+        <table></table>
+    }
+}

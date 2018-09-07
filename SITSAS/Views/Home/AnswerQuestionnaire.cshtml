@@ -1,0 +1,289 @@
+﻿@model SITSAS.Models.AnswerQuestionnaireModel
+    <script>
+        function CreateTask(QuestionID, QuestionnaireID) {
+      @Html.Raw("$.ajax({ url: '/Home/CreateUpdateTask?', data: 'json', type: 'GET', data: 'IsPart=true&IsFromQuestionnaire=true', cache: false }).success(function (result) { $('#popUpItemTwo').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
+      @Html.Raw("metroDialog.open('#popUpTwo');")
+        }
+    </script>
+@if (!Model.IsSub)
+{
+    <h1 class="text-light">@Model.questionnaire.Name<span class="mif-question place-left" style="padding-right:5px;"></span></h1>
+    <hr class="thin bg-grayLighter">
+    <hr class="thin bg-grayLighter">
+    if (Model.questionnaireGroup.Count > 0)
+    {
+    @Html.Raw("<form id='form0' action='/Home/SubmitAnswers' method='post'>")
+    }
+    <input type="submit" id="submit" value="submit" name="submit" style="display:none;" />   
+    <input type="submit" id="save" value="save" name="submit" style="display:none;" />
+    <input type="hidden" name="QuestionnaireID" value="@Model.questionnaire.ID" />
+    if (Model.IncidentTypeID != new Guid())
+    {
+        <input type="hidden" name="IncidentTypeID" value="@Model.IncidentTypeID" />
+    }
+
+    <table style="width:80%;align-content:center" align="center">
+        @*<tr style="width:100%;">
+            <td style="width:100%;">
+                <table style="width:100%;">
+                    <tr style="width:100%;">
+                        <td style="width:20%;"><label>Name</label></td>
+                        <td style="width:80%;">
+                            <div class="input-control text" style="width: 100%;">
+                                <input type="text" name="username" style="width: 100%;" class="text-small" required/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+
+            </td>
+        </tr>*@
+        <tr style="width:100%;">
+            <td style="width:100%;">
+                <table style="width:100%;">
+                    <tr style="width:100%;">
+                        <td style="width:20%;"><label>Location Name</label></td>
+                        <td style="width:80%;">
+                            <div class="input-control text" style="width: 100%;">
+                                @*<span class="mif-expand-more prepend-icon"></span>*@
+                                <select name="LocationID" style="width:100%;" class="text-small" required>
+                                    @if (Model.AllLocations.Count == 1)
+                                    {
+                                        <option value="@Model.AllLocations.FirstOrDefault().ID">@Model.AllLocations.FirstOrDefault().Name</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="" disabled="disabled" selected="selected">Please select...</option>
+                                        foreach (var port in Model.AllLocations.OrderBy(x => x.Name).ToList())
+                                        {
+                                            <option value="@port.ID">@port.Name</option>
+                                        }
+                                    }
+                                    
+                                </select>
+
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+        <tr style="width:100%;">
+            <td style="width:100%;">
+                <table style="width:100%;">
+                    <tr style="width:100%;">
+                        <td style="width:20%;"><label>Date</label></td>
+                        <td style="width:80%;">
+                            <div class="input-control text" data-role="datepicker" style="width: 100%;" data-format="d mmmm yy">
+                                <input type="text" name="dateCompleted" value="@DateTime.Now.ToString("d MMM yy")" style="width: 100%;" class="text-small" />
+                                <button class="button"><span class="mif-calendar"></span></button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+
+            </td>
+        </tr>
+    </table>
+
+}
+
+@foreach (var group in Model.questionnaireGroup)
+{
+
+    @*<h5 class="title">@group.questionnaireGroup.Name</h5>*@
+    <hr class="thin bg-grayLighter">
+    <table style="width:98%;align-content:center" align="center">
+        <tr style="width:100%;">
+            <td style="width:100%;">
+                @foreach (var categories in group.Categories.OrderBy(x => x.Category.DisplayOrder).ToList())
+                {
+                    <h5 class="title">@categories.Category.DisplayName</h5>
+                    <hr class="bg-green" />
+                    <div class="panel success text-small">
+                        <div class="content">
+
+                            <table style="width:98%" align="center">
+
+
+                                @foreach (var dashCat in categories.SubCategories.OrderBy(x => x.SubCategory.DisplayOrder).ToList())
+                                {
+                                    <tr>
+                                        <td>
+                                            <ul class="step-list">
+                                                @if (dashCat.SubCategory.DisplayName.ToUpper() != categories.Category.DisplayName.ToUpper())
+                                                {
+                                                    <h5 class="title">@dashCat.SubCategory.DisplayName</h5>
+                                                    <hr class="bg-blue" />
+                                                }
+
+                                                @foreach (var question in dashCat.questions.OrderBy(x => x.DisplayOrder).ToList())
+                                                {
+                                                    <div class="example" style="width:100%;padding:0;">
+                                                        <table style="width:100%;">
+                                                            <tr style="width:100%;">
+                                                                @if (question.Question.CalculationModel.eNumMapping != (int)SITSAS.Models.eCalculationModels.QuestionnaireResult)
+                                                                {
+                                                                    <td style="width:250px;padding:10px;">
+
+                                                                        @*@if (question.Question.Name.Trim().ToUpper() != dashCat.DashboardCategory.Name.Trim().ToUpper())
+                                                                        {*@
+                                                                            <h5><small>@question.Question.Name</small></h5>
+                                                                        @* } *@
+                                                                    </td>
+                                                                }
+
+                                                                @if (question.Question.CalculationModel.eNumMapping != (int)SITSAS.Models.eCalculationModels.QuestionnaireResult)
+                                                                {
+
+                                                                    @Html.Raw(" <td style='width:300px;padding:10px;'>")
+                                                                }
+                                                                else
+                                                                {
+                                                                    @Html.Raw(" <td style='width:300px;padding:10px;'>")
+                                                                }
+                                                                @switch (question.Question.CalculationModel.eNumMapping)
+                                                                {
+                                                                    case (int)SITSAS.Models.eCalculationModels.DropDownLists:
+                                                                        {
+                                                                            <div class="input-control text" style="width:100%;">
+                                                                                @*<span class="mif-expand-more prepend-icon"></span>*@
+                                                                                <select name="@question.Question.ID" style="width:100%;" class="text-small">
+                                                                                    <option value="" disabled="disabled" selected="selected">Please select...</option>
+                                                                                    @foreach (var answer in question.Question.Answers.Where(x => x.Deleted == false).OrderByDescending(x => x.Score).ToList())
+                                                                                    {
+                                                                                        <option value="@answer.ID">@answer.Description</option>
+                                                                                    }
+                                                                                </select>
+                                                                            </div>
+                                                                            break;
+                                                                        }
+                                                                    case (int)SITSAS.Models.eCalculationModels.NumericValue:
+                                                                        {
+                                                                            <div class="input-control text" style="width:100%;">
+                                                                                <input name="@question.Question.ID" type="number" class="text-small" />
+                                                                            </div>
+                                                                            break;
+                                                                        }
+                                                                    case (int)SITSAS.Models.eCalculationModels.QuestionnaireResult:
+                                                                        {
+                                                                            <h5>@question.Question.Name</h5>
+                                                                            <input name="@question.Question.ID" type="hidden" value="SubQuestionnaire" />
+                                                                            if (question.Question.SubQuestionnaireID != null)
+                                                                            {
+                                                                                Html.RenderAction("AnswerQuestionnaire", new { ID = question.Question.SubQuestionnaireID, IsSub = true });
+                                                                            }
+                                                                            break;
+                                                                        }
+                                                                    case (int)SITSAS.Models.eCalculationModels.TimeSinceARecordedDate:
+                                                                        {
+                                                                            <div class="input-control text" data-role="datepicker" data-format="d mmmm yy">
+                                                                                <input type="text" name="@question.Question.ID" style="width: 100%;" class="text-small" />
+                                                                                <button class="button"><span class="mif-calendar"></span></button>
+                                                                            </div>
+                                                                            break;
+                                                                        }
+                                                                    case (int)SITSAS.Models.eCalculationModels.ManualEntry:
+                                                                        {
+                                                                            <div class="input-control text" style="width:100%;">
+                                                                                <input name="@question.Question.ID" type="number" class="text-small" />
+                                                                            </div>
+                                                                            break;
+                                                                        }
+                                                                    case (int)SITSAS.Models.eCalculationModels.YesNo:
+                                                                        {
+                                                                            <div class="input-control text" style="width:100%;">
+                                                                                @*<span class="mif-expand-more prepend-icon"></span>*@
+                                                                                <select name="@question.Question.ID" style="width:100%;" class="text-small">
+                                                                                    <option value="" disabled="disabled" selected="selected">Please select...</option>
+                                                                                    @foreach (var answer in question.Question.Answers.Where(x => x.Deleted == false).OrderByDescending(x => x.Score).ToList())
+                                                                                    {
+                                                                                        <option value="@answer.ID">@answer.Description</option>
+                                                                                    }
+                                                                                </select>
+                                                                            </div>
+                                                                            break;
+                                                                        }
+                                                                }
+                                                                @Html.Raw("</td>")
+                                                                <td style="width:250px;padding:10px;">
+                                                                    @*<div id="NOTES_@question.Question.ID" class="input-control text" style="width:100%;display:none;">*@
+                                                                    <textarea id="NOTES_@question.Question.ID" name="@question.Question.ID-NOTES" type="text" class="text-small" style="word-break: break-word;height: 62px; width: 250px;width:100%;"></textarea>
+                                                                    @*</div>*@
+                                                                    @*<label id="btnNOTES_@question.Question.ID" class="image-button success" onclick="$('#NOTES_@question.Question.ID').toggle(); $('#btnNOTES_@question.Question.ID').toggle();"><span class="icon mif-quote"></span>+</label>*@
+
+                                                                </td>
+
+                                                                <td style="width:250px;padding:10px;text-align:center;">
+
+                                                                    @if (question.Question.CanBeNA)
+                                                                    {
+                                                                        <label>Not Applicable </label><br /><br />
+                                                                        <label class="switch-original">
+                                                                            <input type="checkbox" name="NA_@question.Question.ID">
+                                                                            <span class="check"></span>
+                                                                        </label>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <label>&nbsp;</label>
+                                                                    }
+
+                                                                </td>
+                                                                <td style="width:250px;padding:10px;text-align:center;">
+
+                                                                    @if (question.Question.CanBeNotAnswered)
+                                                                    {
+                                                                        <label>Not Entered </label><br /><br />
+                                                                        <label class="switch-original">
+                                                                            <input type="checkbox" name="NAns_@question.Question.ID">
+                                                                            <span class="check"></span>
+                                                                        </label>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <label>&nbsp;</label>
+                                                                    }
+
+                                                                </td>
+                                                                <td style="width:250px;padding:10px;text-align:center;">
+                                                                        <a class="image-button warning" onclick="CreateTask('@question.Question.ID', '@Model.questionnaire.ID');"><span class="icon mif-clipboard"></span> Create Task</a>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+
+
+                                                    </div>
+                                                }
+
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+
+
+                        </div>
+                    </div>
+
+                }
+            </td>
+        </tr>
+    </table>
+
+
+}
+@if (!Model.IsSub && Model.questionnaireGroup.Count > 0)
+{
+    @*<input type="submit" id="submit" style="display:none;" /> onclick="$('#submit').trigger('click');"*@
+    @*<button class="image-button success" onclick="$('#save').trigger('click');"><span class="icon mif-floppy-disk"></span> Save</button>*@
+    <button class="image-button success" onclick="$('#submit').trigger('click');"><span class="icon mif-floppy-disk"></span> Submit</button>
+    @Html.Raw("</form>")
+}
+else
+{
+<label>No Questions assigned to this questionnaire.</label>
+}

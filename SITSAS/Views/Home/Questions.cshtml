@@ -1,0 +1,72 @@
+﻿@model SITSAS.Models.QuestionsModel
+<script>
+    function NewQuestion() {
+            @Html.Raw("$.ajax({ url: '/Home/CreateUpdateQuestion?', data: 'json', type: 'GET', data: 'IsPart=true', cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
+                        @Html.Raw("metroDialog.open('#popUp');")
+    }
+    function EditQuestion(id) {
+        @Html.Raw("$.ajax({ url: '/Home/CreateUpdateQuestion?', data: 'json', type: 'GET', data: 'ID=' + id + '&IsPart=true', cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
+                    @Html.Raw("metroDialog.open('#popUp');")
+    }
+    function AddUpdateQuestionAnswers(id) {
+    @Html.Raw("$.ajax({ url: '/Home/AddUpdateQuestionAnswers?', data: 'json', type: 'GET', data: 'QuestionID=' + id + '&IsPart=true', cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
+                @Html.Raw("metroDialog.open('#popUp');")
+    }
+</script>
+<h1 class="text-light">Questions<span class="mif-question place-left" style="padding-right:5px;"></span></h1>
+<hr class="thin bg-grayLighter">
+@if (Model.rights.CanAdd)
+{
+    <a class="image-button warning" onclick="NewQuestion();"><span class="icon mif-plus"></span> Create</a>
+}
+@if (Model.rights.CanView)
+{
+
+    <a class="image-button warning" href="~/Home/RetiredQuestions"><span class="icon mif-undo"></span> Retired Questions</a>
+    <a class="image-button warning" href="~/Home/FutureQuestions"><span class="icon mif-redo"></span> Future Questions</a>
+}
+<hr class="thin bg-grayLighter">
+<hr class="thin bg-grayLighter">
+<table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+    <thead>
+        <tr>
+            <td style="width: 30%" class="sortable-column">Name</td>
+            @*<td style="width: 20%" class="sortable-column">Calculation Model</td>*@
+            <td style="width: 20%" class="sortable-column">Sub Category</td>
+            <td style="width: 20%" class="sortable-column">Category</td>
+            <td style="width: 7.5%" class="sortable-column"></td>
+            <td style="width: 17%" class="sortable-column"></td>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.rights.CanView)
+        {
+
+            foreach (var rCategories in Model.ExistingQuestions)
+            {
+                <tr>
+                    <td>@rCategories.Name</td>
+                    @*<td>@rCategories.CalculationModel.Name</td>*@
+                    <td>@rCategories.SubCategory.Name</td>
+                    <td>@rCategories.SubCategory.Category.Name</td>
+                    <td>
+                        @if (Model.rights.CanEdit)
+                        {
+                            <a class="image-button warning" onclick="EditQuestion('@rCategories.ID');"><span class="icon mif-pencil"></span> Edit</a>
+                        }
+                    </td>
+                    <td>
+                        @if (Model.rights.CanEdit)
+                        {
+                            <a class="image-button warning" href="~/Home/AddUpdateQuestionAnswers?QuestionID=@rCategories.ID"><span class="icon mif-pencil"></span> Answer Options</a>
+                            @*<a class="image-button warning" onclick="AddUpdateQuestionAnswers('@rCategories.ID')"><span class="icon mif-pencil"></span> Answer Options</a>*@
+                        }
+                    </td>
+                    
+                </tr>
+            }
+        }
+
+
+    </tbody>
+</table>

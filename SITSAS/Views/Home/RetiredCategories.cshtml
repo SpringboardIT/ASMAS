@@ -1,0 +1,28 @@
+﻿@model SITSAS.Models.CategoriesModel
+<h1 class="text-light">Retired Categories<span class="mif-security place-left" style="padding-right:5px;"></span></h1>
+<hr class="thin bg-grayLighter">
+<a class="image-button warning" href="~/Home/AssessedRiskCategories"><span class="icon mif-security"></span> Active Categories</a>
+<hr class="thin bg-grayLighter">
+<hr class="thin bg-grayLighter">
+<table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+    <thead>
+        <tr>
+            <td style="width: 92.5%" class="sortable-column">Name</td>
+            <td style="width: 7.5%" class="sortable-column"></td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var rCategories in Model.ExistingCategories)
+        {
+            <tr>
+                <td>@rCategories.Name</td>
+                <td>
+                    <a class="image-button warning" href="~/Home/CreateUpdateCategory?ID=@rCategories.ID"><span class="icon mif-pencil"></span> View</a>
+                    @*<a class="image-button alert"><span class="icon mif-bin"></span> Delete</a>*@
+                </td>
+            </tr>
+        }
+
+
+    </tbody>
+</table>

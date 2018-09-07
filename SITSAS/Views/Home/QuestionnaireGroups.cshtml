@@ -1,0 +1,56 @@
+﻿@model SITSAS.Models.QuestionnaireGroupsModel
+<script>
+    function NewQuestionnaireGroup() {
+            @Html.Raw("$.ajax({ url: '/Home/CreateUpdateQuestionnaireGroup?', data: 'json', type: 'GET', data: 'IsPart=true', cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
+                        @Html.Raw("metroDialog.open('#popUp');")
+    }
+    function EditQuestionnaireGroup(id) {
+        @Html.Raw("$.ajax({ url: '/Home/CreateUpdateQuestionnaireGroup?', data: 'json', type: 'GET', data: 'ID=' + id + '&IsPart=true', cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
+                    @Html.Raw("metroDialog.open('#popUp');")
+    }
+</script>
+<h1 class="text-light">Questionnaire Groups<span class="mif-versions place-left" style="padding-right:5px;"></span></h1>
+<hr class="thin bg-grayLighter">
+@if (Model.rights.CanAdd)
+{
+    <a class="image-button warning" onclick="NewQuestionnaireGroup();"><span class="icon mif-plus"></span> Create</a>
+}
+<hr class="thin bg-grayLighter">
+<hr class="thin bg-grayLighter">
+<table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+    <thead>
+        <tr>
+            <td style="width: 38%" class="sortable-column">Name of Questionnaire Group</td>
+            <td style="width: 39.75%" class="sortable-column">Questionnaire</td>
+            <td style="width: 7.5%" class="sortable-column"></td>
+            <td style="width: 17%" class="sortable-column"></td>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.rights.CanView)
+        {
+
+            foreach (var rCategories in Model.ExistingQuestionnaireGroups)
+            {
+                <tr>
+                    <td>@rCategories.Name</td>
+                    <td>@rCategories.Questionnaire.Name</td>
+                    <td>
+                        @if (Model.rights.CanEdit)
+                        {
+                            <a class="image-button warning" onclick="EditQuestionnaireGroup('@rCategories.ID')"><span class="icon mif-pencil"></span> Edit</a>
+                        }
+                    </td>
+                    <td>
+                        @if (Model.rights.CanEdit)
+                        {
+                            <a class="image-button warning" href="~/Home/QuestionnaireGroupQuestions?ID=@rCategories.ID"><span class="icon mif-pencil"></span> Questions</a>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+
+
+    </tbody>
+</table>

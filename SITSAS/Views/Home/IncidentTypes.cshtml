@@ -1,0 +1,96 @@
+﻿@model SITSAS.Models.IncidentTypesModel
+<script>
+    function NewIncidentType() {
+            @Html.Raw("$.ajax({ url: '/Home/CreateUpdateIncidentType?', data: 'json', type: 'GET', data: 'IsPart=true', cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
+                        @Html.Raw("metroDialog.open('#popUp');")
+    }
+    function EditIncidentType(id) {
+        @Html.Raw("$.ajax({ url: '/Home/CreateUpdateIncidentType?', data: 'json', type: 'GET', data: 'ID=' + id + '&IsPart=true', cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
+                    @Html.Raw("metroDialog.open('#popUp');")
+    }
+</script>
+<h1 class="text-light">Incident Types<span class="mif-apps place-left" style="padding-right:5px;"></span></h1>
+<hr class="thin bg-grayLighter">
+@if (Model.rights.CanAdd)
+{
+    <a class="image-button warning" onclick="NewIncidentType();"><span class="icon mif-plus"></span> Create</a>
+}
+<hr class="thin bg-grayLighter">
+<hr class="thin bg-grayLighter">
+<script>
+    // Close the dropdown if the user clicks outside of it
+    window.onclick = function (event) {
+        if (!event.target.matches('.sitdropbtn')) {
+
+            var dropdowns = document.getElementsByClassName("sitdropdown-content");
+            var i;
+            for (i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+    }
+</script>
+<table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+    <thead>
+        <tr>
+            <td style="width: 30%" class="sortable-column">Name of Incident Type</td>
+            <td style="width: 30%" class="sortable-column">Questionnaire Name</td>
+            <td style="width: 7.5%" class="sortable-column"></td>
+            <td style="width: 7.5%" class="sortable-column"></td>
+            <td style="width: 13%" class="sortable-column"></td>
+            <td style="width: 7.5%" class="sortable-column"></td>
+        </tr>
+    </thead>
+    @if (Model.rights.CanView)
+    {
+        <tbody>
+            @foreach (var rIncidentType in Model.ExistingIncidentTypes)
+            {
+                <tr>
+                    <td>@rIncidentType.Name</td>
+                    <td>@rIncidentType.Questionnaire.Name</td>
+                    <td>
+                        @if (Model.rights.CanEdit)
+                        {
+                            <a class="image-button warning" onclick="EditIncidentType('@rIncidentType.ID')"><span class="icon mif-pencil"></span> Edit</a>
+                        }
+                    </td>
+                    <td>
+                        @if (Model.rights.CanEdit)
+                        {
+                            <a class="image-button warning" href="~/Home/AnswerQuestionnaire?ID=@rIncidentType.QuestionnaireID&IncidentTypeID=@rIncidentType.ID"><span class="icon mif-list-numbered"></span> Answer</a>
+                        }
+                    </td>
+                    <td>
+                        @if (Model.rights.CanView)
+                        {
+                            <a class="image-button warning" href="~/Home/ShowResults?QuestionnaireID=@rIncidentType.QuestionnaireID&IncidentTypeID=@rIncidentType.ID&IncidentType=true"><span class="icon mif-file-text"></span> Results</a>
+                        }
+                    </td>
+                    <td>
+                        @if (Model.rights.CanView)
+                        {
+                            <div class="sitdropdown">
+                                <a onclick="id_@rIncidentType.ID.ToString().Replace("-", "")Dropdown();" class="sitdropbtn image-button warning dropdown-toggle"><span class="icon mif-print"></span> Print</a>
+                                <div id="@rIncidentType.ID.ToString().Replace(" ", "").Replace("-", "")" class="sitdropdown-content">
+                                    <a class="image-button danger" href="~/Home/PrintQuestionnaire?ID=@rIncidentType.QuestionnaireID&Type=PDF" target="_blank"><span class="icon mif-file-pdf"></span> PDF</a>
+                                    <a class="image-button primary" href="~/Home/PrintQuestionnaire?ID=@rIncidentType.QuestionnaireID&Type=Docx"><span class="icon mif-file-word"></span> Word</a>
+                                </div>
+                            </div>
+                            <script>
+                                function id_@rIncidentType.ID.ToString().Replace("-", "")Dropdown() {
+                                    document.getElementById('@rIncidentType.ID.ToString().Replace(" ", "").Replace("-", "")').classList.toggle("sitshow");
+                                }
+                            </script>
+                        }
+                    </td>
+                </tr>
+            }
+
+
+        </tbody>
+    }
+</table>

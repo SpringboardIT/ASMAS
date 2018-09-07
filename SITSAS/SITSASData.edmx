@@ -1,0 +1,2284 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="SITSASModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Answer_Operators">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="OperatorDescription" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Operator" Type="nchar" MaxLength="2" Nullable="false" />
+          <Property Name="eNumMapping" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Answer_ScoreMappings">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="AnswerID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Value" Type="bigint" Nullable="false" />
+          <Property Name="OperatorID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DateUnit" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Answers">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="Score" Type="int" Nullable="false" />
+          <Property Name="QuestionID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Deleted" Type="bit" Nullable="false" />
+          <Property Name="CatchAll" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Area">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="Deleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CalculationModels">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="eNumMapping" Type="int" />
+          <Property Name="Deleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Categories">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="StartDate" Type="datetime" />
+          <Property Name="EndDate" Type="datetime" />
+          <Property Name="SpecialCase" Type="bit" Nullable="false" />
+          <Property Name="Deleted" Type="bit" Nullable="false" />
+          <Property Name="DisplayOrder" Type="int" Nullable="false" />
+          <Property Name="DisplayName" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="DataMappings">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="PrimaryID" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="SecondaryID" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="DisplayOrder" Type="int" Nullable="false" />
+          <Property Name="DataMappingTypeID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="OverrideAll" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DataMappingTypes">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="eNumMapping" Type="int" />
+        </EntityType>
+        <EntityType Name="FrequencyProfile">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Frequency" Type="int" Nullable="false" />
+          <Property Name="StartDate" Type="datetime" Nullable="false" />
+          <Property Name="EndDate" Type="datetime" />
+          <Property Name="NextDateToComplete" Type="datetime" />
+          <Property Name="eDateUnit" Type="int" Nullable="false" />
+          <Property Name="Deleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FrequencyProfile_Dates">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="FrequencyID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="StartDate" Type="datetime" Nullable="false" />
+          <Property Name="EndDate" Type="datetime" Nullable="false" />
+          <Property Name="LocationID" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="IncidentTypes">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="QuestionnaireID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Deleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Location">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="Deleted" Type="bit" Nullable="false" />
+          <Property Name="AreaID" Type="uniqueidentifier" />
+        </EntityType>
+        <EntityType Name="Page_Role_Mappings">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="PageID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="RoleID" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="CanView" Type="bit" Nullable="false" />
+          <Property Name="CanCreate" Type="bit" Nullable="false" />
+          <Property Name="CanUpdate" Type="bit" Nullable="false" />
+          <Property Name="CanDelete" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Pages">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="PageName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Icon" Type="nvarchar(max)" />
+          <Property Name="DisplayOrder" Type="int" Nullable="false" />
+          <Property Name="Link" Type="nvarchar(max)" />
+          <Property Name="DisplayName" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="PermissionGroup">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="GroupName" Type="nvarchar(max)" />
+          <Property Name="Deleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PermissionGroup_User_Mapping">
+          <Key>
+            <PropertyRef Name="MappingID" />
+          </Key>
+          <Property Name="MappingID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="GroupID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="UserID" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="QuestionnaireGroups">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="QuestionnaireID" Type="uniqueidentifier" />
+          <Property Name="Deleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Questionnaires">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="Deleted" Type="bit" Nullable="false" />
+          <Property Name="FrequencyProfileID" Type="uniqueidentifier" />
+        </EntityType>
+        <EntityType Name="Questions">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="CalculationModelID" Type="uniqueidentifier" />
+          <Property Name="Weighting" Type="int" />
+          <Property Name="SubCategoryID" Type="uniqueidentifier" />
+          <Property Name="StartDate" Type="datetime" Nullable="false" />
+          <Property Name="EndDate" Type="datetime" />
+          <Property Name="CanBeNA" Type="bit" Nullable="false" />
+          <Property Name="Deleted" Type="bit" Nullable="false" />
+          <Property Name="SubQuestionnaireID" Type="uniqueidentifier" />
+          <Property Name="SubQuestionnaireMultipleTimes" Type="bit" Nullable="false" />
+          <Property Name="StalenessProfileID" Type="uniqueidentifier" />
+          <Property Name="DefaultValue" Type="int" Nullable="false" />
+          <Property Name="CanBeNotAnswered" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Result_Answers">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="HeaderID" Type="uniqueidentifier" />
+          <Property Name="AnswerID" Type="uniqueidentifier" />
+          <Property Name="RawAnswer" Type="nvarchar(max)" />
+          <Property Name="RawScore" Type="int" />
+          <Property Name="WeightedScore" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="StalenessScore" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="Comments" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Result_Answers_Fixings">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="HeaderID" Type="uniqueidentifier" />
+          <Property Name="AnswerID" Type="uniqueidentifier" />
+          <Property Name="RawAnswer" Type="nvarchar(max)" />
+          <Property Name="RawScore" Type="int" />
+          <Property Name="WeightedScore" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="StalenessScore" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="Comments" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Result_Headers">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CompletedBy" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="SelectedDate" Type="datetime" Nullable="false" />
+          <Property Name="LocationID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="QuestionnaireID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ParentID" Type="uniqueidentifier" />
+          <Property Name="IncidentTypeID" Type="uniqueidentifier" />
+          <Property Name="PDFDocument" Type="varbinary(max)" />
+          <Property Name="Submitted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Result_Headers_Fixings">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CompletedBy" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="SelectedDate" Type="datetime" Nullable="false" />
+          <Property Name="LocationID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="QuestionnaireID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ParentID" Type="uniqueidentifier" />
+          <Property Name="IncidentTypeID" Type="uniqueidentifier" />
+        </EntityType>
+        <EntityType Name="Role_Permissions">
+          <Key>
+            <PropertyRef Name="PermissionsID" />
+          </Key>
+          <Property Name="PermissionsID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="RoleID" Type="uniqueidentifier" />
+          <Property Name="CanView" Type="bit" />
+          <Property Name="CanAdd" Type="bit" />
+          <Property Name="CanEdit" Type="bit" />
+          <Property Name="CanDelete" Type="bit" />
+        </EntityType>
+        <EntityType Name="Role_User_PermissionMapping">
+          <Key>
+            <PropertyRef Name="PermissionMappingID" />
+          </Key>
+          <Property Name="PermissionMappingID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ObjectSID" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="RoleID" Type="uniqueidentifier" />
+        </EntityType>
+        <EntityType Name="Roles">
+          <Key>
+            <PropertyRef Name="RoleID" />
+          </Key>
+          <Property Name="RoleID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="RoleName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Deleted" Type="bit" />
+        </EntityType>
+        <EntityType Name="StalenessProfile">
+          <Key>
+            <PropertyRef Name="ProfileID" />
+          </Key>
+          <Property Name="ProfileID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="StaticDays" Type="int" />
+          <Property Name="FinalScore" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="DaysUntilFinalScore" Type="int" />
+          <Property Name="Deleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SubCategories">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="CategoryID" Type="uniqueidentifier" />
+          <Property Name="Deleted" Type="bit" Nullable="false" />
+          <Property Name="DisplayOrder" Type="int" Nullable="false" />
+          <Property Name="DisplayName" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="SystemSettings">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="Value" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Tasks">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="AssignedTo" Type="nvarchar(max)" />
+          <Property Name="DueDate" Type="datetime" Nullable="false" />
+          <Property Name="Title" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="Status" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ResultLineID" Type="uniqueidentifier" />
+          <Property Name="Deleted" Type="bit" Nullable="false" />
+          <Property Name="CompletedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="TaskStatus">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="enumMapping" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'SITSAS.dbo.vFixingResults' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vFixingResults">
+          <Key>
+            <PropertyRef Name="SelectedDate" />
+          </Key>
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="RawAnswer" Type="nvarchar(max)" />
+          <Property Name="RawScore" Type="int" />
+          <Property Name="CalcWeightedScore" Type="decimal" Precision="21" Scale="2" />
+          <Property Name="CalcStalenessScore" Type="decimal" Precision="21" Scale="2" />
+          <Property Name="Expr1" Type="nvarchar(max)" />
+          <Property Name="SelectedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vQuestionnaireAnswers">
+          <Key>
+            <PropertyRef Name="QuestionID" />
+            <PropertyRef Name="PortID" />
+            <PropertyRef Name="SelectedDate" />
+            <PropertyRef Name="QuestionnaireID" />
+          </Key>
+          <Property Name="HeaderID" Type="uniqueidentifier" />
+          <Property Name="QuestionID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="RawAnswer" Type="nvarchar(max)" />
+          <Property Name="RawScore" Type="int" />
+          <Property Name="CalcWeightedScore" Type="decimal" Precision="21" Scale="2" />
+          <Property Name="CalcStalenessScore" Type="decimal" Precision="21" Scale="2" />
+          <Property Name="PortID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SelectedDate" Type="datetime" Nullable="false" />
+          <Property Name="QuestionnaireID" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Answer_ScoreMappings_Answer_Operators">
+          <End Role="Answer_Operators" Type="Self.Answer_Operators" Multiplicity="1" />
+          <End Role="Answer_ScoreMappings" Type="Self.Answer_ScoreMappings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Answer_Operators">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Answer_ScoreMappings">
+              <PropertyRef Name="OperatorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Answer_ScoreMappings_Answers">
+          <End Role="Answers" Type="Self.Answers" Multiplicity="1" />
+          <End Role="Answer_ScoreMappings" Type="Self.Answer_ScoreMappings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Answers">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Answer_ScoreMappings">
+              <PropertyRef Name="AnswerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Answers_Questions">
+          <End Role="Questions" Type="Self.Questions" Multiplicity="1" />
+          <End Role="Answers" Type="Self.Answers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Questions">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Answers">
+              <PropertyRef Name="QuestionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DashboardCategories_AssessedRiskCategories">
+          <End Role="Categories" Type="Self.Categories" Multiplicity="0..1" />
+          <End Role="SubCategories" Type="Self.SubCategories" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Categories">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SubCategories">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DataMappings_DataMappingTypes">
+          <End Role="DataMappingTypes" Type="Self.DataMappingTypes" Multiplicity="1" />
+          <End Role="DataMappings" Type="Self.DataMappings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DataMappingTypes">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DataMappings">
+              <PropertyRef Name="DataMappingTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FrequencyProfile_Dates_FrequencyProfile">
+          <End Role="FrequencyProfile" Type="Self.FrequencyProfile" Multiplicity="1" />
+          <End Role="FrequencyProfile_Dates" Type="Self.FrequencyProfile_Dates" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FrequencyProfile">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="FrequencyProfile_Dates">
+              <PropertyRef Name="FrequencyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IncidentTypes_Questionnaires">
+          <End Role="Questionnaires" Type="Self.Questionnaires" Multiplicity="1" />
+          <End Role="IncidentTypes" Type="Self.IncidentTypes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Questionnaires">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="IncidentTypes">
+              <PropertyRef Name="QuestionnaireID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Location_Area">
+          <End Role="Area" Type="Self.Area" Multiplicity="0..1" />
+          <End Role="Location" Type="Self.Location" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Area">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Location">
+              <PropertyRef Name="AreaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PermissionGroup_User_Mapping_PermissionGroup">
+          <End Role="PermissionGroup" Type="Self.PermissionGroup" Multiplicity="1" />
+          <End Role="PermissionGroup_User_Mapping" Type="Self.PermissionGroup_User_Mapping" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PermissionGroup">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PermissionGroup_User_Mapping">
+              <PropertyRef Name="GroupID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Permissions_Permissions">
+          <End Role="Roles" Type="Self.Roles" Multiplicity="0..1" />
+          <End Role="Role_Permissions" Type="Self.Role_Permissions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="RoleID" />
+            </Principal>
+            <Dependent Role="Role_Permissions">
+              <PropertyRef Name="RoleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QuestionnaireGroups_Questionnaires">
+          <End Role="Questionnaires" Type="Self.Questionnaires" Multiplicity="0..1" />
+          <End Role="QuestionnaireGroups" Type="Self.QuestionnaireGroups" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Questionnaires">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="QuestionnaireGroups">
+              <PropertyRef Name="QuestionnaireID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Questionnaires_FrequencyProfile">
+          <End Role="FrequencyProfile" Type="Self.FrequencyProfile" Multiplicity="0..1" />
+          <End Role="Questionnaires" Type="Self.Questionnaires" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FrequencyProfile">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Questionnaires">
+              <PropertyRef Name="FrequencyProfileID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Questions_CalculationModels">
+          <End Role="CalculationModels" Type="Self.CalculationModels" Multiplicity="0..1" />
+          <End Role="Questions" Type="Self.Questions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CalculationModels">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Questions">
+              <PropertyRef Name="CalculationModelID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Questions_DashboardCategories">
+          <End Role="SubCategories" Type="Self.SubCategories" Multiplicity="0..1" />
+          <End Role="Questions" Type="Self.Questions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SubCategories">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Questions">
+              <PropertyRef Name="SubCategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Questions_Questionnaires">
+          <End Role="Questionnaires" Type="Self.Questionnaires" Multiplicity="0..1" />
+          <End Role="Questions" Type="Self.Questions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Questionnaires">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Questions">
+              <PropertyRef Name="SubQuestionnaireID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Questions_StalenessProfile">
+          <End Role="StalenessProfile" Type="Self.StalenessProfile" Multiplicity="0..1" />
+          <End Role="Questions" Type="Self.Questions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StalenessProfile">
+              <PropertyRef Name="ProfileID" />
+            </Principal>
+            <Dependent Role="Questions">
+              <PropertyRef Name="StalenessProfileID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Answers_Answers">
+          <End Role="Answers" Type="Self.Answers" Multiplicity="0..1" />
+          <End Role="Result_Answers" Type="Self.Result_Answers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Answers">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Answers">
+              <PropertyRef Name="AnswerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Answers_Fixings_Answers">
+          <End Role="Answers" Type="Self.Answers" Multiplicity="0..1" />
+          <End Role="Result_Answers_Fixings" Type="Self.Result_Answers_Fixings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Answers">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Answers_Fixings">
+              <PropertyRef Name="AnswerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Answers_Fixings_Result_Headers_Fixings">
+          <End Role="Result_Headers_Fixings" Type="Self.Result_Headers_Fixings" Multiplicity="0..1" />
+          <End Role="Result_Answers_Fixings" Type="Self.Result_Answers_Fixings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Result_Headers_Fixings">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Answers_Fixings">
+              <PropertyRef Name="HeaderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Answers_Result_Headers">
+          <End Role="Result_Headers" Type="Self.Result_Headers" Multiplicity="0..1" />
+          <End Role="Result_Answers" Type="Self.Result_Answers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Result_Headers">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Answers">
+              <PropertyRef Name="HeaderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Headers_Fixings_IncidentTypes">
+          <End Role="IncidentTypes" Type="Self.IncidentTypes" Multiplicity="0..1" />
+          <End Role="Result_Headers_Fixings" Type="Self.Result_Headers_Fixings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IncidentTypes">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Headers_Fixings">
+              <PropertyRef Name="IncidentTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Headers_Fixings_Ports">
+          <End Role="Location" Type="Self.Location" Multiplicity="1" />
+          <End Role="Result_Headers_Fixings" Type="Self.Result_Headers_Fixings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Location">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Headers_Fixings">
+              <PropertyRef Name="LocationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Headers_Fixings_Questionnaires">
+          <End Role="Questionnaires" Type="Self.Questionnaires" Multiplicity="1" />
+          <End Role="Result_Headers_Fixings" Type="Self.Result_Headers_Fixings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Questionnaires">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Headers_Fixings">
+              <PropertyRef Name="QuestionnaireID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Headers_Fixings_Result_Headers_Fixings">
+          <End Role="Result_Headers_Fixings" Type="Self.Result_Headers_Fixings" Multiplicity="0..1" />
+          <End Role="Result_Headers_Fixings1" Type="Self.Result_Headers_Fixings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Result_Headers_Fixings">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Headers_Fixings1">
+              <PropertyRef Name="ParentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Headers_IncidentTypes">
+          <End Role="IncidentTypes" Type="Self.IncidentTypes" Multiplicity="0..1" />
+          <End Role="Result_Headers" Type="Self.Result_Headers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IncidentTypes">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Headers">
+              <PropertyRef Name="IncidentTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Headers_Ports">
+          <End Role="Location" Type="Self.Location" Multiplicity="1" />
+          <End Role="Result_Headers" Type="Self.Result_Headers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Location">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Headers">
+              <PropertyRef Name="LocationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Headers_Questionnaires">
+          <End Role="Questionnaires" Type="Self.Questionnaires" Multiplicity="1" />
+          <End Role="Result_Headers" Type="Self.Result_Headers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Questionnaires">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Headers">
+              <PropertyRef Name="QuestionnaireID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Headers_Result_Headers">
+          <End Role="Result_Headers" Type="Self.Result_Headers" Multiplicity="0..1" />
+          <End Role="Result_Headers1" Type="Self.Result_Headers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Result_Headers">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Headers1">
+              <PropertyRef Name="ParentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tasks_TaskStatus">
+          <End Role="TaskStatus" Type="Self.TaskStatus" Multiplicity="1" />
+          <End Role="Tasks" Type="Self.Tasks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TaskStatus">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Tasks">
+              <PropertyRef Name="Status" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="GetAreasForUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="UserID" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="IncludeDeleted" Type="bit" Mode="In" />
+        </Function>
+        <Function Name="GetLocationsForUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="UserID" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="IncludeDeleted" Type="bit" Mode="In" />
+        </Function>
+        <Function Name="GetQuestionnairesForUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="UserID" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="IncludeDeleted" Type="bit" Mode="In" />
+        </Function>
+        <Function Name="HasPermission" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="bit">
+          <Parameter Name="UserID" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="ItemID" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="ItemType" Type="int" Mode="In" />
+        </Function>
+        <EntityContainer Name="SITSASModelStoreContainer">
+          <EntitySet Name="Answer_Operators" EntityType="Self.Answer_Operators" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Answer_ScoreMappings" EntityType="Self.Answer_ScoreMappings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Answers" EntityType="Self.Answers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Area" EntityType="Self.Area" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CalculationModels" EntityType="Self.CalculationModels" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Categories" EntityType="Self.Categories" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DataMappings" EntityType="Self.DataMappings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DataMappingTypes" EntityType="Self.DataMappingTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FrequencyProfile" EntityType="Self.FrequencyProfile" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FrequencyProfile_Dates" EntityType="Self.FrequencyProfile_Dates" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="IncidentTypes" EntityType="Self.IncidentTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Location" EntityType="Self.Location" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Page_Role_Mappings" EntityType="Self.Page_Role_Mappings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Pages" EntityType="Self.Pages" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PermissionGroup" EntityType="Self.PermissionGroup" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PermissionGroup_User_Mapping" EntityType="Self.PermissionGroup_User_Mapping" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="QuestionnaireGroups" EntityType="Self.QuestionnaireGroups" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Questionnaires" EntityType="Self.Questionnaires" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Questions" EntityType="Self.Questions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Result_Answers" EntityType="Self.Result_Answers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Result_Answers_Fixings" EntityType="Self.Result_Answers_Fixings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Result_Headers" EntityType="Self.Result_Headers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Result_Headers_Fixings" EntityType="Self.Result_Headers_Fixings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Role_Permissions" EntityType="Self.Role_Permissions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Role_User_PermissionMapping" EntityType="Self.Role_User_PermissionMapping" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StalenessProfile" EntityType="Self.StalenessProfile" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SubCategories" EntityType="Self.SubCategories" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SystemSettings" EntityType="Self.SystemSettings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tasks" EntityType="Self.Tasks" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TaskStatus" EntityType="Self.TaskStatus" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="vFixingResults" EntityType="Self.vFixingResults" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vFixingResults].[Name] AS [Name], 
+    [vFixingResults].[RawAnswer] AS [RawAnswer], 
+    [vFixingResults].[RawScore] AS [RawScore], 
+    [vFixingResults].[CalcWeightedScore] AS [CalcWeightedScore], 
+    [vFixingResults].[CalcStalenessScore] AS [CalcStalenessScore], 
+    [vFixingResults].[Expr1] AS [Expr1], 
+    [vFixingResults].[SelectedDate] AS [SelectedDate]
+    FROM [dbo].[vFixingResults] AS [vFixingResults]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="vQuestionnaireAnswers" EntityType="Self.vQuestionnaireAnswers" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vQuestionnaireAnswers].[HeaderID] AS [HeaderID], 
+    [vQuestionnaireAnswers].[QuestionID] AS [QuestionID], 
+    [vQuestionnaireAnswers].[RawAnswer] AS [RawAnswer], 
+    [vQuestionnaireAnswers].[RawScore] AS [RawScore], 
+    [vQuestionnaireAnswers].[CalcWeightedScore] AS [CalcWeightedScore], 
+    [vQuestionnaireAnswers].[CalcStalenessScore] AS [CalcStalenessScore], 
+    [vQuestionnaireAnswers].[PortID] AS [PortID], 
+    [vQuestionnaireAnswers].[SelectedDate] AS [SelectedDate], 
+    [vQuestionnaireAnswers].[QuestionnaireID] AS [QuestionnaireID]
+    FROM [dbo].[vQuestionnaireAnswers] AS [vQuestionnaireAnswers]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_Answer_ScoreMappings_Answer_Operators" Association="Self.FK_Answer_ScoreMappings_Answer_Operators">
+            <End Role="Answer_Operators" EntitySet="Answer_Operators" />
+            <End Role="Answer_ScoreMappings" EntitySet="Answer_ScoreMappings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Answer_ScoreMappings_Answers" Association="Self.FK_Answer_ScoreMappings_Answers">
+            <End Role="Answers" EntitySet="Answers" />
+            <End Role="Answer_ScoreMappings" EntitySet="Answer_ScoreMappings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Answers_Questions" Association="Self.FK_Answers_Questions">
+            <End Role="Questions" EntitySet="Questions" />
+            <End Role="Answers" EntitySet="Answers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DashboardCategories_AssessedRiskCategories" Association="Self.FK_DashboardCategories_AssessedRiskCategories">
+            <End Role="Categories" EntitySet="Categories" />
+            <End Role="SubCategories" EntitySet="SubCategories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DataMappings_DataMappingTypes" Association="Self.FK_DataMappings_DataMappingTypes">
+            <End Role="DataMappingTypes" EntitySet="DataMappingTypes" />
+            <End Role="DataMappings" EntitySet="DataMappings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FrequencyProfile_Dates_FrequencyProfile" Association="Self.FK_FrequencyProfile_Dates_FrequencyProfile">
+            <End Role="FrequencyProfile" EntitySet="FrequencyProfile" />
+            <End Role="FrequencyProfile_Dates" EntitySet="FrequencyProfile_Dates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IncidentTypes_Questionnaires" Association="Self.FK_IncidentTypes_Questionnaires">
+            <End Role="Questionnaires" EntitySet="Questionnaires" />
+            <End Role="IncidentTypes" EntitySet="IncidentTypes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Location_Area" Association="Self.FK_Location_Area">
+            <End Role="Area" EntitySet="Area" />
+            <End Role="Location" EntitySet="Location" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PermissionGroup_User_Mapping_PermissionGroup" Association="Self.FK_PermissionGroup_User_Mapping_PermissionGroup">
+            <End Role="PermissionGroup" EntitySet="PermissionGroup" />
+            <End Role="PermissionGroup_User_Mapping" EntitySet="PermissionGroup_User_Mapping" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Permissions_Permissions" Association="Self.FK_Permissions_Permissions">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="Role_Permissions" EntitySet="Role_Permissions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QuestionnaireGroups_Questionnaires" Association="Self.FK_QuestionnaireGroups_Questionnaires">
+            <End Role="Questionnaires" EntitySet="Questionnaires" />
+            <End Role="QuestionnaireGroups" EntitySet="QuestionnaireGroups" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Questionnaires_FrequencyProfile" Association="Self.FK_Questionnaires_FrequencyProfile">
+            <End Role="FrequencyProfile" EntitySet="FrequencyProfile" />
+            <End Role="Questionnaires" EntitySet="Questionnaires" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Questions_CalculationModels" Association="Self.FK_Questions_CalculationModels">
+            <End Role="CalculationModels" EntitySet="CalculationModels" />
+            <End Role="Questions" EntitySet="Questions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Questions_DashboardCategories" Association="Self.FK_Questions_DashboardCategories">
+            <End Role="SubCategories" EntitySet="SubCategories" />
+            <End Role="Questions" EntitySet="Questions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Questions_Questionnaires" Association="Self.FK_Questions_Questionnaires">
+            <End Role="Questionnaires" EntitySet="Questionnaires" />
+            <End Role="Questions" EntitySet="Questions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Questions_StalenessProfile" Association="Self.FK_Questions_StalenessProfile">
+            <End Role="StalenessProfile" EntitySet="StalenessProfile" />
+            <End Role="Questions" EntitySet="Questions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Answers_Answers" Association="Self.FK_Result_Answers_Answers">
+            <End Role="Answers" EntitySet="Answers" />
+            <End Role="Result_Answers" EntitySet="Result_Answers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Answers_Fixings_Answers" Association="Self.FK_Result_Answers_Fixings_Answers">
+            <End Role="Answers" EntitySet="Answers" />
+            <End Role="Result_Answers_Fixings" EntitySet="Result_Answers_Fixings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Answers_Fixings_Result_Headers_Fixings" Association="Self.FK_Result_Answers_Fixings_Result_Headers_Fixings">
+            <End Role="Result_Headers_Fixings" EntitySet="Result_Headers_Fixings" />
+            <End Role="Result_Answers_Fixings" EntitySet="Result_Answers_Fixings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Answers_Result_Headers" Association="Self.FK_Result_Answers_Result_Headers">
+            <End Role="Result_Headers" EntitySet="Result_Headers" />
+            <End Role="Result_Answers" EntitySet="Result_Answers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Headers_Fixings_IncidentTypes" Association="Self.FK_Result_Headers_Fixings_IncidentTypes">
+            <End Role="IncidentTypes" EntitySet="IncidentTypes" />
+            <End Role="Result_Headers_Fixings" EntitySet="Result_Headers_Fixings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Headers_Fixings_Ports" Association="Self.FK_Result_Headers_Fixings_Ports">
+            <End Role="Location" EntitySet="Location" />
+            <End Role="Result_Headers_Fixings" EntitySet="Result_Headers_Fixings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Headers_Fixings_Questionnaires" Association="Self.FK_Result_Headers_Fixings_Questionnaires">
+            <End Role="Questionnaires" EntitySet="Questionnaires" />
+            <End Role="Result_Headers_Fixings" EntitySet="Result_Headers_Fixings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Headers_Fixings_Result_Headers_Fixings" Association="Self.FK_Result_Headers_Fixings_Result_Headers_Fixings">
+            <End Role="Result_Headers_Fixings" EntitySet="Result_Headers_Fixings" />
+            <End Role="Result_Headers_Fixings1" EntitySet="Result_Headers_Fixings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Headers_IncidentTypes" Association="Self.FK_Result_Headers_IncidentTypes">
+            <End Role="IncidentTypes" EntitySet="IncidentTypes" />
+            <End Role="Result_Headers" EntitySet="Result_Headers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Headers_Ports" Association="Self.FK_Result_Headers_Ports">
+            <End Role="Location" EntitySet="Location" />
+            <End Role="Result_Headers" EntitySet="Result_Headers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Headers_Questionnaires" Association="Self.FK_Result_Headers_Questionnaires">
+            <End Role="Questionnaires" EntitySet="Questionnaires" />
+            <End Role="Result_Headers" EntitySet="Result_Headers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Headers_Result_Headers" Association="Self.FK_Result_Headers_Result_Headers">
+            <End Role="Result_Headers" EntitySet="Result_Headers" />
+            <End Role="Result_Headers1" EntitySet="Result_Headers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tasks_TaskStatus" Association="Self.FK_Tasks_TaskStatus">
+            <End Role="TaskStatus" EntitySet="TaskStatus" />
+            <End Role="Tasks" EntitySet="Tasks" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SITSASModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="SITSASEntities" annotation:LazyLoadingEnabled="true">
+          <FunctionImport Name="GetQuestionnairesForUser" EntitySet="Questionnaires" ReturnType="Collection(SITSASModel.Questionnaire)">
+            <Parameter Name="UserID" Mode="In" Type="String" />
+            <Parameter Name="IncludeDeleted" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <FunctionImport Name="GetAreasForUser" EntitySet="Areas" ReturnType="Collection(SITSASModel.Area)">
+            <Parameter Name="UserID" Mode="In" Type="String" />
+            <Parameter Name="IncludeDeleted" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <FunctionImport Name="GetLocationsForUser" EntitySet="Locations" ReturnType="Collection(SITSASModel.Location)">
+            <Parameter Name="UserID" Mode="In" Type="String" />
+            <Parameter Name="IncludeDeleted" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <EntitySet Name="Answer_Operators" EntityType="SITSASModel.Answer_Operators" />
+          <EntitySet Name="Answer_ScoreMappings" EntityType="SITSASModel.Answer_ScoreMappings" />
+          <EntitySet Name="Answers" EntityType="SITSASModel.Answer" />
+          <EntitySet Name="CalculationModels" EntityType="SITSASModel.CalculationModel" />
+          <EntitySet Name="Categories" EntityType="SITSASModel.Category" />
+          <EntitySet Name="DataMappings" EntityType="SITSASModel.DataMapping" />
+          <EntitySet Name="DataMappingTypes" EntityType="SITSASModel.DataMappingType" />
+          <EntitySet Name="IncidentTypes" EntityType="SITSASModel.IncidentType" />
+          <EntitySet Name="Locations" EntityType="SITSASModel.Location" />
+          <EntitySet Name="PermissionGroups" EntityType="SITSASModel.PermissionGroup" />
+          <EntitySet Name="PermissionGroup_User_Mapping" EntityType="SITSASModel.PermissionGroup_User_Mapping" />
+          <EntitySet Name="QuestionnaireGroups" EntityType="SITSASModel.QuestionnaireGroup" />
+          <EntitySet Name="Questionnaires" EntityType="SITSASModel.Questionnaire" />
+          <EntitySet Name="Questions" EntityType="SITSASModel.Question" />
+          <EntitySet Name="Result_Answers" EntityType="SITSASModel.Result_Answers" />
+          <EntitySet Name="Result_Answers_Fixings" EntityType="SITSASModel.Result_Answers_Fixings" />
+          <EntitySet Name="Result_Headers" EntityType="SITSASModel.Result_Headers" />
+          <EntitySet Name="Result_Headers_Fixings" EntityType="SITSASModel.Result_Headers_Fixings" />
+          <EntitySet Name="Role_Permissions" EntityType="SITSASModel.Role_Permissions" />
+          <EntitySet Name="Role_User_PermissionMapping" EntityType="SITSASModel.Role_User_PermissionMapping" />
+          <EntitySet Name="Roles" EntityType="SITSASModel.Role" />
+          <EntitySet Name="StalenessProfiles" EntityType="SITSASModel.StalenessProfile" />
+          <EntitySet Name="SubCategories" EntityType="SITSASModel.SubCategory" />
+          <EntitySet Name="SystemSettings" EntityType="SITSASModel.SystemSetting" />
+          <EntitySet Name="vFixingResults" EntityType="SITSASModel.vFixingResult" />
+          <EntitySet Name="vQuestionnaireAnswers" EntityType="SITSASModel.vQuestionnaireAnswer" />
+          <AssociationSet Name="FK_Answer_ScoreMappings_Answer_Operators" Association="SITSASModel.FK_Answer_ScoreMappings_Answer_Operators">
+            <End Role="Answer_Operators" EntitySet="Answer_Operators" />
+            <End Role="Answer_ScoreMappings" EntitySet="Answer_ScoreMappings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Answer_ScoreMappings_Answers" Association="SITSASModel.FK_Answer_ScoreMappings_Answers">
+            <End Role="Answer" EntitySet="Answers" />
+            <End Role="Answer_ScoreMappings" EntitySet="Answer_ScoreMappings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Answers_Questions" Association="SITSASModel.FK_Answers_Questions">
+            <End Role="Question" EntitySet="Questions" />
+            <End Role="Answer" EntitySet="Answers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Answers_Answers" Association="SITSASModel.FK_Result_Answers_Answers">
+            <End Role="Answer" EntitySet="Answers" />
+            <End Role="Result_Answers" EntitySet="Result_Answers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Answers_Fixings_Answers" Association="SITSASModel.FK_Result_Answers_Fixings_Answers">
+            <End Role="Answer" EntitySet="Answers" />
+            <End Role="Result_Answers_Fixings" EntitySet="Result_Answers_Fixings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Questions_CalculationModels" Association="SITSASModel.FK_Questions_CalculationModels">
+            <End Role="CalculationModel" EntitySet="CalculationModels" />
+            <End Role="Question" EntitySet="Questions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DashboardCategories_AssessedRiskCategories" Association="SITSASModel.FK_DashboardCategories_AssessedRiskCategories">
+            <End Role="Category" EntitySet="Categories" />
+            <End Role="SubCategory" EntitySet="SubCategories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DataMappings_DataMappingTypes" Association="SITSASModel.FK_DataMappings_DataMappingTypes">
+            <End Role="DataMappingType" EntitySet="DataMappingTypes" />
+            <End Role="DataMapping" EntitySet="DataMappings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IncidentTypes_Questionnaires" Association="SITSASModel.FK_IncidentTypes_Questionnaires">
+            <End Role="Questionnaire" EntitySet="Questionnaires" />
+            <End Role="IncidentType" EntitySet="IncidentTypes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Headers_Fixings_IncidentTypes" Association="SITSASModel.FK_Result_Headers_Fixings_IncidentTypes">
+            <End Role="IncidentType" EntitySet="IncidentTypes" />
+            <End Role="Result_Headers_Fixings" EntitySet="Result_Headers_Fixings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Headers_IncidentTypes" Association="SITSASModel.FK_Result_Headers_IncidentTypes">
+            <End Role="IncidentType" EntitySet="IncidentTypes" />
+            <End Role="Result_Headers" EntitySet="Result_Headers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Headers_Fixings_Ports" Association="SITSASModel.FK_Result_Headers_Fixings_Ports">
+            <End Role="Location" EntitySet="Locations" />
+            <End Role="Result_Headers_Fixings" EntitySet="Result_Headers_Fixings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Headers_Ports" Association="SITSASModel.FK_Result_Headers_Ports">
+            <End Role="Location" EntitySet="Locations" />
+            <End Role="Result_Headers" EntitySet="Result_Headers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PermissionGroup_User_Mapping_PermissionGroup" Association="SITSASModel.FK_PermissionGroup_User_Mapping_PermissionGroup">
+            <End Role="PermissionGroup" EntitySet="PermissionGroups" />
+            <End Role="PermissionGroup_User_Mapping" EntitySet="PermissionGroup_User_Mapping" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QuestionnaireGroups_Questionnaires" Association="SITSASModel.FK_QuestionnaireGroups_Questionnaires">
+            <End Role="Questionnaire" EntitySet="Questionnaires" />
+            <End Role="QuestionnaireGroup" EntitySet="QuestionnaireGroups" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Questions_Questionnaires" Association="SITSASModel.FK_Questions_Questionnaires">
+            <End Role="Questionnaire" EntitySet="Questionnaires" />
+            <End Role="Question" EntitySet="Questions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Headers_Fixings_Questionnaires" Association="SITSASModel.FK_Result_Headers_Fixings_Questionnaires">
+            <End Role="Questionnaire" EntitySet="Questionnaires" />
+            <End Role="Result_Headers_Fixings" EntitySet="Result_Headers_Fixings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Headers_Questionnaires" Association="SITSASModel.FK_Result_Headers_Questionnaires">
+            <End Role="Questionnaire" EntitySet="Questionnaires" />
+            <End Role="Result_Headers" EntitySet="Result_Headers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Questions_DashboardCategories" Association="SITSASModel.FK_Questions_DashboardCategories">
+            <End Role="SubCategory" EntitySet="SubCategories" />
+            <End Role="Question" EntitySet="Questions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Questions_StalenessProfile" Association="SITSASModel.FK_Questions_StalenessProfile">
+            <End Role="StalenessProfile" EntitySet="StalenessProfiles" />
+            <End Role="Question" EntitySet="Questions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Answers_Result_Headers" Association="SITSASModel.FK_Result_Answers_Result_Headers">
+            <End Role="Result_Headers" EntitySet="Result_Headers" />
+            <End Role="Result_Answers" EntitySet="Result_Answers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Answers_Fixings_Result_Headers_Fixings" Association="SITSASModel.FK_Result_Answers_Fixings_Result_Headers_Fixings">
+            <End Role="Result_Headers_Fixings" EntitySet="Result_Headers_Fixings" />
+            <End Role="Result_Answers_Fixings" EntitySet="Result_Answers_Fixings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Headers_Result_Headers" Association="SITSASModel.FK_Result_Headers_Result_Headers">
+            <End Role="Result_Headers" EntitySet="Result_Headers" />
+            <End Role="Result_Headers1" EntitySet="Result_Headers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Headers_Fixings_Result_Headers_Fixings" Association="SITSASModel.FK_Result_Headers_Fixings_Result_Headers_Fixings">
+            <End Role="Result_Headers_Fixings" EntitySet="Result_Headers_Fixings" />
+            <End Role="Result_Headers_Fixings1" EntitySet="Result_Headers_Fixings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Permissions_Permissions" Association="SITSASModel.FK_Permissions_Permissions">
+            <End Role="Role" EntitySet="Roles" />
+            <End Role="Role_Permissions" EntitySet="Role_Permissions" />
+          </AssociationSet>
+          <EntitySet Name="Areas" EntityType="SITSASModel.Area" />
+          <AssociationSet Name="FK_Location_Area" Association="SITSASModel.FK_Location_Area">
+            <End Role="Area" EntitySet="Areas" />
+            <End Role="Location" EntitySet="Locations" />
+          </AssociationSet>
+          <EntitySet Name="FrequencyProfiles" EntityType="SITSASModel.FrequencyProfile" />
+          <AssociationSet Name="FK_Questionnaires_FrequencyProfile" Association="SITSASModel.FK_Questionnaires_FrequencyProfile">
+            <End Role="FrequencyProfile" EntitySet="FrequencyProfiles" />
+            <End Role="Questionnaire" EntitySet="Questionnaires" />
+          </AssociationSet>
+          <EntitySet Name="FrequencyProfile_Dates" EntityType="SITSASModel.FrequencyProfile_Dates" />
+          <EntitySet Name="Tasks" EntityType="SITSASModel.Task" />
+          <EntitySet Name="TaskStatus" EntityType="SITSASModel.TaskStatu" />
+          <AssociationSet Name="FK_FrequencyProfile_Dates_FrequencyProfile" Association="SITSASModel.FK_FrequencyProfile_Dates_FrequencyProfile">
+            <End Role="FrequencyProfile" EntitySet="FrequencyProfiles" />
+            <End Role="FrequencyProfile_Dates" EntitySet="FrequencyProfile_Dates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tasks_TaskStatus" Association="SITSASModel.FK_Tasks_TaskStatus">
+            <End Role="TaskStatu" EntitySet="TaskStatus" />
+            <End Role="Task" EntitySet="Tasks" />
+          </AssociationSet>
+          <EntitySet Name="Pages" EntityType="SITSASModel.Page" />
+          <EntitySet Name="Page_Role_Mappings" EntityType="SITSASModel.Page_Role_Mappings" />
+        </EntityContainer>
+        <ComplexType Name="GetQuestionnairesForUser_Result">
+          <Property Type="Guid" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="true" />
+          <Property Type="Boolean" Name="Deleted" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="GetAreasForUser_Result">
+          <Property Type="Guid" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="true" MaxLength="10" />
+          <Property Type="Boolean" Name="Deleted" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="GetLocationsForUser_Result">
+          <Property Type="Guid" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="true" />
+          <Property Type="Boolean" Name="Deleted" Nullable="false" />
+          <Property Type="Guid" Name="AreaID" Nullable="true" />
+        </ComplexType>
+        <EntityType Name="Answer_Operators">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="OperatorDescription" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Operator" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="true" />
+          <Property Name="eNumMapping" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Answer_ScoreMappings" Relationship="SITSASModel.FK_Answer_ScoreMappings_Answer_Operators" FromRole="Answer_Operators" ToRole="Answer_ScoreMappings" />
+        </EntityType>
+        <EntityType Name="Answer_ScoreMappings">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="AnswerID" Type="Guid" Nullable="false" />
+          <Property Name="Value" Type="Int64" Nullable="false" />
+          <Property Name="OperatorID" Type="Guid" Nullable="false" />
+          <Property Name="DateUnit" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Answer_Operators" Relationship="SITSASModel.FK_Answer_ScoreMappings_Answer_Operators" FromRole="Answer_ScoreMappings" ToRole="Answer_Operators" />
+          <NavigationProperty Name="Answer" Relationship="SITSASModel.FK_Answer_ScoreMappings_Answers" FromRole="Answer_ScoreMappings" ToRole="Answer" />
+        </EntityType>
+        <EntityType Name="Answer">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Score" Type="Int32" Nullable="false" />
+          <Property Name="QuestionID" Type="Guid" Nullable="false" />
+          <Property Name="Deleted" Type="Boolean" Nullable="false" />
+          <Property Name="CatchAll" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Answer_ScoreMappings" Relationship="SITSASModel.FK_Answer_ScoreMappings_Answers" FromRole="Answer" ToRole="Answer_ScoreMappings" />
+          <NavigationProperty Name="Question" Relationship="SITSASModel.FK_Answers_Questions" FromRole="Answer" ToRole="Question" />
+          <NavigationProperty Name="Result_Answers" Relationship="SITSASModel.FK_Result_Answers_Answers" FromRole="Answer" ToRole="Result_Answers" />
+          <NavigationProperty Name="Result_Answers_Fixings" Relationship="SITSASModel.FK_Result_Answers_Fixings_Answers" FromRole="Answer" ToRole="Result_Answers_Fixings" />
+        </EntityType>
+        <EntityType Name="CalculationModel">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="eNumMapping" Type="Int32" />
+          <NavigationProperty Name="Questions" Relationship="SITSASModel.FK_Questions_CalculationModels" FromRole="CalculationModel" ToRole="Question" />
+          <Property Name="Deleted" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="StartDate" Type="DateTime" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Precision="3" />
+          <Property Name="SpecialCase" Type="Boolean" Nullable="false" />
+          <Property Name="Deleted" Type="Boolean" Nullable="false" />
+          <Property Name="DisplayOrder" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="SubCategories" Relationship="SITSASModel.FK_DashboardCategories_AssessedRiskCategories" FromRole="Category" ToRole="SubCategory" />
+          <Property Name="DisplayName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="DataMapping">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="PrimaryID" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SecondaryID" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DisplayOrder" Type="Int32" Nullable="false" />
+          <Property Name="DataMappingTypeID" Type="Guid" Nullable="false" />
+          <Property Name="OverrideAll" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="DataMappingType" Relationship="SITSASModel.FK_DataMappings_DataMappingTypes" FromRole="DataMapping" ToRole="DataMappingType" />
+        </EntityType>
+        <EntityType Name="DataMappingType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="eNumMapping" Type="Int32" />
+          <NavigationProperty Name="DataMappings" Relationship="SITSASModel.FK_DataMappings_DataMappingTypes" FromRole="DataMappingType" ToRole="DataMapping" />
+        </EntityType>
+        <EntityType Name="IncidentType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="QuestionnaireID" Type="Guid" Nullable="false" />
+          <Property Name="Deleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Questionnaire" Relationship="SITSASModel.FK_IncidentTypes_Questionnaires" FromRole="IncidentType" ToRole="Questionnaire" />
+          <NavigationProperty Name="Result_Headers_Fixings" Relationship="SITSASModel.FK_Result_Headers_Fixings_IncidentTypes" FromRole="IncidentType" ToRole="Result_Headers_Fixings" />
+          <NavigationProperty Name="Result_Headers" Relationship="SITSASModel.FK_Result_Headers_IncidentTypes" FromRole="IncidentType" ToRole="Result_Headers" />
+        </EntityType>
+        <EntityType Name="Location">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Deleted" Type="Boolean" Nullable="false" />
+          <Property Name="AreaID" Type="Guid" />
+          <NavigationProperty Name="Result_Headers_Fixings" Relationship="SITSASModel.FK_Result_Headers_Fixings_Ports" FromRole="Location" ToRole="Result_Headers_Fixings" />
+          <NavigationProperty Name="Result_Headers" Relationship="SITSASModel.FK_Result_Headers_Ports" FromRole="Location" ToRole="Result_Headers" />
+          <NavigationProperty Name="Area" Relationship="SITSASModel.FK_Location_Area" FromRole="Location" ToRole="Area" />
+        </EntityType>
+        <EntityType Name="PermissionGroup">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="GroupName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Deleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="PermissionGroup_User_Mapping" Relationship="SITSASModel.FK_PermissionGroup_User_Mapping_PermissionGroup" FromRole="PermissionGroup" ToRole="PermissionGroup_User_Mapping" />
+        </EntityType>
+        <EntityType Name="PermissionGroup_User_Mapping">
+          <Key>
+            <PropertyRef Name="MappingID" />
+          </Key>
+          <Property Name="MappingID" Type="Guid" Nullable="false" />
+          <Property Name="GroupID" Type="Guid" Nullable="false" />
+          <Property Name="UserID" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="PermissionGroup" Relationship="SITSASModel.FK_PermissionGroup_User_Mapping_PermissionGroup" FromRole="PermissionGroup_User_Mapping" ToRole="PermissionGroup" />
+        </EntityType>
+        <EntityType Name="QuestionnaireGroup">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="QuestionnaireID" Type="Guid" />
+          <Property Name="Deleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Questionnaire" Relationship="SITSASModel.FK_QuestionnaireGroups_Questionnaires" FromRole="QuestionnaireGroup" ToRole="Questionnaire" />
+        </EntityType>
+        <EntityType Name="Questionnaire">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Deleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="IncidentTypes" Relationship="SITSASModel.FK_IncidentTypes_Questionnaires" FromRole="Questionnaire" ToRole="IncidentType" />
+          <NavigationProperty Name="QuestionnaireGroups" Relationship="SITSASModel.FK_QuestionnaireGroups_Questionnaires" FromRole="Questionnaire" ToRole="QuestionnaireGroup" />
+          <NavigationProperty Name="Questions" Relationship="SITSASModel.FK_Questions_Questionnaires" FromRole="Questionnaire" ToRole="Question" />
+          <NavigationProperty Name="Result_Headers_Fixings" Relationship="SITSASModel.FK_Result_Headers_Fixings_Questionnaires" FromRole="Questionnaire" ToRole="Result_Headers_Fixings" />
+          <NavigationProperty Name="Result_Headers" Relationship="SITSASModel.FK_Result_Headers_Questionnaires" FromRole="Questionnaire" ToRole="Result_Headers" />
+          <Property Name="FrequencyProfileID" Type="Guid" />
+          <NavigationProperty Name="FrequencyProfile" Relationship="SITSASModel.FK_Questionnaires_FrequencyProfile" FromRole="Questionnaire" ToRole="FrequencyProfile" />
+        </EntityType>
+        <EntityType Name="Question">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CalculationModelID" Type="Guid" />
+          <Property Name="Weighting" Type="Int32" />
+          <Property Name="SubCategoryID" Type="Guid" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Precision="3" />
+          <Property Name="CanBeNA" Type="Boolean" Nullable="false" />
+          <Property Name="Deleted" Type="Boolean" Nullable="false" />
+          <Property Name="SubQuestionnaireID" Type="Guid" />
+          <Property Name="SubQuestionnaireMultipleTimes" Type="Boolean" Nullable="false" />
+          <Property Name="StalenessProfileID" Type="Guid" />
+          <Property Name="DefaultValue" Type="Int32" Nullable="false" />
+          <Property Name="CanBeNotAnswered" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Answers" Relationship="SITSASModel.FK_Answers_Questions" FromRole="Question" ToRole="Answer" />
+          <NavigationProperty Name="CalculationModel" Relationship="SITSASModel.FK_Questions_CalculationModels" FromRole="Question" ToRole="CalculationModel" />
+          <NavigationProperty Name="Questionnaire" Relationship="SITSASModel.FK_Questions_Questionnaires" FromRole="Question" ToRole="Questionnaire" />
+          <NavigationProperty Name="SubCategory" Relationship="SITSASModel.FK_Questions_DashboardCategories" FromRole="Question" ToRole="SubCategory" />
+          <NavigationProperty Name="StalenessProfile" Relationship="SITSASModel.FK_Questions_StalenessProfile" FromRole="Question" ToRole="StalenessProfile" />
+        </EntityType>
+        <EntityType Name="Result_Answers">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="HeaderID" Type="Guid" />
+          <Property Name="AnswerID" Type="Guid" />
+          <Property Name="RawAnswer" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="RawScore" Type="Int32" />
+          <Property Name="WeightedScore" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="StalenessScore" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Answer" Relationship="SITSASModel.FK_Result_Answers_Answers" FromRole="Result_Answers" ToRole="Answer" />
+          <NavigationProperty Name="Result_Headers" Relationship="SITSASModel.FK_Result_Answers_Result_Headers" FromRole="Result_Answers" ToRole="Result_Headers" />
+        </EntityType>
+        <EntityType Name="Result_Answers_Fixings">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="HeaderID" Type="Guid" />
+          <Property Name="AnswerID" Type="Guid" />
+          <Property Name="RawAnswer" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="RawScore" Type="Int32" />
+          <Property Name="WeightedScore" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="StalenessScore" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Answer" Relationship="SITSASModel.FK_Result_Answers_Fixings_Answers" FromRole="Result_Answers_Fixings" ToRole="Answer" />
+          <NavigationProperty Name="Result_Headers_Fixings" Relationship="SITSASModel.FK_Result_Answers_Fixings_Result_Headers_Fixings" FromRole="Result_Answers_Fixings" ToRole="Result_Headers_Fixings" />
+        </EntityType>
+        <EntityType Name="Result_Headers">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="CompletedBy" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="SelectedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="LocationID" Type="Guid" Nullable="false" />
+          <Property Name="QuestionnaireID" Type="Guid" Nullable="false" />
+          <Property Name="ParentID" Type="Guid" />
+          <Property Name="IncidentTypeID" Type="Guid" />
+          <NavigationProperty Name="IncidentType" Relationship="SITSASModel.FK_Result_Headers_IncidentTypes" FromRole="Result_Headers" ToRole="IncidentType" />
+          <NavigationProperty Name="Location" Relationship="SITSASModel.FK_Result_Headers_Ports" FromRole="Result_Headers" ToRole="Location" />
+          <NavigationProperty Name="Questionnaire" Relationship="SITSASModel.FK_Result_Headers_Questionnaires" FromRole="Result_Headers" ToRole="Questionnaire" />
+          <NavigationProperty Name="Result_Answers" Relationship="SITSASModel.FK_Result_Answers_Result_Headers" FromRole="Result_Headers" ToRole="Result_Answers" />
+          <NavigationProperty Name="Result_Headers1" Relationship="SITSASModel.FK_Result_Headers_Result_Headers" FromRole="Result_Headers" ToRole="Result_Headers1" />
+          <NavigationProperty Name="Result_Headers2" Relationship="SITSASModel.FK_Result_Headers_Result_Headers" FromRole="Result_Headers1" ToRole="Result_Headers" />
+          <Property Name="PDFDocument" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="Submitted" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Result_Headers_Fixings">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="CompletedBy" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="SelectedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="LocationID" Type="Guid" Nullable="false" />
+          <Property Name="QuestionnaireID" Type="Guid" Nullable="false" />
+          <Property Name="ParentID" Type="Guid" />
+          <Property Name="IncidentTypeID" Type="Guid" />
+          <NavigationProperty Name="IncidentType" Relationship="SITSASModel.FK_Result_Headers_Fixings_IncidentTypes" FromRole="Result_Headers_Fixings" ToRole="IncidentType" />
+          <NavigationProperty Name="Location" Relationship="SITSASModel.FK_Result_Headers_Fixings_Ports" FromRole="Result_Headers_Fixings" ToRole="Location" />
+          <NavigationProperty Name="Questionnaire" Relationship="SITSASModel.FK_Result_Headers_Fixings_Questionnaires" FromRole="Result_Headers_Fixings" ToRole="Questionnaire" />
+          <NavigationProperty Name="Result_Answers_Fixings" Relationship="SITSASModel.FK_Result_Answers_Fixings_Result_Headers_Fixings" FromRole="Result_Headers_Fixings" ToRole="Result_Answers_Fixings" />
+          <NavigationProperty Name="Result_Headers_Fixings1" Relationship="SITSASModel.FK_Result_Headers_Fixings_Result_Headers_Fixings" FromRole="Result_Headers_Fixings" ToRole="Result_Headers_Fixings1" />
+          <NavigationProperty Name="Result_Headers_Fixings2" Relationship="SITSASModel.FK_Result_Headers_Fixings_Result_Headers_Fixings" FromRole="Result_Headers_Fixings1" ToRole="Result_Headers_Fixings" />
+        </EntityType>
+        <EntityType Name="Role_Permissions">
+          <Key>
+            <PropertyRef Name="PermissionsID" />
+          </Key>
+          <Property Name="CanEdit" Type="Boolean" />
+          <Property Name="CanDelete" Type="Boolean" />
+          <Property Name="CanView" Type="Boolean" />
+          <Property Name="RoleID" Type="Guid" />
+          <Property Name="CanAdd" Type="Boolean" />
+          <Property Name="PermissionsID" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="Role" Relationship="SITSASModel.FK_Permissions_Permissions" FromRole="Role_Permissions" ToRole="Role" />
+        </EntityType>
+        <EntityType Name="Role_User_PermissionMapping">
+          <Key>
+            <PropertyRef Name="PermissionMappingID" />
+          </Key>
+          <Property Name="PermissionMappingID" Type="Guid" Nullable="false" />
+          <Property Name="ObjectSID" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="RoleID" Type="Guid" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="RoleID" />
+          </Key>
+          <Property Name="RoleID" Type="Guid" Nullable="false" />
+          <Property Name="RoleName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Deleted" Type="Boolean" />
+          <NavigationProperty Name="Role_Permissions" Relationship="SITSASModel.FK_Permissions_Permissions" FromRole="Role" ToRole="Role_Permissions" />
+        </EntityType>
+        <EntityType Name="StalenessProfile">
+          <Key>
+            <PropertyRef Name="ProfileID" />
+          </Key>
+          <Property Name="ProfileID" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="StaticDays" Type="Int32" />
+          <Property Name="FinalScore" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="DaysUntilFinalScore" Type="Int32" />
+          <Property Name="Deleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Questions" Relationship="SITSASModel.FK_Questions_StalenessProfile" FromRole="StalenessProfile" ToRole="Question" />
+        </EntityType>
+        <EntityType Name="SubCategory">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CategoryID" Type="Guid" />
+          <Property Name="Deleted" Type="Boolean" Nullable="false" />
+          <Property Name="DisplayOrder" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Category" Relationship="SITSASModel.FK_DashboardCategories_AssessedRiskCategories" FromRole="SubCategory" ToRole="Category" />
+          <NavigationProperty Name="Questions" Relationship="SITSASModel.FK_Questions_DashboardCategories" FromRole="SubCategory" ToRole="Question" />
+          <Property Name="DisplayName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SystemSetting">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="vFixingResult">
+          <Key>
+            <PropertyRef Name="SelectedDate" />
+          </Key>
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="RawAnswer" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="RawScore" Type="Int32" />
+          <Property Name="CalcWeightedScore" Type="Decimal" Precision="21" Scale="2" />
+          <Property Name="CalcStalenessScore" Type="Decimal" Precision="21" Scale="2" />
+          <Property Name="Expr1" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SelectedDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="vQuestionnaireAnswer">
+          <Key>
+            <PropertyRef Name="QuestionID" />
+            <PropertyRef Name="PortID" />
+            <PropertyRef Name="SelectedDate" />
+            <PropertyRef Name="QuestionnaireID" />
+          </Key>
+          <Property Name="HeaderID" Type="Guid" />
+          <Property Name="QuestionID" Type="Guid" Nullable="false" />
+          <Property Name="RawAnswer" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="RawScore" Type="Int32" />
+          <Property Name="CalcWeightedScore" Type="Decimal" Precision="21" Scale="2" />
+          <Property Name="CalcStalenessScore" Type="Decimal" Precision="21" Scale="2" />
+          <Property Name="PortID" Type="Guid" Nullable="false" />
+          <Property Name="SelectedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="QuestionnaireID" Type="Guid" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Answer_ScoreMappings_Answer_Operators">
+          <End Type="SITSASModel.Answer_Operators" Role="Answer_Operators" Multiplicity="1" />
+          <End Type="SITSASModel.Answer_ScoreMappings" Role="Answer_ScoreMappings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Answer_Operators">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Answer_ScoreMappings">
+              <PropertyRef Name="OperatorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Answer_ScoreMappings_Answers">
+          <End Type="SITSASModel.Answer" Role="Answer" Multiplicity="1" />
+          <End Type="SITSASModel.Answer_ScoreMappings" Role="Answer_ScoreMappings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Answer">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Answer_ScoreMappings">
+              <PropertyRef Name="AnswerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Answers_Questions">
+          <End Type="SITSASModel.Question" Role="Question" Multiplicity="1" />
+          <End Type="SITSASModel.Answer" Role="Answer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Question">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Answer">
+              <PropertyRef Name="QuestionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Answers_Answers">
+          <End Type="SITSASModel.Answer" Role="Answer" Multiplicity="0..1" />
+          <End Type="SITSASModel.Result_Answers" Role="Result_Answers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Answer">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Answers">
+              <PropertyRef Name="AnswerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Answers_Fixings_Answers">
+          <End Type="SITSASModel.Answer" Role="Answer" Multiplicity="0..1" />
+          <End Type="SITSASModel.Result_Answers_Fixings" Role="Result_Answers_Fixings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Answer">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Answers_Fixings">
+              <PropertyRef Name="AnswerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Questions_CalculationModels">
+          <End Type="SITSASModel.CalculationModel" Role="CalculationModel" Multiplicity="0..1" />
+          <End Type="SITSASModel.Question" Role="Question" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CalculationModel">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Question">
+              <PropertyRef Name="CalculationModelID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DashboardCategories_AssessedRiskCategories">
+          <End Type="SITSASModel.Category" Role="Category" Multiplicity="0..1" />
+          <End Type="SITSASModel.SubCategory" Role="SubCategory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SubCategory">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DataMappings_DataMappingTypes">
+          <End Type="SITSASModel.DataMappingType" Role="DataMappingType" Multiplicity="1" />
+          <End Type="SITSASModel.DataMapping" Role="DataMapping" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DataMappingType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DataMapping">
+              <PropertyRef Name="DataMappingTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IncidentTypes_Questionnaires">
+          <End Type="SITSASModel.Questionnaire" Role="Questionnaire" Multiplicity="1" />
+          <End Type="SITSASModel.IncidentType" Role="IncidentType" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Questionnaire">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="IncidentType">
+              <PropertyRef Name="QuestionnaireID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Headers_Fixings_IncidentTypes">
+          <End Type="SITSASModel.IncidentType" Role="IncidentType" Multiplicity="0..1" />
+          <End Type="SITSASModel.Result_Headers_Fixings" Role="Result_Headers_Fixings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IncidentType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Headers_Fixings">
+              <PropertyRef Name="IncidentTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Headers_IncidentTypes">
+          <End Type="SITSASModel.IncidentType" Role="IncidentType" Multiplicity="0..1" />
+          <End Type="SITSASModel.Result_Headers" Role="Result_Headers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IncidentType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Headers">
+              <PropertyRef Name="IncidentTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Headers_Fixings_Ports">
+          <End Type="SITSASModel.Location" Role="Location" Multiplicity="1" />
+          <End Type="SITSASModel.Result_Headers_Fixings" Role="Result_Headers_Fixings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Location">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Headers_Fixings">
+              <PropertyRef Name="LocationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Headers_Ports">
+          <End Type="SITSASModel.Location" Role="Location" Multiplicity="1" />
+          <End Type="SITSASModel.Result_Headers" Role="Result_Headers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Location">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Headers">
+              <PropertyRef Name="LocationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PermissionGroup_User_Mapping_PermissionGroup">
+          <End Type="SITSASModel.PermissionGroup" Role="PermissionGroup" Multiplicity="1" />
+          <End Type="SITSASModel.PermissionGroup_User_Mapping" Role="PermissionGroup_User_Mapping" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PermissionGroup">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PermissionGroup_User_Mapping">
+              <PropertyRef Name="GroupID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QuestionnaireGroups_Questionnaires">
+          <End Type="SITSASModel.Questionnaire" Role="Questionnaire" Multiplicity="0..1" />
+          <End Type="SITSASModel.QuestionnaireGroup" Role="QuestionnaireGroup" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Questionnaire">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="QuestionnaireGroup">
+              <PropertyRef Name="QuestionnaireID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Questions_Questionnaires">
+          <End Type="SITSASModel.Questionnaire" Role="Questionnaire" Multiplicity="0..1" />
+          <End Type="SITSASModel.Question" Role="Question" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Questionnaire">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Question">
+              <PropertyRef Name="SubQuestionnaireID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Headers_Fixings_Questionnaires">
+          <End Type="SITSASModel.Questionnaire" Role="Questionnaire" Multiplicity="1" />
+          <End Type="SITSASModel.Result_Headers_Fixings" Role="Result_Headers_Fixings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Questionnaire">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Headers_Fixings">
+              <PropertyRef Name="QuestionnaireID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Headers_Questionnaires">
+          <End Type="SITSASModel.Questionnaire" Role="Questionnaire" Multiplicity="1" />
+          <End Type="SITSASModel.Result_Headers" Role="Result_Headers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Questionnaire">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Headers">
+              <PropertyRef Name="QuestionnaireID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Questions_DashboardCategories">
+          <End Type="SITSASModel.SubCategory" Role="SubCategory" Multiplicity="0..1" />
+          <End Type="SITSASModel.Question" Role="Question" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SubCategory">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Question">
+              <PropertyRef Name="SubCategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Questions_StalenessProfile">
+          <End Type="SITSASModel.StalenessProfile" Role="StalenessProfile" Multiplicity="0..1" />
+          <End Type="SITSASModel.Question" Role="Question" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StalenessProfile">
+              <PropertyRef Name="ProfileID" />
+            </Principal>
+            <Dependent Role="Question">
+              <PropertyRef Name="StalenessProfileID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Answers_Result_Headers">
+          <End Type="SITSASModel.Result_Headers" Role="Result_Headers" Multiplicity="0..1" />
+          <End Type="SITSASModel.Result_Answers" Role="Result_Answers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Result_Headers">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Answers">
+              <PropertyRef Name="HeaderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Answers_Fixings_Result_Headers_Fixings">
+          <End Type="SITSASModel.Result_Headers_Fixings" Role="Result_Headers_Fixings" Multiplicity="0..1" />
+          <End Type="SITSASModel.Result_Answers_Fixings" Role="Result_Answers_Fixings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Result_Headers_Fixings">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Answers_Fixings">
+              <PropertyRef Name="HeaderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Headers_Result_Headers">
+          <End Type="SITSASModel.Result_Headers" Role="Result_Headers" Multiplicity="0..1" />
+          <End Type="SITSASModel.Result_Headers" Role="Result_Headers1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Result_Headers">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Headers1">
+              <PropertyRef Name="ParentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Headers_Fixings_Result_Headers_Fixings">
+          <End Type="SITSASModel.Result_Headers_Fixings" Role="Result_Headers_Fixings" Multiplicity="0..1" />
+          <End Type="SITSASModel.Result_Headers_Fixings" Role="Result_Headers_Fixings1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Result_Headers_Fixings">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Headers_Fixings1">
+              <PropertyRef Name="ParentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Permissions_Permissions">
+          <End Type="SITSASModel.Role" Role="Role" Multiplicity="0..1" />
+          <End Type="SITSASModel.Role_Permissions" Role="Role_Permissions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="RoleID" />
+            </Principal>
+            <Dependent Role="Role_Permissions">
+              <PropertyRef Name="RoleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Area">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Deleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Locations" Relationship="SITSASModel.FK_Location_Area" FromRole="Area" ToRole="Location" />
+        </EntityType>
+        <Association Name="FK_Location_Area">
+          <End Type="SITSASModel.Area" Role="Area" Multiplicity="0..1" />
+          <End Type="SITSASModel.Location" Role="Location" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Area">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Location">
+              <PropertyRef Name="AreaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="FrequencyProfile">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Frequency" Type="Int32" Nullable="false" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="NextDateToComplete" Type="DateTime" Precision="3" />
+          <Property Name="eDateUnit" Type="Int32" Nullable="false" />
+          <Property Name="Deleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Questionnaires" Relationship="SITSASModel.FK_Questionnaires_FrequencyProfile" FromRole="FrequencyProfile" ToRole="Questionnaire" />
+          <Property Name="EndDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="FrequencyProfile_Dates" Relationship="SITSASModel.FK_FrequencyProfile_Dates_FrequencyProfile" FromRole="FrequencyProfile" ToRole="FrequencyProfile_Dates" />
+        </EntityType>
+        <Association Name="FK_Questionnaires_FrequencyProfile">
+          <End Type="SITSASModel.FrequencyProfile" Role="FrequencyProfile" Multiplicity="0..1" />
+          <End Type="SITSASModel.Questionnaire" Role="Questionnaire" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FrequencyProfile">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Questionnaire">
+              <PropertyRef Name="FrequencyProfileID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="FrequencyProfile_Dates">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="FrequencyID" Type="Guid" Nullable="false" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="LocationID" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="FrequencyProfile" Relationship="SITSASModel.FK_FrequencyProfile_Dates_FrequencyProfile" FromRole="FrequencyProfile_Dates" ToRole="FrequencyProfile" />
+        </EntityType>
+        <EntityType Name="Task">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="AssignedTo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DueDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Status" Type="Guid" Nullable="false" />
+          <Property Name="ResultLineID" Type="Guid" />
+          <NavigationProperty Name="TaskStatu" Relationship="SITSASModel.FK_Tasks_TaskStatus" FromRole="Task" ToRole="TaskStatu" />
+          <Property Name="Deleted" Type="Boolean" Nullable="false" />
+          <Property Name="CompletedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="TaskStatu">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="enumMapping" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Tasks" Relationship="SITSASModel.FK_Tasks_TaskStatus" FromRole="TaskStatu" ToRole="Task" />
+        </EntityType>
+        <Association Name="FK_FrequencyProfile_Dates_FrequencyProfile">
+          <End Type="SITSASModel.FrequencyProfile" Role="FrequencyProfile" Multiplicity="1" />
+          <End Type="SITSASModel.FrequencyProfile_Dates" Role="FrequencyProfile_Dates" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FrequencyProfile">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="FrequencyProfile_Dates">
+              <PropertyRef Name="FrequencyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tasks_TaskStatus">
+          <End Type="SITSASModel.TaskStatu" Role="TaskStatu" Multiplicity="1" />
+          <End Type="SITSASModel.Task" Role="Task" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TaskStatu">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Task">
+              <PropertyRef Name="Status" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Page">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="PageName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Icon" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DisplayOrder" Type="Int32" Nullable="false" />
+          <Property Name="Link" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DisplayName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Page_Role_Mappings">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="PageID" Type="Guid" Nullable="false" />
+          <Property Name="RoleID" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CanView" Type="Boolean" Nullable="false" />
+          <Property Name="CanCreate" Type="Boolean" Nullable="false" />
+          <Property Name="CanUpdate" Type="Boolean" Nullable="false" />
+          <Property Name="CanDelete" Type="Boolean" Nullable="false" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SITSASModelStoreContainer" CdmEntityContainer="SITSASEntities">
+          <FunctionImportMapping FunctionImportName="GetQuestionnairesForUser" FunctionName="SITSASModel.Store.GetQuestionnairesForUser">
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetAreasForUser" FunctionName="SITSASModel.Store.GetAreasForUser">
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetLocationsForUser" FunctionName="SITSASModel.Store.GetLocationsForUser">
+          </FunctionImportMapping>
+          <EntitySetMapping Name="Answer_Operators">
+            <EntityTypeMapping TypeName="SITSASModel.Answer_Operators">
+              <MappingFragment StoreEntitySet="Answer_Operators">
+                <ScalarProperty Name="eNumMapping" ColumnName="eNumMapping" />
+                <ScalarProperty Name="Operator" ColumnName="Operator" />
+                <ScalarProperty Name="OperatorDescription" ColumnName="OperatorDescription" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Answer_ScoreMappings">
+            <EntityTypeMapping TypeName="SITSASModel.Answer_ScoreMappings">
+              <MappingFragment StoreEntitySet="Answer_ScoreMappings">
+                <ScalarProperty Name="DateUnit" ColumnName="DateUnit" />
+                <ScalarProperty Name="OperatorID" ColumnName="OperatorID" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="AnswerID" ColumnName="AnswerID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Answers">
+            <EntityTypeMapping TypeName="SITSASModel.Answer">
+              <MappingFragment StoreEntitySet="Answers">
+                <ScalarProperty Name="CatchAll" ColumnName="CatchAll" />
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+                <ScalarProperty Name="QuestionID" ColumnName="QuestionID" />
+                <ScalarProperty Name="Score" ColumnName="Score" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CalculationModels">
+            <EntityTypeMapping TypeName="SITSASModel.CalculationModel">
+              <MappingFragment StoreEntitySet="CalculationModels">
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+                <ScalarProperty Name="eNumMapping" ColumnName="eNumMapping" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Categories">
+            <EntityTypeMapping TypeName="SITSASModel.Category">
+              <MappingFragment StoreEntitySet="Categories">
+                <ScalarProperty Name="DisplayName" ColumnName="DisplayName" />
+                <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+                <ScalarProperty Name="SpecialCase" ColumnName="SpecialCase" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DataMappings">
+            <EntityTypeMapping TypeName="SITSASModel.DataMapping">
+              <MappingFragment StoreEntitySet="DataMappings">
+                <ScalarProperty Name="OverrideAll" ColumnName="OverrideAll" />
+                <ScalarProperty Name="DataMappingTypeID" ColumnName="DataMappingTypeID" />
+                <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+                <ScalarProperty Name="SecondaryID" ColumnName="SecondaryID" />
+                <ScalarProperty Name="PrimaryID" ColumnName="PrimaryID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DataMappingTypes">
+            <EntityTypeMapping TypeName="SITSASModel.DataMappingType">
+              <MappingFragment StoreEntitySet="DataMappingTypes">
+                <ScalarProperty Name="eNumMapping" ColumnName="eNumMapping" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IncidentTypes">
+            <EntityTypeMapping TypeName="SITSASModel.IncidentType">
+              <MappingFragment StoreEntitySet="IncidentTypes">
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+                <ScalarProperty Name="QuestionnaireID" ColumnName="QuestionnaireID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Locations">
+            <EntityTypeMapping TypeName="SITSASModel.Location">
+              <MappingFragment StoreEntitySet="Location">
+                <ScalarProperty Name="AreaID" ColumnName="AreaID" />
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PermissionGroups">
+            <EntityTypeMapping TypeName="SITSASModel.PermissionGroup">
+              <MappingFragment StoreEntitySet="PermissionGroup">
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+                <ScalarProperty Name="GroupName" ColumnName="GroupName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PermissionGroup_User_Mapping">
+            <EntityTypeMapping TypeName="SITSASModel.PermissionGroup_User_Mapping">
+              <MappingFragment StoreEntitySet="PermissionGroup_User_Mapping">
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="GroupID" ColumnName="GroupID" />
+                <ScalarProperty Name="MappingID" ColumnName="MappingID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="QuestionnaireGroups">
+            <EntityTypeMapping TypeName="SITSASModel.QuestionnaireGroup">
+              <MappingFragment StoreEntitySet="QuestionnaireGroups">
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+                <ScalarProperty Name="QuestionnaireID" ColumnName="QuestionnaireID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Questionnaires">
+            <EntityTypeMapping TypeName="SITSASModel.Questionnaire">
+              <MappingFragment StoreEntitySet="Questionnaires">
+                <ScalarProperty Name="FrequencyProfileID" ColumnName="FrequencyProfileID" />
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Questions">
+            <EntityTypeMapping TypeName="SITSASModel.Question">
+              <MappingFragment StoreEntitySet="Questions">
+                <ScalarProperty Name="CanBeNotAnswered" ColumnName="CanBeNotAnswered" />
+                <ScalarProperty Name="DefaultValue" ColumnName="DefaultValue" />
+                <ScalarProperty Name="StalenessProfileID" ColumnName="StalenessProfileID" />
+                <ScalarProperty Name="SubQuestionnaireMultipleTimes" ColumnName="SubQuestionnaireMultipleTimes" />
+                <ScalarProperty Name="SubQuestionnaireID" ColumnName="SubQuestionnaireID" />
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+                <ScalarProperty Name="CanBeNA" ColumnName="CanBeNA" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="SubCategoryID" ColumnName="SubCategoryID" />
+                <ScalarProperty Name="Weighting" ColumnName="Weighting" />
+                <ScalarProperty Name="CalculationModelID" ColumnName="CalculationModelID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Result_Answers">
+            <EntityTypeMapping TypeName="SITSASModel.Result_Answers">
+              <MappingFragment StoreEntitySet="Result_Answers">
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="StalenessScore" ColumnName="StalenessScore" />
+                <ScalarProperty Name="WeightedScore" ColumnName="WeightedScore" />
+                <ScalarProperty Name="RawScore" ColumnName="RawScore" />
+                <ScalarProperty Name="RawAnswer" ColumnName="RawAnswer" />
+                <ScalarProperty Name="AnswerID" ColumnName="AnswerID" />
+                <ScalarProperty Name="HeaderID" ColumnName="HeaderID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Result_Answers_Fixings">
+            <EntityTypeMapping TypeName="SITSASModel.Result_Answers_Fixings">
+              <MappingFragment StoreEntitySet="Result_Answers_Fixings">
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="StalenessScore" ColumnName="StalenessScore" />
+                <ScalarProperty Name="WeightedScore" ColumnName="WeightedScore" />
+                <ScalarProperty Name="RawScore" ColumnName="RawScore" />
+                <ScalarProperty Name="RawAnswer" ColumnName="RawAnswer" />
+                <ScalarProperty Name="AnswerID" ColumnName="AnswerID" />
+                <ScalarProperty Name="HeaderID" ColumnName="HeaderID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Result_Headers">
+            <EntityTypeMapping TypeName="SITSASModel.Result_Headers">
+              <MappingFragment StoreEntitySet="Result_Headers">
+                <ScalarProperty Name="Submitted" ColumnName="Submitted" />
+                <ScalarProperty Name="PDFDocument" ColumnName="PDFDocument" />
+                <ScalarProperty Name="IncidentTypeID" ColumnName="IncidentTypeID" />
+                <ScalarProperty Name="ParentID" ColumnName="ParentID" />
+                <ScalarProperty Name="QuestionnaireID" ColumnName="QuestionnaireID" />
+                <ScalarProperty Name="LocationID" ColumnName="LocationID" />
+                <ScalarProperty Name="SelectedDate" ColumnName="SelectedDate" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CompletedBy" ColumnName="CompletedBy" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Result_Headers_Fixings">
+            <EntityTypeMapping TypeName="SITSASModel.Result_Headers_Fixings">
+              <MappingFragment StoreEntitySet="Result_Headers_Fixings">
+                <ScalarProperty Name="IncidentTypeID" ColumnName="IncidentTypeID" />
+                <ScalarProperty Name="ParentID" ColumnName="ParentID" />
+                <ScalarProperty Name="QuestionnaireID" ColumnName="QuestionnaireID" />
+                <ScalarProperty Name="LocationID" ColumnName="LocationID" />
+                <ScalarProperty Name="SelectedDate" ColumnName="SelectedDate" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CompletedBy" ColumnName="CompletedBy" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Role_Permissions">
+            <EntityTypeMapping TypeName="SITSASModel.Role_Permissions">
+              <MappingFragment StoreEntitySet="Role_Permissions">
+                <ScalarProperty Name="PermissionsID" ColumnName="PermissionsID" />
+                <ScalarProperty Name="CanAdd" ColumnName="CanAdd" />
+                <ScalarProperty Name="RoleID" ColumnName="RoleID" />
+                <ScalarProperty Name="CanView" ColumnName="CanView" />
+                <ScalarProperty Name="CanDelete" ColumnName="CanDelete" />
+                <ScalarProperty Name="CanEdit" ColumnName="CanEdit" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Role_User_PermissionMapping">
+            <EntityTypeMapping TypeName="SITSASModel.Role_User_PermissionMapping">
+              <MappingFragment StoreEntitySet="Role_User_PermissionMapping">
+                <ScalarProperty Name="RoleID" ColumnName="RoleID" />
+                <ScalarProperty Name="ObjectSID" ColumnName="ObjectSID" />
+                <ScalarProperty Name="PermissionMappingID" ColumnName="PermissionMappingID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Roles">
+            <EntityTypeMapping TypeName="SITSASModel.Role">
+              <MappingFragment StoreEntitySet="Roles">
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+                <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+                <ScalarProperty Name="RoleID" ColumnName="RoleID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StalenessProfiles">
+            <EntityTypeMapping TypeName="SITSASModel.StalenessProfile">
+              <MappingFragment StoreEntitySet="StalenessProfile">
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+                <ScalarProperty Name="DaysUntilFinalScore" ColumnName="DaysUntilFinalScore" />
+                <ScalarProperty Name="FinalScore" ColumnName="FinalScore" />
+                <ScalarProperty Name="StaticDays" ColumnName="StaticDays" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ProfileID" ColumnName="ProfileID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SubCategories">
+            <EntityTypeMapping TypeName="SITSASModel.SubCategory">
+              <MappingFragment StoreEntitySet="SubCategories">
+                <ScalarProperty Name="DisplayName" ColumnName="DisplayName" />
+                <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SystemSettings">
+            <EntityTypeMapping TypeName="SITSASModel.SystemSetting">
+              <MappingFragment StoreEntitySet="SystemSettings">
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vFixingResults">
+            <EntityTypeMapping TypeName="SITSASModel.vFixingResult">
+              <MappingFragment StoreEntitySet="vFixingResults">
+                <ScalarProperty Name="SelectedDate" ColumnName="SelectedDate" />
+                <ScalarProperty Name="Expr1" ColumnName="Expr1" />
+                <ScalarProperty Name="CalcStalenessScore" ColumnName="CalcStalenessScore" />
+                <ScalarProperty Name="CalcWeightedScore" ColumnName="CalcWeightedScore" />
+                <ScalarProperty Name="RawScore" ColumnName="RawScore" />
+                <ScalarProperty Name="RawAnswer" ColumnName="RawAnswer" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vQuestionnaireAnswers">
+            <EntityTypeMapping TypeName="SITSASModel.vQuestionnaireAnswer">
+              <MappingFragment StoreEntitySet="vQuestionnaireAnswers">
+                <ScalarProperty Name="QuestionnaireID" ColumnName="QuestionnaireID" />
+                <ScalarProperty Name="SelectedDate" ColumnName="SelectedDate" />
+                <ScalarProperty Name="PortID" ColumnName="PortID" />
+                <ScalarProperty Name="CalcStalenessScore" ColumnName="CalcStalenessScore" />
+                <ScalarProperty Name="CalcWeightedScore" ColumnName="CalcWeightedScore" />
+                <ScalarProperty Name="RawScore" ColumnName="RawScore" />
+                <ScalarProperty Name="RawAnswer" ColumnName="RawAnswer" />
+                <ScalarProperty Name="QuestionID" ColumnName="QuestionID" />
+                <ScalarProperty Name="HeaderID" ColumnName="HeaderID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Areas">
+            <EntityTypeMapping TypeName="SITSASModel.Area">
+              <MappingFragment StoreEntitySet="Area">
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FrequencyProfiles">
+            <EntityTypeMapping TypeName="SITSASModel.FrequencyProfile">
+              <MappingFragment StoreEntitySet="FrequencyProfile">
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+                <ScalarProperty Name="eDateUnit" ColumnName="eDateUnit" />
+                <ScalarProperty Name="NextDateToComplete" ColumnName="NextDateToComplete" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="Frequency" ColumnName="Frequency" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FrequencyProfile_Dates">
+            <EntityTypeMapping TypeName="SITSASModel.FrequencyProfile_Dates">
+              <MappingFragment StoreEntitySet="FrequencyProfile_Dates">
+                <ScalarProperty Name="LocationID" ColumnName="LocationID" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="FrequencyID" ColumnName="FrequencyID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tasks">
+            <EntityTypeMapping TypeName="SITSASModel.Task">
+              <MappingFragment StoreEntitySet="Tasks">
+                <ScalarProperty Name="CompletedDate" ColumnName="CompletedDate" />
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+                <ScalarProperty Name="ResultLineID" ColumnName="ResultLineID" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="DueDate" ColumnName="DueDate" />
+                <ScalarProperty Name="AssignedTo" ColumnName="AssignedTo" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TaskStatus">
+            <EntityTypeMapping TypeName="SITSASModel.TaskStatu">
+              <MappingFragment StoreEntitySet="TaskStatus">
+                <ScalarProperty Name="enumMapping" ColumnName="enumMapping" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Pages">
+            <EntityTypeMapping TypeName="SITSASModel.Page">
+              <MappingFragment StoreEntitySet="Pages">
+                <ScalarProperty Name="DisplayName" ColumnName="DisplayName" />
+                <ScalarProperty Name="Link" ColumnName="Link" />
+                <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+                <ScalarProperty Name="Icon" ColumnName="Icon" />
+                <ScalarProperty Name="PageName" ColumnName="PageName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Page_Role_Mappings">
+            <EntityTypeMapping TypeName="SITSASModel.Page_Role_Mappings">
+              <MappingFragment StoreEntitySet="Page_Role_Mappings">
+                <ScalarProperty Name="CanDelete" ColumnName="CanDelete" />
+                <ScalarProperty Name="CanUpdate" ColumnName="CanUpdate" />
+                <ScalarProperty Name="CanCreate" ColumnName="CanCreate" />
+                <ScalarProperty Name="CanView" ColumnName="CanView" />
+                <ScalarProperty Name="RoleID" ColumnName="RoleID" />
+                <ScalarProperty Name="PageID" ColumnName="PageID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,0 +1,181 @@
+﻿@model SITSAS.Models.AnswerOneQuestionForLocationsModel
+    <form > </form>
+
+<form id='form0' action='/Home/SubmitMultiLocationOneQuestion' method='post'>
+
+    
+    <table style="width:80%;align-content:center" align="center">
+        <tr style="width:100%;">
+            <td style="width:100%;">
+                <table style="width:100%;">
+                    <tr style="width:100%;">
+                        <td style="width:20%;"><label>Name</label></td>
+                        <td style="width:80%;">
+                            <div class="input-control text" style="width: 100%;">
+                                <input type="text" name="username" style="width: 100%;" class="text-small" />
+                                <input type="hidden" value="@Model.question.ID" name="QuestionID" style="width: 100%;" class="text-small" />
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+
+            </td>
+        </tr>
+        @*<tr style="width:100%;">
+                <td style="width:100%;">
+                    <table style="width:100%;">
+                        <tr style="width:100%;">
+                            <td style="width:20%;"><label>Question Name</label></td>
+                            <td style="width:80%;">
+                                <div class="input-control text" style="width: 100%;">
+                                    <span class="mif-expand-more prepend-icon"></span>
+                                    <label>@Model.question.Name</label>
+
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                </td>
+            </tr>*@
+        <tr style="width:100%;">
+            <td style="width:100%;">
+                <table style="width:100%;">
+                    <tr style="width:100%;">
+                        <td style="width:20%;"><label>Date</label></td>
+                        <td style="width:80%;">
+                            <div class="input-control text" data-role="datepicker" style="width: 100%;" data-format="d mmmm yy">
+                                <input type="text" name="dateCompleted" value="@Model.selectedDate.ToString("d MMM yy")" style="width: 100%;" class="text-small" />
+                                <button class="button"><span class="mif-calendar"></span></button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+
+            </td>
+        </tr>
+    </table>
+
+    <ul class="step-list">
+        <h5 class="title">@Model.question.Name</h5>
+        <hr class="bg-blue" />
+
+
+        @foreach (var port in Model.Locations.OrderBy(x => x.Name).ToList())
+        {
+            <div class="example" style="width:100%">
+                <table style="width:100%;">
+                    <tr style="width:100%;">
+                        @if (Model.question.CalculationModel.eNumMapping != (int)SITSAS.Models.eCalculationModels.QuestionnaireResult)
+                        {
+                            <td style="width:20%;">
+
+                                @*@if (question.Question.Name.Trim().ToUpper() != dashCat.DashboardCategory.Name.Trim().ToUpper())
+                                    {*@
+                                <h5><small>@port.Name</small></h5>
+                                @* } *@
+                            </td>
+                        }
+
+                        @if (Model.question.CalculationModel.eNumMapping != (int)SITSAS.Models.eCalculationModels.QuestionnaireResult)
+                        {
+
+                            @Html.Raw("<td style='width:60%;'>")
+                        }
+                        else
+                        {
+                            @Html.Raw("<td style='width:90%;'>")
+                        }
+                        @switch (Model.question.CalculationModel.eNumMapping)
+                        {
+                            case (int)SITSAS.Models.eCalculationModels.DropDownLists:
+                                {
+                                    <div class="input-control text" style="width:100%;">
+                                        @*<span class="mif-expand-more prepend-icon"></span>*@
+                                        <select name="@port.ID" style="width:100%;" class="text-small">
+                                            @foreach (var answer in Model.question.Answers.Where(x => x.Deleted == false).ToList())
+                                            {
+                                                <option value="@answer.ID">@answer.Description</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    break;
+                                }
+                            case (int)SITSAS.Models.eCalculationModels.NumericValue:
+                                {
+                                    <div class="input-control text" style="width:100%;">
+                                        <input name="@port.ID" type="number" value="1" class="text-small" />
+                                    </div>
+                                    break;
+                                }
+                            case (int)SITSAS.Models.eCalculationModels.QuestionnaireResult:
+                                {
+                                    <h5>@port.Name</h5>
+                                    <input name="@port.ID" type="hidden" value="SubQuestionnaire" />
+                                    if (Model.question.SubQuestionnaireID != null)
+                                    {
+                                        Html.RenderAction("AnswerQuestionnaire", new { ID = Model.question.SubQuestionnaireID, IsSub = true });
+                                    }
+                                    break;
+                                }
+                            case (int)SITSAS.Models.eCalculationModels.TimeSinceARecordedDate:
+                                {
+                                    <div class="input-control text" data-role="datepicker" data-format="d mmmm yy">
+                                        <input type="text" name="@port.ID" style="width: 100%;" class="text-small" />
+                                        <button class="button"><span class="mif-calendar"></span></button>
+                                    </div>
+                                    break;
+                                }
+                            case (int)SITSAS.Models.eCalculationModels.ManualEntry:
+                                {
+                                    <div class="input-control text" style="width:100%;">
+                                        <input name="@port.ID" type="number" value="1" class="text-small" />
+                                    </div>
+                                    break;
+                                }
+                        }
+                        @Html.Raw("</td>")
+                        <td style="width:10%;">
+                            @*<div id="NOTES_@port.ID" class="input-control text" style="width:100%;display:none;">*@
+                            <textarea id="NOTES_@port.ID" name="@port.ID-NOTES" type="text" class="text-small" style="word-break: break-word;width:100%;display:none;"></textarea>
+                            @*</div>*@
+                            <label id="btnNOTES_@port.ID" class="image-button success" onclick="$('#NOTES_@port.ID').toggle(); $('#btnNOTES_@port.ID').toggle();"><span class="icon mif-quote"></span></label>
+
+                        </td>
+
+                        <td style="width:10%;">
+
+                            @if (Model.question.CanBeNA)
+                            {
+                                <label>N/A </label>
+                                <label class="switch-original">
+                                    <input type="checkbox" name="NA_@port.ID">
+                                    <span class="check"></span>
+                                </label>
+                            }
+
+                        </td>
+                        <td style="width:10%;">
+@if (Model.allComments[port.ID] != null)
+{
+                        @Html.Raw(Model.allComments[port.ID].ToString())
+}
+                            @if (Model.previousAnswers[port.ID] != null)
+                            {
+                                @Html.Raw(Model.previousAnswers[port.ID].RawAnswer.ToString())
+                            }
+                       
+                            </td>
+</tr>
+                </table>
+
+
+            </div>
+        }
+
+    </ul>
+    <input type="submit" id="submit" style="display:none;" />
+    <button class="image-button success" onclick="$('#submit').trigger('click');"><span class="icon mif-floppy-disk"></span> Submit Answers</button>
+    </form>

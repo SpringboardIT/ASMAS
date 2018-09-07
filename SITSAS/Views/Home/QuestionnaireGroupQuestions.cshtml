@@ -1,0 +1,126 @@
+﻿@model SITSAS.Models.QuestionnaireGroupQuestionsModel
+
+<div class="grid" style="width:100%;">
+    <div class="row" style="width:100%;">
+        <div class="" style="width:100%;">
+            <div class="panel" style="width:100%;height:100%;padding:5px;">
+                <div class="heading">
+                    <span class="icon mif-question"></span>
+                    <span class="title">Question</span>
+                </div>
+                <div class="content">
+                    <br />
+                    <table style="width: 60%;" align="center">
+                        <tr>
+                            <td style="width: 100%;">
+                                <label>Name : @Model.QuestionnaireGroup.Name</label><br /><br />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 100%;">
+                                <label>Questionnaire: @Model.QuestionnaireGroup.Questionnaire.Name</label><br /><br />
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+
+<div class="grid" style="width:100%;">
+    <div class="row cells2" style="width:100%;">
+        <div class="" style="width:100%;">
+            <div class="panel success" style="width:100%;padding:5px;">
+
+                <div class="heading">
+                    <span class="title">Existing Questions</span>
+                </div>
+                <div class="content">
+                    
+                    <table class="dataTable border bordered">
+                        <thead>
+                            <tr>
+                                <td>Name</td>
+                                <td>Calculation Model</td>
+                                <td>Dashboard Category</td>
+                                <td style="width:20%;">Sort Order</tdstyle="width:50%;">
+                                <td></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var answers in Model.ExistingMapQuestions.OrderBy(x => x.DisplayOrder).ToList())
+                            {
+                                <tr>
+                                    <td>@answers.Question.Name</td>
+                                    <td>@answers.Question.CalculationModel.Name</td>
+                                    <td>@answers.Question.SubCategory.Name</td>
+                                    <td>
+                                        <a class="image-button" href="~/Home/SortOrderQuestionInQuestionnaireGroup?QuestionID=@answers.Question.ID&QuestionnaireGroupID=@Model.QuestionnaireGroup.ID&Direction=Up"><span class="icon mif-arrow-up"></span></a><a class="image-button" href="~/Home/SortOrderQuestionInQuestionnaireGroup?QuestionID=@answers.Question.ID&QuestionnaireGroupID=@Model.QuestionnaireGroup.ID&Direction=Down"><span class="icon mif-arrow-down"></span></a>
+                                    </td>
+                                    <td>
+                                        @* LOGIC HERE SO THAT IF THE QUESTION HAS BEEN ANSWERED THIS WILL NOT APPEAR!!!!!!!!!!!!!! *@
+                                        <a class="image-button warning" href="~/Home/RemoveQuestionFromQuestionnaireGroup?QuestionID=@answers.Question.ID&QuestionnaireGroupID=@Model.QuestionnaireGroup.ID"><span class="icon mif-bin"></span> Delete</a>
+                                    </td>
+                                </tr>
+                            }
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="" style="width:100%;">
+            <div class="panel success" style="width:100%;padding:5px;">
+
+                <div class="heading">
+                    <span class="title">Add New Question</span>
+                </div>
+                <div class="content">
+                    <form id="form1" action="/Home/AddQuestionFromQuestionnaireGroup" method="post">
+                        <br />
+                        <br />
+                        <div class="grid">
+                            <div class="row cells3">
+                                <div class="" style="width:100%;height:100%;padding:5px;">
+                                    <div class="heading">
+                                        <span class="title">Question</span><br />
+                                    </div>
+                                    <div class="input-control text" style="width:100%;">
+                                        <input type="hidden" name="QuestionnaireGroupID" value="@Model.QuestionnaireGroup.ID" />
+                                        @*<span class="mif-expand-more prepend-icon"></span>*@
+                                        <select name="QuestionID" style="width: 100%;">
+                                            @foreach (var op in Model.AllQuestions.ToList())
+                                            {
+                                                <option value="@op.ID">@op.Name</option>
+                                            }
+
+                                        </select>
+                                    </div>
+                                </div>
+                                    @*<div class="" style="width:100%;height:100%;padding:5px;">
+                                        @*<div class="heading">
+                                            <span class="title">Display Order</span>
+                                        </div>*@
+                                        @*<div class="input-control text" style="width:100%;">
+                                            <input type="number" name="DisplayOrder" style="width: 100%;" min="0" required />
+                                        </div>*@
+                                    </div>
+                                </div>
+                        </div>
+                        <br />
+                        <br />
+                        <button class="image-button success" onclick="$('#form1').submit();"><span class="icon mif-plus"></span> Add Question</button>
+                        <br />
+                        <br />
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

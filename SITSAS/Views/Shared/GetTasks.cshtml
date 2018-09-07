@@ -1,0 +1,36 @@
+﻿@model SITSAS.Models.GetTasksModel
+<script>
+
+    function EditTask(id) {
+        @Html.Raw("$.ajax({ url: '/Home/CreateUpdateTask?', data: 'json', type: 'GET', data: 'ID=' + id + '&IsPart=true', cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
+        @Html.Raw("metroDialog.open('#popUp');")
+    }
+</script>
+<hr class="thin bg-grayLighter">
+<table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+    <thead>
+        <tr>
+            <td style="width: 25%" class="sortable-column">Title</td>
+            <td style="width: 25%" class="sortable-column">Description</td>
+            <td style="width: 25%" class="sortable-column">Due Date</td>
+            <td style="width: 25%" class="sortable-column"></td>
+        </tr>
+    </thead>
+    <tbody>
+            @foreach (var Task in Model.Tasks)
+            {
+                <tr>
+                    <td>@Task.Title</td>
+                    <td>@Task.Description</td>
+                    <td>@Task.DueDate.ToString("d MMM yy")</td>
+                    <td>
+                            <a class="image-button warning" onclick="EditTask('@Task.ID')"><span class="icon mif-pencil"></span> Edit</a>
+                    </td>
+                </tr>
+            }
+    </tbody>
+</table>
+<br />
+<br />
+<br />
+<br />

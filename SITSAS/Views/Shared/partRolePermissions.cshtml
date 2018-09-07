@@ -1,0 +1,112 @@
+﻿@model SITSAS.Models.RolePermissionsModel
+
+@if (Model.rights.CanEdit)
+{
+    <button class="image-button primary" onclick="$('#RolePermissionsubmit').trigger('click');"><span class="icon mif-floppy-disk"></span> Save</button>
+}
+<form id="form0" action="/Home/SaveRolePermission" method="post">
+    <input type="submit" id="RolePermissionsubmit" style="display:none;" />
+    <input type="hidden" name="PageID" value="@Model.PageID" />
+    @if (Model.rights.CanEdit)
+    {
+        <br />
+        <br />
+    }
+
+    <table class="table striped">
+        <thead>
+            <tr>
+                <td>Role</td>
+                <td>Can View</td>
+                <td>Can Create</td>
+                <td>Can Update</td>
+                <td>Can Delete</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var role in Model.Roles)
+            {
+                <tr>
+                    <td>@role.Role.RoleName</td>
+                    @if (Model.rights.CanEdit)
+                    {
+                        if (role.Mapping.CanView)
+                        {
+                            <td><input name="@role.Role.RoleID-CanView" type="checkbox" data-role="checkbox" checked></td>
+                        }
+                        else
+                        {
+                            <td><input name="@role.Role.RoleID-CanView" type="checkbox" data-role="checkbox"></td>
+                        }
+
+                        if (role.Mapping.CanCreate)
+                        {
+                            <td><input name="@role.Role.RoleID-CanCreate" type="checkbox" data-role="checkbox" checked></td>
+                        }
+                        else
+                        {
+                            <td><input name="@role.Role.RoleID-CanCreate" type="checkbox" data-role="checkbox"></td>
+                        }
+                        if (role.Mapping.CanUpdate)
+                        {
+                            <td><input name="@role.Role.RoleID-CanEdit" type="checkbox" data-role="checkbox" checked></td>
+                        }
+                        else
+                        {
+                            <td><input name="@role.Role.RoleID-CanEdit" type="checkbox" data-role="checkbox"></td>
+                        }
+                        if (role.Mapping.CanDelete)
+                        {
+                            <td><input name="@role.Role.RoleID-CanDelete" type="checkbox" data-role="checkbox" checked></td>
+                        }
+                        else
+                        {
+                            <td><input name="@role.Role.RoleID-CanDelete" type="checkbox" data-role="checkbox"></td>
+                        }
+                    }
+                    else
+                    {
+                        if (role.Mapping.CanView)
+                        {
+                            <td><input name="@role.Role.RoleID-CanView" type="checkbox" data-role="checkbox" checked disabled></td>
+                        }
+                        else
+                        {
+                            <td><input name="@role.Role.RoleID-CanView" type="checkbox" data-role="checkbox" disabled></td>
+                        }
+
+                        if (role.Mapping.CanCreate)
+                        {
+                            <td><input name="@role.Role.RoleID-CanCreate" type="checkbox" data-role="checkbox" checked disabled></td>
+                        }
+                        else
+                        {
+                            <td><input name="@role.Role.RoleID-CanCreate" type="checkbox" data-role="checkbox" disabled></td>
+                        }
+                        if (role.Mapping.CanUpdate)
+                        {
+                            <td><input name="@role.Role.RoleID-CanEdit" type="checkbox" data-role="checkbox" checked disabled></td>
+                        }
+                        else
+                        {
+                            <td><input name="@role.Role.RoleID-CanEdit" type="checkbox" data-role="checkbox" disabled></td>
+                        }
+                        if (role.Mapping.CanDelete)
+                        {
+                            <td><input name="@role.Role.RoleID-CanDelete" type="checkbox" data-role="checkbox" checked disabled></td>
+                        }
+                        else
+                        {
+                            <td><input name="@role.Role.RoleID-CanDelete" type="checkbox" data-role="checkbox" disabled></td>
+                        }
+                    }
+
+                </tr>
+            }
+        </tbody>
+
+
+
+
+    </table>
+</form>

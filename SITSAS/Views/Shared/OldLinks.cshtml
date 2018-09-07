@@ -1,0 +1,206 @@
+﻿@if (Request.Url.AbsolutePath == "/Home/Areas" || Request.Url.AbsolutePath == "/Home/CreateUpdateArea")
+{
+    @Html.Raw("<li class='active'>")
+}
+else
+{
+    @Html.Raw("<li>")
+}
+<a href="~/Home/Areas">
+    <span class="mif-location-city icon"></span>
+    <span class="title">Areas</span>
+    @*<span class="counter">0</span>*@
+</a>
+@Html.Raw("</li>")
+@if (Request.Url.AbsolutePath == "/Home/Locations")
+{
+    @Html.Raw("<li class='active'>")
+}
+else
+{
+    @Html.Raw("<li>")
+}
+<a href="~/Home/Locations">
+    <span class="mif-location icon"></span>
+    <span class="title">Locations</span>
+</a>
+@Html.Raw("</li>")
+@if (Request.Url.AbsolutePath == "/Home/Categories" || Request.Url.AbsolutePath == "/Home/CreateUpdateCategory" || Request.Url.AbsolutePath == "/Home/RetiredCategories" || Request.Url.AbsolutePath == "/Home/FutureCategories")
+{
+    @Html.Raw("<li class='active'>")
+}
+else
+{
+    @Html.Raw("<li>")
+}
+<a href="~/Home/Categories">
+    <span class="mif-paragraph-justify icon"></span>
+    <span class="title">Categories</span>
+</a>
+@Html.Raw("</li>")
+@if (Request.Url.AbsolutePath == "/Home/SubCategories" || Request.Url.AbsolutePath == "/Home/CreateUpdateSubCategories")
+{
+    @Html.Raw("<li class='active'>")
+}
+else
+{
+    @Html.Raw("<li>")
+}
+<a href="~/Home/SubCategories">
+    <span class="mif-paragraph-left icon"></span>
+    <span class="title">Sub Categories</span>
+</a>
+@Html.Raw("</li>")
+@if (Request.Url.AbsolutePath == "/Home/Questions" || Request.Url.AbsolutePath == "/Home/CreateUpdateQuestion" || Request.Url.AbsolutePath == "/Home/AddUpdateQuestionAnswers" || Request.Url.AbsolutePath == "/Home/RetiredQuestions" || Request.Url.AbsolutePath == "/Home/FutureQuestions")
+{
+    @Html.Raw("<li class='active'>")
+}
+else
+{
+    @Html.Raw("<li>")
+}
+<a href="~/Home/Questions">
+    <span class="mif-question icon"></span>
+    <span class="title">Questions</span>
+</a>
+@Html.Raw("</li>")
+@*@if (Request.Url.AbsolutePath == "/Home/QuestionnaireGroups" || Request.Url.AbsolutePath == "/Home/CreateUpdateQuestionnaireGroup" || Request.Url.AbsolutePath.ToString().StartsWith("/Home/QuestionnaireGroupQuestions"))
+    {
+        @Html.Raw("<li class='active'>")
+    }
+    else
+    {
+        @Html.Raw("<li>")
+    }
+    <a href="~/Home/QuestionnaireGroups">
+        <span class="mif-versions icon"></span>
+        <span class="title">Questionnaire<br />Groups</span>
+    </a>
+    @Html.Raw("</li>")*@
+@if (Request.Url.AbsolutePath == "/Home/Questionnaires" || Request.Url.AbsolutePath == "/Home/CreateUpdateQuestionnaire")
+{
+    @Html.Raw("<li class='active'>")
+}
+else
+{
+    @Html.Raw("<li>")
+}
+<a href="~/Home/Questionnaires">
+    <span class="mif-move-down icon"></span>
+    <span class="title">Maintain<br />Questionnaires</span>
+</a>
+@Html.Raw("</li>")
+@if (Request.Url.AbsolutePath == "/Home/FrequencyProfiles" || Request.Url.AbsolutePath == "/Home/CreateUpdateFrequencyProfile")
+{
+    @Html.Raw("<li class='active'>")
+}
+else
+{
+    @Html.Raw("<li>")
+}
+<a href="~/Home/FrequencyProfiles">
+    <span class="mif-calendar icon"></span>
+    <span class="title">Frequency Profiles</span>
+    @*<span class="counter">0</span>*@
+</a>
+@Html.Raw("</li>")
+@if (Request.Url.AbsolutePath == "/Home/AnswerQuestionnaires" || Request.Url.AbsolutePath == "/Home/AnswerQuestionnaire" || Request.Url.AbsolutePath == "/Home/ShowResults")
+{
+    @Html.Raw("<li class='active'>")
+}
+else
+{
+    @Html.Raw("<li>")
+}
+<a href="~/Home/AnswerQuestionnaires">
+    <span class="mif-move-down icon"></span>
+    <span class="title">Answer<br />Questionnaires</span>
+</a>
+@Html.Raw("</li>")
+
+
+@*@if (Request.Url.AbsolutePath == "/Home/IncidentTypes" || Request.Url.AbsolutePath == "/Home/CreateUpdateIncidentType")
+    {
+        @Html.Raw("<li class='active'>")
+    }
+    else
+    {
+        @Html.Raw("<li>")
+    }
+    <a href="~/Home/IncidentTypes">
+        <span class="mif-apps icon"></span>
+        <span class="title">Incident Types</span>
+    </a>
+        @Html.Raw("</li>")*@
+
+
+
+@*@if (Request.Url.AbsolutePath == "/Home/FixScores")
+    {
+        @Html.Raw("<li class='active'>")
+    }
+    else
+    {
+        @Html.Raw("<li>")
+    }
+    <a href="~/Home/FixScores">
+        <span class="mif-clipboard icon"></span>
+        <span class="title">Fix Scores</span>
+    </a>
+    @Html.Raw("</li>")*@
+
+@*@if (Request.Url.AbsolutePath == "/Home/StalenessProfiles" || Request.Url.AbsolutePath == "/Home/CreateUpdateStalenessProfile")
+    {
+        @Html.Raw("<li class='active'>")
+    }
+    else
+    {
+        @Html.Raw("<li>")
+    }
+    <a href="~/Home/StalenessProfiles">
+        <span class="mif-sort-desc icon"></span>
+        <span class="title">Staleness Profiles</span>
+    </a>
+    @Html.Raw("</li>")*@
+
+
+@if (Request.Url.AbsolutePath == "/Home/AnswerOneQuestion")
+{
+    @Html.Raw("<li class='active'>")
+}
+else
+{
+    @Html.Raw("<li>")
+}
+<a href="~/Home/AnswerOneQuestion">
+    <span class="mif-clipboard icon"></span>
+    <span class="title">Answer One<br />Question</span>
+</a>
+@Html.Raw("</li>")
+
+@if (Request.Url.AbsolutePath == "/Roles" || Request.Url.AbsolutePath == "/Roles/AddUsersToRole")
+{
+    @Html.Raw("<li class='active'>")
+}
+else
+{
+    @Html.Raw("<li>")
+}
+<a href="~/Roles">
+    <span class="mif-user-check icon"></span>
+    <span class="title">User Roles</span>
+</a>
+@Html.Raw("</li>")
+
+@if (Request.Url.AbsolutePath == "/Roles/PermissionGroup" || Request.Url.AbsolutePath == "/Roles/PermissionGroupCreateNewScreen" || Request.Url.AbsolutePath == "Roles/AddUsersToGroup")
+{
+    @Html.Raw("<li class='active'>")
+}
+else
+{
+    @Html.Raw("<li>")
+}
+<a href="~/Roles/PermissionGroup">
+    <span class="mif-users icon"></span>
+    <span class="title">Permission Groups</span>
+</a>

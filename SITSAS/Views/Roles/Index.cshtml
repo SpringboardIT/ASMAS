@@ -1,0 +1,69 @@
+﻿@model Tuple<List<Role>, SITSAS.Models.AccessRights>
+<script>
+    function NewRole() {
+        @Html.Raw("$.ajax({ url: '/Home/CreateUpdateRole?', data: 'json', type: 'GET', data: 'IsPart=true', cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
+        @Html.Raw("metroDialog.open('#popUp');")
+    }
+    function EditRole(id) {
+        @Html.Raw("$.ajax({ url: '/Home/CreateUpdateRole?', data: 'json', type: 'GET', data: 'ID=' + id + '&IsPart=true', cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
+        @Html.Raw("metroDialog.open('#popUp');")
+    }
+</script>
+<h1 class="text-light">User Roles<span class="mif-user-check place-left" style="padding-right:5px;"></span></h1>
+<hr class="thin bg-grayLighter">
+@if (Model.Item2.CanAdd)
+{
+    <a class="image-button warning" onclick="NewRole();"><span class="icon mif-plus"></span> Create</a>
+}
+@if (Model.Item2.CanView == true)
+{
+    if (Model.Item1.Count == 0)
+    {
+        <div class="alert alert-info" role="alert">
+            No Roles Found
+        </div>
+    }
+    else
+    {
+        <table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+            <thead>
+                <tr>
+                    <th style="width:75%;">
+                        Role
+                    </th>
+                    <th style="width:25%;">
+                        
+                    </th>
+                    <th style="width:25%;">
+
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Role role in Model.Item1)
+                {
+                    <tr>
+                        <td>
+                            @role.RoleName
+                        </td>
+                        <td>
+                            @if (Model.Item2.CanEdit == true)
+                            {
+                                <a class="image-button warning" href="~/Roles/AddUsersToRole?RoleID=@role.RoleID"><span class="icon mif-user-plus"></span> Add Users</a>
+                            }
+                        </td>
+                        <td>
+                            @if (Model.Item2.CanEdit)
+                        {
+                                <a class="image-button warning" onclick="EditRole('@role.RoleID')"><span class="icon mif-pencil"></span> Edit</a>
+                            }
+                            @*<a class="image-button alert"><span class="icon mif-bin"></span> Delete</a>*@
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br />
+        <table></table>
+    }
+}

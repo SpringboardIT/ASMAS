@@ -1,0 +1,89 @@
+﻿@using Infragistics.Web.Mvc
+@using DCLReportingDatabase.Models
+@model  Tuple<PermissionGroupModel, AccessRights>
+@{
+
+    ViewBag.Title = "Permission Group";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+<script>
+    $(function () {
+        $("#grid").igGrid({
+            features: [
+                   {
+                       name: "Sorting",
+                       type: "local"
+                   },
+           {
+               name: "Filtering",
+               type: "local",
+               mode: "simple",
+               filterDialogContainment: "window"
+           }
+            ]
+        });
+        var cols = $("#grid").igGrid("option", "columns");
+        for (var col in cols) {
+            $("#grid_dd_" + col.toString()).find(".ui-iggrid-filtericonstartswith").closest("li").remove();
+            $("#grid_dd_" + col.toString()).find(".ui-iggrid-filtericonendswith").closest("li").remove();
+            $("#grid_dd_" + col.toString()).find(".ui-iggrid-filtericonequals").closest("li").remove();
+            $("#grid_dd_" + col.toString()).find(".ui-iggrid-filtericondoesnotcontain").closest("li").remove();
+            $("#grid_dd_" + col.toString()).find(".ui-iggrid-filtericondoesnotequal").closest("li").remove();
+        }
+
+    });
+</script>
+
+<h2>Deleted Permission Groups</h2>
+
+@if (Model.Item2.CanView == true)
+{
+    if (Model.Item1.ExistingPermissionGroups.Count == 0)
+    {
+        <div class="alert alert-info" role="alert">
+            No Deleted PermissionGroups, please create one.
+        </div>
+
+    }
+    else
+    {
+
+        <table id="grid">
+            <thead>
+                <tr>
+                    <th>
+                        Group Name
+                    </th>
+                    <th>
+
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ExistingPermissionGroup in Model.Item1.ExistingPermissionGroups)
+                {
+                    <tr>
+                        <td>
+                            @ExistingPermissionGroup.GroupName
+                        </td>
+                        <td>
+                            @if (Model.Item2.CanEdit == true)
+                            {
+                                <form id="form1" action="RestorePermissionGroup" method="post" onsubmit="return">
+                                    <input name="ID" type="hidden" value="@ExistingPermissionGroup.ID" />
+                                    <button type="submit" class="btn btn-lg btn-info">Restore</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br />
+
+
+        <table></table>
+    }
+}
+
