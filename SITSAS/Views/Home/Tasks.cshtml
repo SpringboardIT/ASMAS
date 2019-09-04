@@ -1,16 +1,39 @@
-﻿<a class="image-button warning" onclick="CreateTask();"><span class="icon mif-clipboard"></span> Create Task</a>
+﻿@*<a class="image-button warning" onclick="CreateTask();"><span class="icon mif-clipboard"></span> Create Task</a>*@
+<button class="image-button warning" onclick="CreateTask();">
+    <span class="mif-clipboard icon"></span>
+    <span class="caption">Create Task</span>
+</button>
 <br /><br />
-<div class="grid" style="width:75%;margin:auto">
+<script>
+        function loadJobAccordionData(formName) {
+            if (formName != '') {
+                @{ string URL = string.Empty;
+
+                URL = "$.ajax({ url: '/Home/GetTasks?', data: 'json', type: 'GET', data: 'Status=' + formName";
+                URL = URL + ", cache: false, success: function (result) { $('#Task-' + formName).empty().append(result); }});";
+            }
+                @Html.Raw(URL)
+            }
+        }
+    function CreateTask() {
+@Html.Raw("$.ajax({ url: '/Home/CreateUpdateTask?', data: 'json', type: 'GET', data: 'IsPart=true', cache: false, success: function (result) { $('#popUpContent').empty().append(result); }});")
+        @Html.Raw("Metro.dialog.open('#popUp');")
+    }
+
+
+</script>
+
+<div class="grid" style="width:1200px;margin:auto">
     <div class="row">
         <div class="cell auto-size">
-            <div class="accordion" data-role="accordion" data-on-frame-opened="loadJobAccordionData(frame.find('.internalHeading').text())">
-                    <div class="frame">
-                        <div class="heading" style="background-color:#e00039;color:#fff;">Overdue</div>
-                        <div class="internalHeading" style="display:none;">Overdue</div>
-                        <div id="Task-Overdue" class="content">
+            <div data-role="accordion" data-show-active="false" data-on-frame-open="loadJobAccordionData(arguments[0].find('.internalHeading').text())">
+                <div class="frame">
+                    <div class="heading" style="background-color:#e00039;color:#fff;">Overdue</div>
+                    <div class="internalHeading" style="display:none;">Overdue</div>
+                    <div id="Task-Overdue" class="content">
 
-                        </div>
                     </div>
+                </div>
                 <div class="frame">
                     <div class="heading" style="background-color:#f87626;color:#fff;">Due Soon</div>
                     <div class="internalHeading" style="display:none;">DueSoon</div>
@@ -32,27 +55,9 @@
 
                     </div>
                 </div>
-           
+
             </div>
         </div>
     </div>
 </div>
 
-<script>
-        function loadJobAccordionData(formName) {
-            if (formName != '') {
-                @{ string URL = string.Empty;
-
-                URL = "$.ajax({ url: '/Home/GetTasks?', data: 'json', type: 'GET', data: 'Status=' + formName";
-                URL = URL + ", cache: false }).success(function (result) { $('#Task-' + formName).empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });";
-            }
-                @Html.Raw(URL)
-            }
-        }
-    function CreateTask() {
-@Html.Raw("$.ajax({ url: '/Home/CreateUpdateTask?', data: 'json', type: 'GET', data: 'IsPart=true', cache: false }).success(function (result) { $('#popUpItemTwo').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
-@Html.Raw("metroDialog.open('#popUpTwo');")
-    }
-      
-
-</script>

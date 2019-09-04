@@ -25,11 +25,12 @@ namespace SITSAS
         public string Name { get; set; }
         public bool Deleted { get; set; }
         public Nullable<System.Guid> AreaID { get; set; }
+        public string UserID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Result_Headers_Fixings> Result_Headers_Fixings { get; set; }
+        public virtual Area Area { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Result_Headers> Result_Headers { get; set; }
-        public virtual Area Area { get; set; }
     }
 }

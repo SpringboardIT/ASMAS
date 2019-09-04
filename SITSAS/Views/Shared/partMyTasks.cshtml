@@ -1,4 +1,5 @@
 ﻿@model SITSAS.Models.MyTasksModel
+<br />
 @if (Request.Url.AbsolutePath == "/Home/Tasks")
 {
     @Html.Raw("<li class='active'>")
@@ -7,9 +8,8 @@ else
 {
     @Html.Raw("<li>")
 }
-<a href="~/Home/Tasks" style="background-color:@Model.Colour">
+<a href="~/Home/Tasks" style="color:#fff;font-size:11px;">
     <span class="mif-users icon"></span>
     <span class="title">My Tasks</span>
-    <span class="counter">@Model.NumberOfTasks.ToString()</span>
 </a>
 @Html.Raw("</li>")

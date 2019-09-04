@@ -18,7 +18,7 @@ namespace SITSAS.Models
         public static DateTime GetDateTimeFromForm(FormCollection form, string Key)
         {
             string ls = form[Key];
-            DateTime lg = new DateTime();
+            DateTime lg = DateTime.MinValue;
             DateTime.TryParse(ls, out lg);
             return lg;
         }
@@ -63,6 +63,18 @@ namespace SITSAS.Models
                 }
             }
            
+            return model;
+        }
+        public static List<string> GetStringCollectionFromForm(FormCollection form, string Key)
+        {
+            List<string> model = new List<string>();
+            string ls = form[Key];
+            if (!string.IsNullOrEmpty(ls))
+            {
+              model = ls.Split(',').ToList();
+              
+            }
+
             return model;
         }
     }

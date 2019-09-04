@@ -1,0 +1,18 @@
+﻿@model SITSAS.Models.DateSelectionModel
+
+<div class="input-control text" style="width: 100%;">
+    <select id="MonthSelection" name="MonthSelection" style="width:100%;" class="text-small" onchange="LoadPreviousAnswers();" required>
+        <option value="" disabled="disabled" selected="selected">Please select...</option>
+@foreach (var option in Model.DropdownOptions.ToList())
+{
+    if (Model.SelectedValue == option.Value)
+    {
+                <option value="@option.Value" selected>@option.Value</option>
+            }
+            else
+            {
+                <option value="@option.Value" @if (option.Disabled) { @Html.Raw("disabled")  }>@option.Value</option>
+            }
+        }
+    </select>
+</div>

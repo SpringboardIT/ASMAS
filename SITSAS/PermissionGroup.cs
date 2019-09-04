@@ -23,8 +23,12 @@ namespace SITSAS
         public System.Guid ID { get; set; }
         public string GroupName { get; set; }
         public bool Deleted { get; set; }
+        public Nullable<bool> Hidden { get; set; }
+        public Nullable<System.Guid> ParentGroupID { get; set; }
+        public Nullable<System.Guid> TemplateID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PermissionGroup_User_Mapping> PermissionGroup_User_Mapping { get; set; }
+        public virtual Location_PermissionGroupTemplate Location_PermissionGroupTemplate { get; set; }
     }
 }

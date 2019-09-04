@@ -420,7 +420,7 @@ namespace SITSAS.Controllers
                 {
                     AccessRights Rights = ContextModel.DetermineAccess();
                     PermissionGroupModel model = new PermissionGroupModel();
-                    model.ExistingPermissionGroups = context.PermissionGroups.Where(x => x.Deleted == false).OrderBy(x => x.GroupName).ToList();
+                    model.ExistingPermissionGroups = context.PermissionGroups.Where(x => x.Deleted == false && x.Hidden != true).OrderBy(x => x.GroupName).ToList();
                     var tuple = new Tuple<PermissionGroupModel, AccessRights>(model, Rights);
                     return View(tuple);
                 }
@@ -458,6 +458,7 @@ namespace SITSAS.Controllers
                             List<DataMapping> AllGroupMappings = context.DataMappings.Include("DataMappingType").Where(x => x.PrimaryID == GroupID).ToList();
 
                             model.ExistingPermissionGroup = context.PermissionGroups.Where(x => x.ID == ID.Value).FirstOrDefault();
+
                             model.HasUsers = context.PermissionGroup_User_Mapping.Where(x => x.GroupID == ID).ToList().Count > 0; //change this to users assigned to group
 
                             model.AllQuestionnairesOverride = AllGroupMappings.Where(x => x.OverrideAll == true && x.PrimaryID == GroupID && x.DataMappingType.eNumMapping == (int)eDataMappingType.GroupToQuestionnaire).ToList().Count > 0;
@@ -510,6 +511,12 @@ namespace SITSAS.Controllers
                         else
                         {
                             model.PermissionGroupExists = false;
+                        }
+
+                        model.AllPermissionGroups = context.PermissionGroups.Where(x => x.Deleted == false && x.Hidden != true).ToList();
+                        if (model.ExistingPermissionGroup != null)
+                        {
+                            model.AllPermissionGroups.Remove(model.ExistingPermissionGroup);
                         }
                         var tuple = new Tuple<PermissionGroupNewModel, AccessRights>(model, Rights);
                         return View(tuple);
@@ -794,10 +801,22 @@ namespace SITSAS.Controllers
                     string lsPermissionGroupID = form["ExistingPermissionGroupID"];
                     Guid.TryParse(lsPermissionGroupID, out PermissionGroupID);
 
+                    string lsParentGroup = form["ParentGroupID"];
+                    Guid ParentID = new Guid();
+                    if (!string.IsNullOrEmpty(lsParentGroup))
+                    {
+                        Guid.TryParse(lsParentGroup, out ParentID);
+                    }
+
                     if (PermissionGroupID != new Guid())
                     {
                         PermissionGroup existingPermissionGroup = context.PermissionGroups.Where(x => x.ID == PermissionGroupID).FirstOrDefault();
                         existingPermissionGroup.GroupName = PermissionGroupName;
+                        existingPermissionGroup.Hidden = false;
+                        if (ParentID != new Guid())
+                        {
+                            existingPermissionGroup.ParentGroupID = ParentID;
+                        }
                         if (form.AllKeys.Contains("AllQuestionnairesOverride"))
                         {
                             DataMappingType Dtype = context.DataMappingTypes.Where(x => x.eNumMapping == (int)eDataMappingType.GroupToQuestionnaire).FirstOrDefault();
@@ -807,6 +826,7 @@ namespace SITSAS.Controllers
                             dmap.OverrideAll = true;
                             dmap.PrimaryID = PermissionGroupID.ToString();
                             dmap.SecondaryID = new Guid().ToString();
+                            
                             context.DataMappings.Add(dmap);
                             //AddToAudit("Update Permission Group: " + dmap.ID);
                             //model.AllContractsOverride = AllGroupMappings.Where(x => x.OverrideAll == true && x.DataMappingType.eNumMapping == (int)DataPermissionMappings.GroupToContract).ToList().Count > 0;
@@ -881,7 +901,11 @@ namespace SITSAS.Controllers
                         newPermissionGroup.ID = Guid.NewGuid();
                         PermissionGroupID = newPermissionGroup.ID;
                         newPermissionGroup.GroupName = PermissionGroupName;
-
+                        newPermissionGroup.Hidden = false;
+                        if (ParentID != new Guid())
+                        {
+                            newPermissionGroup.ParentGroupID = ParentID;
+                        }
                         context.PermissionGroups.Add(newPermissionGroup);
 
                         if (form.AllKeys.Contains("AllQuestionnairesOverride"))

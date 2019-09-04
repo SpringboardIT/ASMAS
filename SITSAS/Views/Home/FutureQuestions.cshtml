@@ -1,10 +1,14 @@
 ﻿@model SITSAS.Models.QuestionsModel
 <h1 class="text-light">Future Questions<span class="mif-question place-left" style="padding-right:5px;"></span></h1>
 <hr class="thin bg-grayLighter">
-<a class="image-button warning" href="~/Home/Questions"><span class="icon mif-question"></span> Active Questions</a>
+<button class="image-button warning" onclick="window.location.href = '/Home/Questions'">
+    <span class="mif-question icon"></span>
+    <span class="caption">Active Questions</span>
+</button>
 <hr class="thin bg-grayLighter">
 <hr class="thin bg-grayLighter">
-<table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+<table id="jobDataTable" class="table striped table-border mt-4" data-rows="-1" data-show-table-info="false" data-role="table" data-auto-width="false" style="width:100%;" data-show-rows-steps="false" data-show-pagination="false">
+
     <thead>
         <tr>
             <td style="width: 39.75%" class="sortable-column">Name of Question</td>
@@ -20,10 +24,16 @@
                 <td>@rCategories.Name</td>
                 <td>@rCategories.CalculationModel.Name</td>
                 <td>
-                    <a class="image-button warning" href="~/Home/CreateUpdateQuestion?ID=@rCategories.ID"><span class="icon mif-pencil"></span> Edit</a>
+                    <button class="image-button warning" onclick="window.location.href = 'Home/CreateUpdateQuestion?ID=@rCategories.ID'">
+                        <span class="mif-pencil icon"></span>
+                        <span class="caption">View</span>
+                    </button>
                 </td>
                 <td>
-                    <a class="image-button warning" href="~/Home/AddUpdateQuestionAnswers?QuestionID=@rCategories.ID"><span class="icon mif-pencil"></span> Answers</a>
+                    <button class="image-button warning" onclick="window.location.href = '/Home/AddUpdateQuestionAnswers?QuestionID=@rCategories.ID'">
+                        <span class="mif-pencil icon"></span>
+                        <span class="caption">Answers</span>
+                    </button>
                 </td>
             </tr>
         }

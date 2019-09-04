@@ -83,21 +83,6 @@
         <div id="div_loading" style="display: none;">
             <img src="@Url.Content("~/Images/loading.gif")" alt="" />
         </div>
-        <div class="panel" style="margin:20px;">
-            <div class="heading" style="background-color:#36CAB2;">
-                <span class="icon mif-users" style="background-color:#1F1C53;"></span>
-                @if (Model.Item1.PermissionGroupExists)
-                {
-                    <span class="title">Update Permission Group</span>
-                }
-                else
-                {
-                    <span class="title">
-                        Create New Permission Group
-                    </span>
-                }
-
-</div>
             <div class="content" style="background-color:#d7f4ef;padding:40px;">
                 <table style="width: 50%;">
                     <tr style="height: 40px;">
@@ -107,23 +92,55 @@
                         <td style="width: 70%;">
                             @if (Model.Item1.PermissionGroupExists)
                             {
-                                <input type="text" name="PermissionGroupName" id="PermissionGroupName" value="@Model.Item1.ExistingPermissionGroup.GroupName" style="width: 50%;" />
+                                <input type="text" name="PermissionGroupName" id="PermissionGroupName" value="@Model.Item1.ExistingPermissionGroup.GroupName" style="width: 100%;" />
                             }
                             else
                             {
-                                <input type="text" name="PermissionGroupName" id="PermissionGroupName" style="width: 50%;" />
+                                <input type="text" name="PermissionGroupName" id="PermissionGroupName" style="width: 100%;" />
                             }
 
                         </td>
                     </tr>
                     @if (Model.Item1.PermissionGroupExists)
                 {
-                        <input type="hidden" name="ExistingPermissionGroupID" id="ExistingPermissionGroupID" value="@Model.Item1.ExistingPermissionGroup.ID" style="width: 50%;" />
+                        <input type="hidden" name="ExistingPermissionGroupID" id="ExistingPermissionGroupID" value="@Model.Item1.ExistingPermissionGroup.ID" style="width: 100%;" />
                     }
                     else
                     {
-                        <input type="hidden" name="ExistingPermissionGroupID" id="ExistingPermissionGroupID" value="0" style="width: 50%;" />
+                        <input type="hidden" name="ExistingPermissionGroupID" id="ExistingPermissionGroupID" value="0" style="width: 100%;" />
                     }
+                    <tr style="height: 40px;">
+                        <td style="width: 30%;">
+                            <label>Parent Group:</label>
+                        </td>
+                        <td style="width: 70%;">
+                            <div class="input-control text" style="width:100%;">
+                                <select name="ParentGroupID" style="width: 100%;">
+                                    <option value="" disabled="disabled" selected="selected">Please select...</option>
+                                    @foreach (var rCategory in Model.Item1.AllPermissionGroups.ToList().OrderBy(x => x.GroupName))
+                                    {
+                                        if (Model.Item1.PermissionGroupExists)
+                                        {
+                                            if (Model.Item1.ExistingPermissionGroup.ParentGroupID == rCategory.ID)
+                                            {
+                                                <option value="@rCategory.ID" selected="selected">@rCategory.GroupName</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@rCategory.ID">@rCategory.GroupName</option>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <option value="@rCategory.ID">@rCategory.GroupName</option>
+                                        }
+
+                                    }
+
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
                     <tr>
                         <td style="width: 30%;">
                             <label>View All Questionnaires  </label>
@@ -250,7 +267,8 @@
 
                             </form>
 
-                            <table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+                            <table id="jobDataTable" class="table striped table-border mt-4" data-rows="-1" data-show-table-info="false" data-role="table" data-auto-width="false" style="width:100%;" data-show-rows-steps="false" data-show-pagination="false">
+
                                 <thead>
                                     <tr>
                                         <td style="width: 46.25%" class="sortable-column">Name of Questionnaire</td>
@@ -315,7 +333,8 @@
 
                             </form>
 
-                            <table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+                            <table id="jobDataTable" class="table striped table-border mt-4" data-rows="-1" data-show-table-info="false" data-role="table" data-auto-width="false" style="width:100%;" data-show-rows-steps="false" data-show-pagination="false">
+
                                 <thead>
                                     <tr>
                                         <td style="width: 46.25%" class="sortable-column">Name of Location</td>
@@ -379,7 +398,8 @@
 
                             </form>
 
-                            <table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+                            <table id="jobDataTable" class="table striped table-border mt-4" data-rows="-1" data-show-table-info="false" data-role="table" data-auto-width="false" style="width:100%;" data-show-rows-steps="false" data-show-pagination="false">
+
                                 <thead>
                                     <tr>
                                         <td style="width: 46.25%" class="sortable-column">Name</td>

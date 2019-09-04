@@ -1,75 +1,93 @@
 ﻿@model  SITSAS.Models.CreateUpdateLocationModel
-
-<button class="image-button warning" onclick="$('#submit').trigger('click');"><span class="icon mif-floppy-disk"></span> Save</button>
+<button class="image-button warning" onclick="$('#submit').trigger('click');">
+    <span class="mif-floppy-disk icon"></span>
+    <span class="caption">Save</span>
+</button>
 @if (Model.LocationExists)
 {
-    <a class="image-button warning" href="~/Home/DeleteLocation?ID=@Model.ExistingLocation.ID" onclick="return confirm('Are you sure you want to delete this item?')"><span class="icon mif-bin"></span> Delete</a>
+    <button class="image-button warning" onclick="if (confirm('Are you sure you want to delete this item?') == true) { window.location.href = '/Home/DeleteLocation?ID=@Model.ExistingLocation.ID'; }">
+        <span class="mif-bin icon"></span>
+        <span class="caption">Delete</span>
+    </button>
 }
 <hr class="thin bg-grayLighter">
+<div class="content" style="background-color:#d7f4ef;padding:10px;">
+    <form id="form0" action="/Home/SaveLocation" method="post">
+        <input type="submit" id="submit" style="display:none;" />
+        <table style="width: 80%;" align="center">
+            <tr>
+                <td style="width: 100%;">
+                    <label>Service Name</label>
+                    <div class="input-control text" style="width:100%;">
+                        @if (Model.LocationExists)
+                        {
 
-<div class="panel">
-    <div class="heading" style="background-color:#36CAB2;">
-        <span class="icon mif-location" style="background-color:#1F1C53;"></span>
-
-        @if (Model.LocationExists)
-        {
-            <span class="title">Update Location</span>
-
-        }
-        else
-        {
-            <span class="title">Create New Location</span>
-        }
-
-
-    </div>
-    <div class="content" style="background-color:#d7f4ef;">
-        <form id="form0" action="/Home/SaveLocation" method="post">
-            <input type="submit" id="submit" style="display:none;" />
-            <br />
-            <br />
-            <table style="width: 80%;" align="center">
-                <tr>
-                    <td style="width: 100%;">
-                        <label>Name</label>
-                        <div class="input-control text" style="width:100%;">
-                            @if (Model.LocationExists)
-                            {
-
-                                <input type="text" name="Name" id="Name" value="@Model.ExistingLocation.Name" style="width: 100%;" required />
+                            <input type="text" name="Name" id="Name" value="@Model.ExistingLocation.Name" style="width: 100%;" required />
                                 <input type="hidden" name="ExistingLocationID" id="ExistingLocationID" value="@Model.ExistingLocation.ID" />
 
-                            }
-                            else
-                            {
-                                <input type="text" name="Name" id="Name" style="width: 100%;" required />
+                        }
+                        else
+                        {
+                            <input type="text" name="Name" id="Name" style="width: 100%;" required />
                                 <input type="hidden" name="ExistingLocationID" id="ExistingLocationID" value="0" />
-                            }
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="width: 100%;">
-                        <label>Area</label>
-                        <div class="input-control text" style="width:100%;">
-                            <select name="AreaID" style="width: 100%;">
+                        }
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 100%;">
+                    <label>Area</label>
+                    <div class="input-control text" style="width:100%;">
+                        <select name="AreaID" style="width: 100%;">
 
-                                @foreach (var rCategory in Model.AllAreas.OrderBy(x => x.Name))
+                            @foreach (var rCategory in Model.AllAreas.OrderBy(x => x.Name))
+                            {
+                                if (Model.LocationExists)
                                 {
-                                    if (Model.LocationExists)
+                                    if (Model.ExistingLocation.AreaID == rCategory.ID)
                                     {
-                                        if (Model.ExistingLocation.AreaID == rCategory.ID)
-                                        {
-                                            <option value="@rCategory.ID" selected="selected">@rCategory.Name</option>
-                                        }
-                                        else
-                                        {
-                                            <option value="@rCategory.ID">@rCategory.Name</option>
-                                        }
+                                        <option value="@rCategory.ID" selected="selected">@rCategory.Name</option>
                                     }
                                     else
                                     {
                                         <option value="@rCategory.ID">@rCategory.Name</option>
+                                    }
+                                }
+                                else
+                                {
+                                    <option value="@rCategory.ID">@rCategory.Name</option>
+                                }
+
+                            }
+
+                        </select>
+                    </div>
+                </td>
+            </tr>
+            @foreach (var permGroupTemplate in Model.AllLocationPermissionGroups.OrderBy(x => x.Name))
+            {
+                <tr>
+                    <td style="width: 100%;">
+                        <label>@permGroupTemplate.Name</label>
+                        <div class="input-control" style="width:100%;">
+                            <select data-role="select" name="@permGroupTemplate.ID" multiple>
+                                <option value="">Please Select...</option>
+                                @foreach (SITSAS.Models.DirectoryUser usr in Model.AllUsers.Where(x => x.Name != string.Empty).OrderBy(x => x.Name).ToList())
+                                {
+                                    if (Model.PermissionGroupToUsername.ContainsKey(permGroupTemplate.ID))
+                                    {
+                                        if (Model.PermissionGroupToUsername[permGroupTemplate.ID].Contains(usr.SN))
+                                        {
+                                            <option value="@usr.SN" selected="selected">@usr.Name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@usr.SN">@usr.Name</option>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <option value="@usr.SN">@usr.Name</option>
                                     }
 
                                 }
@@ -78,11 +96,9 @@
                         </div>
                     </td>
                 </tr>
-            </table>
-        </form>
-        <br />
-        <br />
+            }
 
-    </div>
+        </table>
+    </form>
 </div>
 

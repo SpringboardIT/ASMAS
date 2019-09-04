@@ -2,40 +2,21 @@
 
 <div class="grid" style="width:100%;">
     <div class="row" style="width:100%;">
-        <div class="" style="width:100%;">
-            <div class="panel" style="width:100%;height:100%;padding:5px;">
-                <div class="heading">
-                    <span class="icon mif-question"></span>
-                    <span class="title">Question</span>
-                </div>
-                <div class="content">
-                    <br />
-                    <table style="width: 60%;" align="center">
-                        <tr>
-                            <td style="width: 100%;">
-                                <label>Name : @Model.Questionnaire.Name</label><br /><br />
-                            </td>
-                        </tr>
-                    </table>
+        <div class="cell">
+            <h1>Assessment : @Model.Questionnaire.Name</h1>
 
-                </div>
-            </div>
-            </div>
         </div>
     </div>
-
+</div>
 
 <div class="grid" style="width:100%;">
-    <div class="row cells2" style="width:100%;">
-        <div class="" style="width:100%;">
-            <div class="panel success" style="width:100%;padding:5px;">
-
-                <div class="heading">
-                    <span class="title">Existing Questions</span>
-                </div>
-                <div class="content">
+    <div class="row" style="width:100%;">
+        <div class="cell">
+            <h2>Existing Questions</h2>
+                    <div class="content">
                     
-                    <table class="dataTable border bordered">
+                    <table id="jobDataTable" class="table striped table-border mt-4" data-rows="-1" data-show-table-info="false" data-role="table" data-auto-width="false" style="width:100%;" data-show-rows-steps="false" data-show-pagination="false">
+
                         <thead>
                             <tr>
                                 <td>Name</td>
@@ -49,16 +30,25 @@
                             @foreach (var answers in Model.ExistingMapQuestions.OrderBy(x => x.DisplayOrder).ToList())
                             {
                                 <tr>
-                                    <td>@answers.Question.Name</td>
+                                    <td><p class="fg-black" style="width:400px;  display:block;  word-break: break-word;white-space:normal;line-height:20px;">@answers.Question.Name</p></td>
                                     <td>@answers.Question.CalculationModel.Name</td>
                                     <td>@answers.Question.SubCategory.Name</td>
                                     <td>
-                                        <a class="image-button" href="~/Home/SortOrderQuestionInQuestionnaire?QuestionID=@answers.Question.ID&QuestionnaireID=@Model.Questionnaire.ID&Direction=Up"><span class="icon mif-arrow-up"></span></a><a class="image-button" href="~/Home/SortOrderQuestionInQuestionnaire?QuestionID=@answers.Question.ID&QuestionnaireID=@Model.Questionnaire.ID&Direction=Down"><span class="icon mif-arrow-down"></span></a>
-                                    </td>
+                                        <button class="image-button warning" onclick="window.location.href = '/Home/SortOrderQuestionInQuestionnaire?QuestionID=@answers.Question.ID&QuestionnaireID=@Model.Questionnaire.ID&Direction=Up';">
+                                            <span class="mif-arrow-up icon"></span>
+                                            <span class="caption"> </span>
+                                        </button>
+                                        <button class="image-button warning" onclick="window.location.href = '/Home/SortOrderQuestionInQuestionnaire?QuestionID=@answers.Question.ID&QuestionnaireID=@Model.Questionnaire.ID&Direction=Down';">
+                                            <span class="mif-arrow-down icon"></span>
+                                            <span class="caption"> </span>
+                                        </button>         </td>
                                     <td>
                                         @* LOGIC HERE SO THAT IF THE QUESTION HAS BEEN ANSWERED THIS WILL NOT APPEAR!!!!!!!!!!!!!! *@
-                                        <a class="image-button warning" href="~/Home/RemoveQuestionFromQuestionnaire?QuestionID=@answers.Question.ID&QuestionnaireID=@Model.Questionnaire.ID"><span class="icon mif-bin"></span> Delete</a>
-                                    </td>
+                                        <button class="image-button warning" onclick="window.location.href = '/Home/RemoveQuestionFromQuestionnaire?QuestionID=@answers.Question.ID&QuestionnaireID=@Model.Questionnaire.ID';">
+                                            <span class="mif-bin icon"></span>
+                                            <span class="caption">Delete</span>
+                                        </button>
+                                                                        </td>
                                 </tr>
                             }
 
@@ -66,15 +56,11 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
+           
         </div>
-        <div class="" style="width:100%;">
-            <div class="panel success" style="width:100%;padding:5px;">
-
-                <div class="heading">
-                    <span class="title">Add New Question</span>
-                </div>
-                <div class="content">
+        <div class="cell">
+            <h2>Add New Question</h2>
+                          <div class="content">
                     <form id="form1" action="/Home/AddQuestionFromQuestionnaire" method="post">
                         <br />
                         <br />
@@ -96,21 +82,14 @@
                                         </select>
                                     </div>
                                 </div>
-                                    @*<div class="" style="width:100%;height:100%;padding:5px;">
-                                        @*<div class="heading">
-                                            <span class="title">Display Order</span>
-                                        </div>*@
-                                        @*<div class="input-control text" style="width:100%;">
-                                            <input type="number" name="DisplayOrder" style="width: 100%;" min="0" required />
-                                        </div>*@
                                     </div>
                                 </div>
-                        </div>
                         <br />
                         <br />
-                        <button class="image-button success" onclick="$('#form1').submit();"><span class="icon mif-plus"></span> Add Question</button>
-                        <br />
-                        <br />
+                        <button class="image-button warning" onclick="$('#form1').submit();">
+                            <span class="mif-plus icon"></span>
+                            <span class="caption">Add Question</span>
+                        </button>
                     </form>
                 </div>
 
@@ -118,4 +97,3 @@
 
         </div>
     </div>
-</div>

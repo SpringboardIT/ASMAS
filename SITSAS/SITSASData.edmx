@@ -124,6 +124,14 @@
           <Property Name="Name" Type="nvarchar(max)" />
           <Property Name="Deleted" Type="bit" Nullable="false" />
           <Property Name="AreaID" Type="uniqueidentifier" />
+          <Property Name="UserID" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Location_PermissionGroupTemplate">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
         </EntityType>
         <EntityType Name="Page_Role_Mappings">
           <Key>
@@ -155,6 +163,9 @@
           <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="GroupName" Type="nvarchar(max)" />
           <Property Name="Deleted" Type="bit" Nullable="false" />
+          <Property Name="Hidden" Type="bit" />
+          <Property Name="ParentGroupID" Type="uniqueidentifier" />
+          <Property Name="TemplateID" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="PermissionGroup_User_Mapping">
           <Key>
@@ -200,6 +211,7 @@
           <Property Name="StalenessProfileID" Type="uniqueidentifier" />
           <Property Name="DefaultValue" Type="int" Nullable="false" />
           <Property Name="CanBeNotAnswered" Type="bit" Nullable="false" />
+          <Property Name="PreviousQuestionID" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="Result_Answers">
           <Key>
@@ -254,17 +266,18 @@
           <Property Name="QuestionnaireID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="ParentID" Type="uniqueidentifier" />
           <Property Name="IncidentTypeID" Type="uniqueidentifier" />
+          <Property Name="PDFDocument" Type="varbinary(max)" />
         </EntityType>
         <EntityType Name="Role_Permissions">
           <Key>
             <PropertyRef Name="PermissionsID" />
           </Key>
-          <Property Name="PermissionsID" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="RoleID" Type="uniqueidentifier" />
-          <Property Name="CanView" Type="bit" />
-          <Property Name="CanAdd" Type="bit" />
           <Property Name="CanEdit" Type="bit" />
           <Property Name="CanDelete" Type="bit" />
+          <Property Name="CanView" Type="bit" />
+          <Property Name="RoleID" Type="uniqueidentifier" />
+          <Property Name="CanAdd" Type="bit" />
+          <Property Name="PermissionsID" Type="uniqueidentifier" Nullable="false" />
         </EntityType>
         <EntityType Name="Role_User_PermissionMapping">
           <Key>
@@ -317,16 +330,16 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="AssignedTo" Type="nvarchar(max)" />
           <Property Name="DueDate" Type="datetime" Nullable="false" />
           <Property Name="Title" Type="nvarchar(max)" Nullable="false" />
           <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
           <Property Name="CreatedBy" Type="nvarchar(max)" Nullable="false" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="Status" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="ResultLineID" Type="uniqueidentifier" />
+          <Property Name="HeaderID" Type="uniqueidentifier" />
           <Property Name="Deleted" Type="bit" Nullable="false" />
           <Property Name="CompletedDate" Type="datetime" />
+          <Property Name="Comments" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="TaskStatus">
           <Key>
@@ -335,39 +348,6 @@
           <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
           <Property Name="enumMapping" Type="int" Nullable="false" />
-        </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'SITSAS.dbo.vFixingResults' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="vFixingResults">
-          <Key>
-            <PropertyRef Name="SelectedDate" />
-          </Key>
-          <Property Name="Name" Type="nvarchar(max)" />
-          <Property Name="RawAnswer" Type="nvarchar(max)" />
-          <Property Name="RawScore" Type="int" />
-          <Property Name="CalcWeightedScore" Type="decimal" Precision="21" Scale="2" />
-          <Property Name="CalcStalenessScore" Type="decimal" Precision="21" Scale="2" />
-          <Property Name="Expr1" Type="nvarchar(max)" />
-          <Property Name="SelectedDate" Type="datetime" Nullable="false" />
-        </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="vQuestionnaireAnswers">
-          <Key>
-            <PropertyRef Name="QuestionID" />
-            <PropertyRef Name="PortID" />
-            <PropertyRef Name="SelectedDate" />
-            <PropertyRef Name="QuestionnaireID" />
-          </Key>
-          <Property Name="HeaderID" Type="uniqueidentifier" />
-          <Property Name="QuestionID" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="RawAnswer" Type="nvarchar(max)" />
-          <Property Name="RawScore" Type="int" />
-          <Property Name="CalcWeightedScore" Type="decimal" Precision="21" Scale="2" />
-          <Property Name="CalcStalenessScore" Type="decimal" Precision="21" Scale="2" />
-          <Property Name="PortID" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="SelectedDate" Type="datetime" Nullable="false" />
-          <Property Name="QuestionnaireID" Type="uniqueidentifier" Nullable="false" />
         </EntityType>
         <Association Name="FK_Answer_ScoreMappings_Answer_Operators">
           <End Role="Answer_Operators" Type="Self.Answer_Operators" Multiplicity="1" />
@@ -462,6 +442,18 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
             </Principal>
             <Dependent Role="Location">
               <PropertyRef Name="AreaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PermissionGroup_Location_PermissionGroupTemplate">
+          <End Role="Location_PermissionGroupTemplate" Type="Self.Location_PermissionGroupTemplate" Multiplicity="0..1" />
+          <End Role="PermissionGroup" Type="Self.PermissionGroup" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Location_PermissionGroupTemplate">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PermissionGroup">
+              <PropertyRef Name="TemplateID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -717,6 +709,12 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="ApproveQuestionnaire" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="ClearPartEnteredQuestionnaire" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="uniqueidentifier" Mode="In" />
+        </Function>
         <Function Name="GetAreasForUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="UserID" Type="nvarchar(max)" Mode="In" />
           <Parameter Name="IncludeDeleted" Type="bit" Mode="In" />
@@ -747,6 +745,7 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
           <EntitySet Name="FrequencyProfile_Dates" EntityType="Self.FrequencyProfile_Dates" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="IncidentTypes" EntityType="Self.IncidentTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Location" EntityType="Self.Location" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Location_PermissionGroupTemplate" EntityType="Self.Location_PermissionGroupTemplate" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Page_Role_Mappings" EntityType="Self.Page_Role_Mappings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Pages" EntityType="Self.Pages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PermissionGroup" EntityType="Self.PermissionGroup" Schema="dbo" store:Type="Tables" />
@@ -766,30 +765,6 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
           <EntitySet Name="SystemSettings" EntityType="Self.SystemSettings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tasks" EntityType="Self.Tasks" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TaskStatus" EntityType="Self.TaskStatus" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="vFixingResults" EntityType="Self.vFixingResults" store:Type="Views" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [vFixingResults].[Name] AS [Name], 
-    [vFixingResults].[RawAnswer] AS [RawAnswer], 
-    [vFixingResults].[RawScore] AS [RawScore], 
-    [vFixingResults].[CalcWeightedScore] AS [CalcWeightedScore], 
-    [vFixingResults].[CalcStalenessScore] AS [CalcStalenessScore], 
-    [vFixingResults].[Expr1] AS [Expr1], 
-    [vFixingResults].[SelectedDate] AS [SelectedDate]
-    FROM [dbo].[vFixingResults] AS [vFixingResults]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="vQuestionnaireAnswers" EntityType="Self.vQuestionnaireAnswers" store:Type="Views" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [vQuestionnaireAnswers].[HeaderID] AS [HeaderID], 
-    [vQuestionnaireAnswers].[QuestionID] AS [QuestionID], 
-    [vQuestionnaireAnswers].[RawAnswer] AS [RawAnswer], 
-    [vQuestionnaireAnswers].[RawScore] AS [RawScore], 
-    [vQuestionnaireAnswers].[CalcWeightedScore] AS [CalcWeightedScore], 
-    [vQuestionnaireAnswers].[CalcStalenessScore] AS [CalcStalenessScore], 
-    [vQuestionnaireAnswers].[PortID] AS [PortID], 
-    [vQuestionnaireAnswers].[SelectedDate] AS [SelectedDate], 
-    [vQuestionnaireAnswers].[QuestionnaireID] AS [QuestionnaireID]
-    FROM [dbo].[vQuestionnaireAnswers] AS [vQuestionnaireAnswers]</DefiningQuery>
-          </EntitySet>
           <AssociationSet Name="FK_Answer_ScoreMappings_Answer_Operators" Association="Self.FK_Answer_ScoreMappings_Answer_Operators">
             <End Role="Answer_Operators" EntitySet="Answer_Operators" />
             <End Role="Answer_ScoreMappings" EntitySet="Answer_ScoreMappings" />
@@ -821,6 +796,10 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
           <AssociationSet Name="FK_Location_Area" Association="Self.FK_Location_Area">
             <End Role="Area" EntitySet="Area" />
             <End Role="Location" EntitySet="Location" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PermissionGroup_Location_PermissionGroupTemplate" Association="Self.FK_PermissionGroup_Location_PermissionGroupTemplate">
+            <End Role="Location_PermissionGroupTemplate" EntitySet="Location_PermissionGroupTemplate" />
+            <End Role="PermissionGroup" EntitySet="PermissionGroup" />
           </AssociationSet>
           <AssociationSet Name="FK_PermissionGroup_User_Mapping_PermissionGroup" Association="Self.FK_PermissionGroup_User_Mapping_PermissionGroup">
             <End Role="PermissionGroup" EntitySet="PermissionGroup" />
@@ -940,7 +919,6 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
           <EntitySet Name="Questions" EntityType="SITSASModel.Question" />
           <EntitySet Name="Result_Answers" EntityType="SITSASModel.Result_Answers" />
           <EntitySet Name="Result_Answers_Fixings" EntityType="SITSASModel.Result_Answers_Fixings" />
-          <EntitySet Name="Result_Headers" EntityType="SITSASModel.Result_Headers" />
           <EntitySet Name="Result_Headers_Fixings" EntityType="SITSASModel.Result_Headers_Fixings" />
           <EntitySet Name="Role_Permissions" EntityType="SITSASModel.Role_Permissions" />
           <EntitySet Name="Role_User_PermissionMapping" EntityType="SITSASModel.Role_User_PermissionMapping" />
@@ -948,8 +926,6 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
           <EntitySet Name="StalenessProfiles" EntityType="SITSASModel.StalenessProfile" />
           <EntitySet Name="SubCategories" EntityType="SITSASModel.SubCategory" />
           <EntitySet Name="SystemSettings" EntityType="SITSASModel.SystemSetting" />
-          <EntitySet Name="vFixingResults" EntityType="SITSASModel.vFixingResult" />
-          <EntitySet Name="vQuestionnaireAnswers" EntityType="SITSASModel.vQuestionnaireAnswer" />
           <AssociationSet Name="FK_Answer_ScoreMappings_Answer_Operators" Association="SITSASModel.FK_Answer_ScoreMappings_Answer_Operators">
             <End Role="Answer_Operators" EntitySet="Answer_Operators" />
             <End Role="Answer_ScoreMappings" EntitySet="Answer_ScoreMappings" />
@@ -990,17 +966,9 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
             <End Role="IncidentType" EntitySet="IncidentTypes" />
             <End Role="Result_Headers_Fixings" EntitySet="Result_Headers_Fixings" />
           </AssociationSet>
-          <AssociationSet Name="FK_Result_Headers_IncidentTypes" Association="SITSASModel.FK_Result_Headers_IncidentTypes">
-            <End Role="IncidentType" EntitySet="IncidentTypes" />
-            <End Role="Result_Headers" EntitySet="Result_Headers" />
-          </AssociationSet>
           <AssociationSet Name="FK_Result_Headers_Fixings_Ports" Association="SITSASModel.FK_Result_Headers_Fixings_Ports">
             <End Role="Location" EntitySet="Locations" />
             <End Role="Result_Headers_Fixings" EntitySet="Result_Headers_Fixings" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Result_Headers_Ports" Association="SITSASModel.FK_Result_Headers_Ports">
-            <End Role="Location" EntitySet="Locations" />
-            <End Role="Result_Headers" EntitySet="Result_Headers" />
           </AssociationSet>
           <AssociationSet Name="FK_PermissionGroup_User_Mapping_PermissionGroup" Association="SITSASModel.FK_PermissionGroup_User_Mapping_PermissionGroup">
             <End Role="PermissionGroup" EntitySet="PermissionGroups" />
@@ -1018,10 +986,6 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
             <End Role="Questionnaire" EntitySet="Questionnaires" />
             <End Role="Result_Headers_Fixings" EntitySet="Result_Headers_Fixings" />
           </AssociationSet>
-          <AssociationSet Name="FK_Result_Headers_Questionnaires" Association="SITSASModel.FK_Result_Headers_Questionnaires">
-            <End Role="Questionnaire" EntitySet="Questionnaires" />
-            <End Role="Result_Headers" EntitySet="Result_Headers" />
-          </AssociationSet>
           <AssociationSet Name="FK_Questions_DashboardCategories" Association="SITSASModel.FK_Questions_DashboardCategories">
             <End Role="SubCategory" EntitySet="SubCategories" />
             <End Role="Question" EntitySet="Questions" />
@@ -1030,17 +994,9 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
             <End Role="StalenessProfile" EntitySet="StalenessProfiles" />
             <End Role="Question" EntitySet="Questions" />
           </AssociationSet>
-          <AssociationSet Name="FK_Result_Answers_Result_Headers" Association="SITSASModel.FK_Result_Answers_Result_Headers">
-            <End Role="Result_Headers" EntitySet="Result_Headers" />
-            <End Role="Result_Answers" EntitySet="Result_Answers" />
-          </AssociationSet>
           <AssociationSet Name="FK_Result_Answers_Fixings_Result_Headers_Fixings" Association="SITSASModel.FK_Result_Answers_Fixings_Result_Headers_Fixings">
             <End Role="Result_Headers_Fixings" EntitySet="Result_Headers_Fixings" />
             <End Role="Result_Answers_Fixings" EntitySet="Result_Answers_Fixings" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Result_Headers_Result_Headers" Association="SITSASModel.FK_Result_Headers_Result_Headers">
-            <End Role="Result_Headers" EntitySet="Result_Headers" />
-            <End Role="Result_Headers1" EntitySet="Result_Headers" />
           </AssociationSet>
           <AssociationSet Name="FK_Result_Headers_Fixings_Result_Headers_Fixings" Association="SITSASModel.FK_Result_Headers_Fixings_Result_Headers_Fixings">
             <End Role="Result_Headers_Fixings" EntitySet="Result_Headers_Fixings" />
@@ -1061,19 +1017,51 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
             <End Role="Questionnaire" EntitySet="Questionnaires" />
           </AssociationSet>
           <EntitySet Name="FrequencyProfile_Dates" EntityType="SITSASModel.FrequencyProfile_Dates" />
-          <EntitySet Name="Tasks" EntityType="SITSASModel.Task" />
           <EntitySet Name="TaskStatus" EntityType="SITSASModel.TaskStatu" />
           <AssociationSet Name="FK_FrequencyProfile_Dates_FrequencyProfile" Association="SITSASModel.FK_FrequencyProfile_Dates_FrequencyProfile">
             <End Role="FrequencyProfile" EntitySet="FrequencyProfiles" />
             <End Role="FrequencyProfile_Dates" EntitySet="FrequencyProfile_Dates" />
           </AssociationSet>
+          <EntitySet Name="Pages" EntityType="SITSASModel.Page" />
+          <EntitySet Name="Page_Role_Mappings" EntityType="SITSASModel.Page_Role_Mappings" />
+          <EntitySet Name="Result_Headers" EntityType="SITSASModel.Result_Headers" />
+          <AssociationSet Name="FK_Result_Headers_IncidentTypes" Association="SITSASModel.FK_Result_Headers_IncidentTypes">
+            <End Role="IncidentType" EntitySet="IncidentTypes" />
+            <End Role="Result_Headers" EntitySet="Result_Headers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Headers_Ports" Association="SITSASModel.FK_Result_Headers_Ports">
+            <End Role="Location" EntitySet="Locations" />
+            <End Role="Result_Headers" EntitySet="Result_Headers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Headers_Questionnaires" Association="SITSASModel.FK_Result_Headers_Questionnaires">
+            <End Role="Questionnaire" EntitySet="Questionnaires" />
+            <End Role="Result_Headers" EntitySet="Result_Headers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Answers_Result_Headers" Association="SITSASModel.FK_Result_Answers_Result_Headers">
+            <End Role="Result_Headers" EntitySet="Result_Headers" />
+            <End Role="Result_Answers" EntitySet="Result_Answers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Result_Headers_Result_Headers" Association="SITSASModel.FK_Result_Headers_Result_Headers">
+            <End Role="Result_Headers" EntitySet="Result_Headers" />
+            <End Role="Result_Headers1" EntitySet="Result_Headers" />
+          </AssociationSet>
+          <FunctionImport Name="ClearPartEnteredQuestionnaire">
+          <Parameter Name="ID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="ApproveQuestionnaire">
+          <Parameter Name="ID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <EntitySet Name="Tasks" EntityType="SITSASModel.Task" />
           <AssociationSet Name="FK_Tasks_TaskStatus" Association="SITSASModel.FK_Tasks_TaskStatus">
             <End Role="TaskStatu" EntitySet="TaskStatus" />
             <End Role="Task" EntitySet="Tasks" />
           </AssociationSet>
-          <EntitySet Name="Pages" EntityType="SITSASModel.Page" />
-          <EntitySet Name="Page_Role_Mappings" EntityType="SITSASModel.Page_Role_Mappings" />
-        </EntityContainer>
+          <EntitySet Name="Location_PermissionGroupTemplate" EntityType="SITSASModel.Location_PermissionGroupTemplate" />
+          <AssociationSet Name="FK_PermissionGroup_Location_PermissionGroupTemplate" Association="SITSASModel.FK_PermissionGroup_Location_PermissionGroupTemplate">
+            <End Role="Location_PermissionGroupTemplate" EntitySet="Location_PermissionGroupTemplate" />
+            <End Role="PermissionGroup" EntitySet="PermissionGroups" />
+          </AssociationSet>
+          </EntityContainer>
         <ComplexType Name="GetQuestionnairesForUser_Result">
           <Property Type="Guid" Name="ID" Nullable="false" />
           <Property Type="String" Name="Name" Nullable="true" />
@@ -1193,8 +1181,9 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
           <Property Name="Deleted" Type="Boolean" Nullable="false" />
           <Property Name="AreaID" Type="Guid" />
           <NavigationProperty Name="Result_Headers_Fixings" Relationship="SITSASModel.FK_Result_Headers_Fixings_Ports" FromRole="Location" ToRole="Result_Headers_Fixings" />
-          <NavigationProperty Name="Result_Headers" Relationship="SITSASModel.FK_Result_Headers_Ports" FromRole="Location" ToRole="Result_Headers" />
           <NavigationProperty Name="Area" Relationship="SITSASModel.FK_Location_Area" FromRole="Location" ToRole="Area" />
+          <NavigationProperty Name="Result_Headers" Relationship="SITSASModel.FK_Result_Headers_Ports" FromRole="Location" ToRole="Result_Headers" />
+          <Property Name="UserID" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="PermissionGroup">
           <Key>
@@ -1204,6 +1193,10 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
           <Property Name="GroupName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Deleted" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="PermissionGroup_User_Mapping" Relationship="SITSASModel.FK_PermissionGroup_User_Mapping_PermissionGroup" FromRole="PermissionGroup" ToRole="PermissionGroup_User_Mapping" />
+          <Property Name="Hidden" Type="Boolean" />
+          <Property Name="ParentGroupID" Type="Guid" />
+          <Property Name="TemplateID" Type="Guid" />
+          <NavigationProperty Name="Location_PermissionGroupTemplate" Relationship="SITSASModel.FK_PermissionGroup_Location_PermissionGroupTemplate" FromRole="PermissionGroup" ToRole="Location_PermissionGroupTemplate" />
         </EntityType>
         <EntityType Name="PermissionGroup_User_Mapping">
           <Key>
@@ -1235,9 +1228,9 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
           <NavigationProperty Name="QuestionnaireGroups" Relationship="SITSASModel.FK_QuestionnaireGroups_Questionnaires" FromRole="Questionnaire" ToRole="QuestionnaireGroup" />
           <NavigationProperty Name="Questions" Relationship="SITSASModel.FK_Questions_Questionnaires" FromRole="Questionnaire" ToRole="Question" />
           <NavigationProperty Name="Result_Headers_Fixings" Relationship="SITSASModel.FK_Result_Headers_Fixings_Questionnaires" FromRole="Questionnaire" ToRole="Result_Headers_Fixings" />
-          <NavigationProperty Name="Result_Headers" Relationship="SITSASModel.FK_Result_Headers_Questionnaires" FromRole="Questionnaire" ToRole="Result_Headers" />
           <Property Name="FrequencyProfileID" Type="Guid" />
           <NavigationProperty Name="FrequencyProfile" Relationship="SITSASModel.FK_Questionnaires_FrequencyProfile" FromRole="Questionnaire" ToRole="FrequencyProfile" />
+          <NavigationProperty Name="Result_Headers" Relationship="SITSASModel.FK_Result_Headers_Questionnaires" FromRole="Questionnaire" ToRole="Result_Headers" />
         </EntityType>
         <EntityType Name="Question">
           <Key>
@@ -1262,6 +1255,7 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
           <NavigationProperty Name="Questionnaire" Relationship="SITSASModel.FK_Questions_Questionnaires" FromRole="Question" ToRole="Questionnaire" />
           <NavigationProperty Name="SubCategory" Relationship="SITSASModel.FK_Questions_DashboardCategories" FromRole="Question" ToRole="SubCategory" />
           <NavigationProperty Name="StalenessProfile" Relationship="SITSASModel.FK_Questions_StalenessProfile" FromRole="Question" ToRole="StalenessProfile" />
+          <Property Name="PreviousQuestionID" Type="Guid" />
         </EntityType>
         <EntityType Name="Result_Answers">
           <Key>
@@ -1293,27 +1287,6 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
           <NavigationProperty Name="Answer" Relationship="SITSASModel.FK_Result_Answers_Fixings_Answers" FromRole="Result_Answers_Fixings" ToRole="Answer" />
           <NavigationProperty Name="Result_Headers_Fixings" Relationship="SITSASModel.FK_Result_Answers_Fixings_Result_Headers_Fixings" FromRole="Result_Answers_Fixings" ToRole="Result_Headers_Fixings" />
         </EntityType>
-        <EntityType Name="Result_Headers">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Guid" Nullable="false" />
-          <Property Name="CompletedBy" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="SelectedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="LocationID" Type="Guid" Nullable="false" />
-          <Property Name="QuestionnaireID" Type="Guid" Nullable="false" />
-          <Property Name="ParentID" Type="Guid" />
-          <Property Name="IncidentTypeID" Type="Guid" />
-          <NavigationProperty Name="IncidentType" Relationship="SITSASModel.FK_Result_Headers_IncidentTypes" FromRole="Result_Headers" ToRole="IncidentType" />
-          <NavigationProperty Name="Location" Relationship="SITSASModel.FK_Result_Headers_Ports" FromRole="Result_Headers" ToRole="Location" />
-          <NavigationProperty Name="Questionnaire" Relationship="SITSASModel.FK_Result_Headers_Questionnaires" FromRole="Result_Headers" ToRole="Questionnaire" />
-          <NavigationProperty Name="Result_Answers" Relationship="SITSASModel.FK_Result_Answers_Result_Headers" FromRole="Result_Headers" ToRole="Result_Answers" />
-          <NavigationProperty Name="Result_Headers1" Relationship="SITSASModel.FK_Result_Headers_Result_Headers" FromRole="Result_Headers" ToRole="Result_Headers1" />
-          <NavigationProperty Name="Result_Headers2" Relationship="SITSASModel.FK_Result_Headers_Result_Headers" FromRole="Result_Headers1" ToRole="Result_Headers" />
-          <Property Name="PDFDocument" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <Property Name="Submitted" Type="Boolean" Nullable="false" />
-        </EntityType>
         <EntityType Name="Result_Headers_Fixings">
           <Key>
             <PropertyRef Name="ID" />
@@ -1332,6 +1305,7 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
           <NavigationProperty Name="Result_Answers_Fixings" Relationship="SITSASModel.FK_Result_Answers_Fixings_Result_Headers_Fixings" FromRole="Result_Headers_Fixings" ToRole="Result_Answers_Fixings" />
           <NavigationProperty Name="Result_Headers_Fixings1" Relationship="SITSASModel.FK_Result_Headers_Fixings_Result_Headers_Fixings" FromRole="Result_Headers_Fixings" ToRole="Result_Headers_Fixings1" />
           <NavigationProperty Name="Result_Headers_Fixings2" Relationship="SITSASModel.FK_Result_Headers_Fixings_Result_Headers_Fixings" FromRole="Result_Headers_Fixings1" ToRole="Result_Headers_Fixings" />
+          <Property Name="PDFDocument" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
         <EntityType Name="Role_Permissions">
           <Key>
@@ -1394,35 +1368,6 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
           <Property Name="ID" Type="Guid" Nullable="false" />
           <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="vFixingResult">
-          <Key>
-            <PropertyRef Name="SelectedDate" />
-          </Key>
-          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="RawAnswer" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="RawScore" Type="Int32" />
-          <Property Name="CalcWeightedScore" Type="Decimal" Precision="21" Scale="2" />
-          <Property Name="CalcStalenessScore" Type="Decimal" Precision="21" Scale="2" />
-          <Property Name="Expr1" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="SelectedDate" Type="DateTime" Nullable="false" Precision="3" />
-        </EntityType>
-        <EntityType Name="vQuestionnaireAnswer">
-          <Key>
-            <PropertyRef Name="QuestionID" />
-            <PropertyRef Name="PortID" />
-            <PropertyRef Name="SelectedDate" />
-            <PropertyRef Name="QuestionnaireID" />
-          </Key>
-          <Property Name="HeaderID" Type="Guid" />
-          <Property Name="QuestionID" Type="Guid" Nullable="false" />
-          <Property Name="RawAnswer" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="RawScore" Type="Int32" />
-          <Property Name="CalcWeightedScore" Type="Decimal" Precision="21" Scale="2" />
-          <Property Name="CalcStalenessScore" Type="Decimal" Precision="21" Scale="2" />
-          <Property Name="PortID" Type="Guid" Nullable="false" />
-          <Property Name="SelectedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="QuestionnaireID" Type="Guid" Nullable="false" />
         </EntityType>
         <Association Name="FK_Answer_ScoreMappings_Answer_Operators">
           <End Type="SITSASModel.Answer_Operators" Role="Answer_Operators" Multiplicity="1" />
@@ -1544,18 +1489,6 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Result_Headers_IncidentTypes">
-          <End Type="SITSASModel.IncidentType" Role="IncidentType" Multiplicity="0..1" />
-          <End Type="SITSASModel.Result_Headers" Role="Result_Headers" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="IncidentType">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Result_Headers">
-              <PropertyRef Name="IncidentTypeID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Result_Headers_Fixings_Ports">
           <End Type="SITSASModel.Location" Role="Location" Multiplicity="1" />
           <End Type="SITSASModel.Result_Headers_Fixings" Role="Result_Headers_Fixings" Multiplicity="*" />
@@ -1564,18 +1497,6 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="Result_Headers_Fixings">
-              <PropertyRef Name="LocationID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Result_Headers_Ports">
-          <End Type="SITSASModel.Location" Role="Location" Multiplicity="1" />
-          <End Type="SITSASModel.Result_Headers" Role="Result_Headers" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Location">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Result_Headers">
               <PropertyRef Name="LocationID" />
             </Dependent>
           </ReferentialConstraint>
@@ -1628,18 +1549,6 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Result_Headers_Questionnaires">
-          <End Type="SITSASModel.Questionnaire" Role="Questionnaire" Multiplicity="1" />
-          <End Type="SITSASModel.Result_Headers" Role="Result_Headers" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Questionnaire">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Result_Headers">
-              <PropertyRef Name="QuestionnaireID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Questions_DashboardCategories">
           <End Type="SITSASModel.SubCategory" Role="SubCategory" Multiplicity="0..1" />
           <End Type="SITSASModel.Question" Role="Question" Multiplicity="*" />
@@ -1664,18 +1573,6 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Result_Answers_Result_Headers">
-          <End Type="SITSASModel.Result_Headers" Role="Result_Headers" Multiplicity="0..1" />
-          <End Type="SITSASModel.Result_Answers" Role="Result_Answers" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Result_Headers">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Result_Answers">
-              <PropertyRef Name="HeaderID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Result_Answers_Fixings_Result_Headers_Fixings">
           <End Type="SITSASModel.Result_Headers_Fixings" Role="Result_Headers_Fixings" Multiplicity="0..1" />
           <End Type="SITSASModel.Result_Answers_Fixings" Role="Result_Answers_Fixings" Multiplicity="*" />
@@ -1685,18 +1582,6 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
             </Principal>
             <Dependent Role="Result_Answers_Fixings">
               <PropertyRef Name="HeaderID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Result_Headers_Result_Headers">
-          <End Type="SITSASModel.Result_Headers" Role="Result_Headers" Multiplicity="0..1" />
-          <End Type="SITSASModel.Result_Headers" Role="Result_Headers1" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Result_Headers">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Result_Headers1">
-              <PropertyRef Name="ParentID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1783,23 +1668,6 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
           <Property Name="LocationID" Type="Guid" Nullable="false" />
           <NavigationProperty Name="FrequencyProfile" Relationship="SITSASModel.FK_FrequencyProfile_Dates_FrequencyProfile" FromRole="FrequencyProfile_Dates" ToRole="FrequencyProfile" />
         </EntityType>
-        <EntityType Name="Task">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Guid" Nullable="false" />
-          <Property Name="AssignedTo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DueDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Title" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Description" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Status" Type="Guid" Nullable="false" />
-          <Property Name="ResultLineID" Type="Guid" />
-          <NavigationProperty Name="TaskStatu" Relationship="SITSASModel.FK_Tasks_TaskStatus" FromRole="Task" ToRole="TaskStatu" />
-          <Property Name="Deleted" Type="Boolean" Nullable="false" />
-          <Property Name="CompletedDate" Type="DateTime" Precision="3" />
-        </EntityType>
         <EntityType Name="TaskStatu">
           <Key>
             <PropertyRef Name="ID" />
@@ -1818,18 +1686,6 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
             </Principal>
             <Dependent Role="FrequencyProfile_Dates">
               <PropertyRef Name="FrequencyID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Tasks_TaskStatus">
-          <End Type="SITSASModel.TaskStatu" Role="TaskStatu" Multiplicity="1" />
-          <End Type="SITSASModel.Task" Role="Task" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TaskStatu">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Task">
-              <PropertyRef Name="Status" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1856,7 +1712,137 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
           <Property Name="CanUpdate" Type="Boolean" Nullable="false" />
           <Property Name="CanDelete" Type="Boolean" Nullable="false" />
         </EntityType>
-      </Schema>
+        <EntityType Name="Result_Headers">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="CompletedBy" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="SelectedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="LocationID" Type="Guid" Nullable="false" />
+          <Property Name="QuestionnaireID" Type="Guid" Nullable="false" />
+          <Property Name="ParentID" Type="Guid" />
+          <Property Name="IncidentTypeID" Type="Guid" />
+          <Property Name="PDFDocument" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="Submitted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="IncidentType" Relationship="SITSASModel.FK_Result_Headers_IncidentTypes" FromRole="Result_Headers" ToRole="IncidentType" />
+          <NavigationProperty Name="Location" Relationship="SITSASModel.FK_Result_Headers_Ports" FromRole="Result_Headers" ToRole="Location" />
+          <NavigationProperty Name="Questionnaire" Relationship="SITSASModel.FK_Result_Headers_Questionnaires" FromRole="Result_Headers" ToRole="Questionnaire" />
+          <NavigationProperty Name="Result_Answers" Relationship="SITSASModel.FK_Result_Answers_Result_Headers" FromRole="Result_Headers" ToRole="Result_Answers" />
+          <NavigationProperty Name="Result_Headers1" Relationship="SITSASModel.FK_Result_Headers_Result_Headers" FromRole="Result_Headers" ToRole="Result_Headers1" />
+          <NavigationProperty Name="Result_Headers2" Relationship="SITSASModel.FK_Result_Headers_Result_Headers" FromRole="Result_Headers1" ToRole="Result_Headers" />
+        </EntityType>
+        <Association Name="FK_Result_Headers_IncidentTypes">
+          <End Type="SITSASModel.IncidentType" Role="IncidentType" Multiplicity="0..1" />
+          <End Type="SITSASModel.Result_Headers" Role="Result_Headers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IncidentType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Headers">
+              <PropertyRef Name="IncidentTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Headers_Ports">
+          <End Type="SITSASModel.Location" Role="Location" Multiplicity="1" />
+          <End Type="SITSASModel.Result_Headers" Role="Result_Headers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Location">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Headers">
+              <PropertyRef Name="LocationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Headers_Questionnaires">
+          <End Type="SITSASModel.Questionnaire" Role="Questionnaire" Multiplicity="1" />
+          <End Type="SITSASModel.Result_Headers" Role="Result_Headers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Questionnaire">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Headers">
+              <PropertyRef Name="QuestionnaireID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Answers_Result_Headers">
+          <End Type="SITSASModel.Result_Headers" Role="Result_Headers" Multiplicity="0..1" />
+          <End Type="SITSASModel.Result_Answers" Role="Result_Answers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Result_Headers">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Answers">
+              <PropertyRef Name="HeaderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Result_Headers_Result_Headers">
+          <End Type="SITSASModel.Result_Headers" Role="Result_Headers" Multiplicity="0..1" />
+          <End Type="SITSASModel.Result_Headers" Role="Result_Headers1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Result_Headers">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result_Headers1">
+              <PropertyRef Name="ParentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Task">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="DueDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Status" Type="Guid" Nullable="false" />
+          <Property Name="HeaderID" Type="Guid" />
+          <Property Name="Deleted" Type="Boolean" Nullable="false" />
+          <Property Name="CompletedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="TaskStatu" Relationship="SITSASModel.FK_Tasks_TaskStatus" FromRole="Task" ToRole="TaskStatu" />
+          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_Tasks_TaskStatus">
+          <End Type="SITSASModel.TaskStatu" Role="TaskStatu" Multiplicity="1" />
+          <End Type="SITSASModel.Task" Role="Task" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TaskStatu">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Task">
+              <PropertyRef Name="Status" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Location_PermissionGroupTemplate">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="PermissionGroups" Relationship="SITSASModel.FK_PermissionGroup_Location_PermissionGroupTemplate" FromRole="Location_PermissionGroupTemplate" ToRole="PermissionGroup" />
+        </EntityType>
+        <Association Name="FK_PermissionGroup_Location_PermissionGroupTemplate">
+          <End Type="SITSASModel.Location_PermissionGroupTemplate" Role="Location_PermissionGroupTemplate" Multiplicity="0..1" />
+          <End Type="SITSASModel.PermissionGroup" Role="PermissionGroup" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Location_PermissionGroupTemplate">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PermissionGroup">
+              <PropertyRef Name="TemplateID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -1959,6 +1945,7 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
           <EntitySetMapping Name="Locations">
             <EntityTypeMapping TypeName="SITSASModel.Location">
               <MappingFragment StoreEntitySet="Location">
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
                 <ScalarProperty Name="AreaID" ColumnName="AreaID" />
                 <ScalarProperty Name="Deleted" ColumnName="Deleted" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -1969,6 +1956,9 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
           <EntitySetMapping Name="PermissionGroups">
             <EntityTypeMapping TypeName="SITSASModel.PermissionGroup">
               <MappingFragment StoreEntitySet="PermissionGroup">
+                <ScalarProperty Name="TemplateID" ColumnName="TemplateID" />
+                <ScalarProperty Name="ParentGroupID" ColumnName="ParentGroupID" />
+                <ScalarProperty Name="Hidden" ColumnName="Hidden" />
                 <ScalarProperty Name="Deleted" ColumnName="Deleted" />
                 <ScalarProperty Name="GroupName" ColumnName="GroupName" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
@@ -2007,6 +1997,7 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
           <EntitySetMapping Name="Questions">
             <EntityTypeMapping TypeName="SITSASModel.Question">
               <MappingFragment StoreEntitySet="Questions">
+                <ScalarProperty Name="PreviousQuestionID" ColumnName="PreviousQuestionID" />
                 <ScalarProperty Name="CanBeNotAnswered" ColumnName="CanBeNotAnswered" />
                 <ScalarProperty Name="DefaultValue" ColumnName="DefaultValue" />
                 <ScalarProperty Name="StalenessProfileID" ColumnName="StalenessProfileID" />
@@ -2052,25 +2043,10 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Result_Headers">
-            <EntityTypeMapping TypeName="SITSASModel.Result_Headers">
-              <MappingFragment StoreEntitySet="Result_Headers">
-                <ScalarProperty Name="Submitted" ColumnName="Submitted" />
-                <ScalarProperty Name="PDFDocument" ColumnName="PDFDocument" />
-                <ScalarProperty Name="IncidentTypeID" ColumnName="IncidentTypeID" />
-                <ScalarProperty Name="ParentID" ColumnName="ParentID" />
-                <ScalarProperty Name="QuestionnaireID" ColumnName="QuestionnaireID" />
-                <ScalarProperty Name="LocationID" ColumnName="LocationID" />
-                <ScalarProperty Name="SelectedDate" ColumnName="SelectedDate" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CompletedBy" ColumnName="CompletedBy" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Result_Headers_Fixings">
             <EntityTypeMapping TypeName="SITSASModel.Result_Headers_Fixings">
               <MappingFragment StoreEntitySet="Result_Headers_Fixings">
+                <ScalarProperty Name="PDFDocument" ColumnName="PDFDocument" />
                 <ScalarProperty Name="IncidentTypeID" ColumnName="IncidentTypeID" />
                 <ScalarProperty Name="ParentID" ColumnName="ParentID" />
                 <ScalarProperty Name="QuestionnaireID" ColumnName="QuestionnaireID" />
@@ -2145,34 +2121,6 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="vFixingResults">
-            <EntityTypeMapping TypeName="SITSASModel.vFixingResult">
-              <MappingFragment StoreEntitySet="vFixingResults">
-                <ScalarProperty Name="SelectedDate" ColumnName="SelectedDate" />
-                <ScalarProperty Name="Expr1" ColumnName="Expr1" />
-                <ScalarProperty Name="CalcStalenessScore" ColumnName="CalcStalenessScore" />
-                <ScalarProperty Name="CalcWeightedScore" ColumnName="CalcWeightedScore" />
-                <ScalarProperty Name="RawScore" ColumnName="RawScore" />
-                <ScalarProperty Name="RawAnswer" ColumnName="RawAnswer" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="vQuestionnaireAnswers">
-            <EntityTypeMapping TypeName="SITSASModel.vQuestionnaireAnswer">
-              <MappingFragment StoreEntitySet="vQuestionnaireAnswers">
-                <ScalarProperty Name="QuestionnaireID" ColumnName="QuestionnaireID" />
-                <ScalarProperty Name="SelectedDate" ColumnName="SelectedDate" />
-                <ScalarProperty Name="PortID" ColumnName="PortID" />
-                <ScalarProperty Name="CalcStalenessScore" ColumnName="CalcStalenessScore" />
-                <ScalarProperty Name="CalcWeightedScore" ColumnName="CalcWeightedScore" />
-                <ScalarProperty Name="RawScore" ColumnName="RawScore" />
-                <ScalarProperty Name="RawAnswer" ColumnName="RawAnswer" />
-                <ScalarProperty Name="QuestionID" ColumnName="QuestionID" />
-                <ScalarProperty Name="HeaderID" ColumnName="HeaderID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Areas">
             <EntityTypeMapping TypeName="SITSASModel.Area">
               <MappingFragment StoreEntitySet="Area">
@@ -2207,23 +2155,6 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Tasks">
-            <EntityTypeMapping TypeName="SITSASModel.Task">
-              <MappingFragment StoreEntitySet="Tasks">
-                <ScalarProperty Name="CompletedDate" ColumnName="CompletedDate" />
-                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
-                <ScalarProperty Name="ResultLineID" ColumnName="ResultLineID" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="DueDate" ColumnName="DueDate" />
-                <ScalarProperty Name="AssignedTo" ColumnName="AssignedTo" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="TaskStatus">
             <EntityTypeMapping TypeName="SITSASModel.TaskStatu">
               <MappingFragment StoreEntitySet="TaskStatus">
@@ -2254,6 +2185,49 @@ warning 6002: The table/view 'SITSAS.dbo.vQuestionnaireAnswers' does not have a 
                 <ScalarProperty Name="CanView" ColumnName="CanView" />
                 <ScalarProperty Name="RoleID" ColumnName="RoleID" />
                 <ScalarProperty Name="PageID" ColumnName="PageID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Result_Headers">
+            <EntityTypeMapping TypeName="SITSASModel.Result_Headers">
+              <MappingFragment StoreEntitySet="Result_Headers">
+                <ScalarProperty Name="Submitted" ColumnName="Submitted" />
+                <ScalarProperty Name="PDFDocument" ColumnName="PDFDocument" />
+                <ScalarProperty Name="IncidentTypeID" ColumnName="IncidentTypeID" />
+                <ScalarProperty Name="ParentID" ColumnName="ParentID" />
+                <ScalarProperty Name="QuestionnaireID" ColumnName="QuestionnaireID" />
+                <ScalarProperty Name="LocationID" ColumnName="LocationID" />
+                <ScalarProperty Name="SelectedDate" ColumnName="SelectedDate" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CompletedBy" ColumnName="CompletedBy" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="ClearPartEnteredQuestionnaire" FunctionName="SITSASModel.Store.ClearPartEnteredQuestionnaire" />
+          <FunctionImportMapping FunctionImportName="ApproveQuestionnaire" FunctionName="SITSASModel.Store.ApproveQuestionnaire" />
+          <EntitySetMapping Name="Tasks">
+            <EntityTypeMapping TypeName="SITSASModel.Task">
+              <MappingFragment StoreEntitySet="Tasks">
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="CompletedDate" ColumnName="CompletedDate" />
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+                <ScalarProperty Name="HeaderID" ColumnName="HeaderID" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="DueDate" ColumnName="DueDate" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Location_PermissionGroupTemplate">
+            <EntityTypeMapping TypeName="SITSASModel.Location_PermissionGroupTemplate">
+              <MappingFragment StoreEntitySet="Location_PermissionGroupTemplate">
+                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

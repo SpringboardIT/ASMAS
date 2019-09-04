@@ -244,10 +244,14 @@
     <Compile Include="Location.cs">
       <DependentUpon>SITSASData.tt</DependentUpon>
     </Compile>
+    <Compile Include="Location_PermissionGroupTemplate.cs">
+      <DependentUpon>SITSASData.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\AnswersModel.cs" />
     <Compile Include="Models\FrequencyProfileModel.cs" />
     <Compile Include="Models\CalculateScoreHelper.cs" />
     <Compile Include="Models\ContextModel.cs" />
+    <Compile Include="Models\IndexModel.cs" />
     <Compile Include="Models\QuestionnaireGroupModel.cs" />
     <Compile Include="Models\QuestionModel.cs" />
     <Compile Include="Models\IncidentTypesModel.cs" />
@@ -336,12 +340,6 @@
     <Compile Include="TaskStatu.cs">
       <DependentUpon>SITSASData.tt</DependentUpon>
     </Compile>
-    <Compile Include="vFixingResult.cs">
-      <DependentUpon>SITSASData.tt</DependentUpon>
-    </Compile>
-    <Compile Include="vQuestionnaireAnswer.cs">
-      <DependentUpon>SITSASData.tt</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Readme\Elmah.txt" />
@@ -353,6 +351,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="css\docs.css" />
     <Content Include="css\main.css" />
+    <Content Include="css\metro-all.css" />
     <Content Include="css\metro-colors.css" />
     <Content Include="css\metro-icons.css" />
     <Content Include="css\metro-responsive.css" />
@@ -371,6 +370,7 @@
     <Content Include="js\jquery-2.1.3.min.js" />
     <Content Include="js\jquery-3.1.0.js" />
     <Content Include="js\jquery-3.1.0.min.js" />
+    <Content Include="js\jquery-3.3.1.min.js" />
     <Content Include="js\jquery-ui.js" />
     <Content Include="js\jquery.dataTables.min.js" />
     <Content Include="js\metro.js" />
@@ -470,7 +470,9 @@
       <DependentUpon>SITSASData.edmx</DependentUpon>
       <LastGenOutput>SITSASData.cs</LastGenOutput>
     </Content>
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -551,6 +553,17 @@
     <Content Include="Views\Shared\partRolePermissions.cshtml" />
     <Content Include="Views\Shared\OldLinks.cshtml" />
     <Content Include="Views\Shared\partSideMenu.cshtml" />
+    <Content Include="Views\Home\ReviewLocation.cshtml" />
+    <Content Include="Views\Home\ReviewQuestionForLocation.cshtml" />
+    <Content Include="Views\Home\ReviewQuestionnaires.cshtml" />
+    <Content Include="Views\Home\ApprovedQuestionnaires.cshtml" />
+    <Content Include="Views\Home\ShowApprovedResults.cshtml" />
+    <Content Include="Views\Home\ShowApprovedQuestionnaireResults.cshtml" />
+    <Content Include="Views\Home\Home.cshtml" />
+    <Content Include="Views\Shared\partYearSelection.cshtml" />
+    <Content Include="Views\Shared\partMonthSelection.cshtml" />
+    <Content Include="Views\Shared\TaskStatuses.cshtml" />
+    <Content Include="Views\Home\ReassignTasks.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

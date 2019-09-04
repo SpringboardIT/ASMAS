@@ -45,9 +45,8 @@
                     <tr style="width:100%;">
                         <td style="width:20%;"><label>Date</label></td>
                         <td style="width:80%;">
-                            <div class="input-control text" data-role="datepicker" style="width: 100%;" data-format="d mmmm yy">
-                                <input type="text" name="dateCompleted" value="@Model.selectedDate.ToString("d MMM yy")" style="width: 100%;" class="text-small" />
-                                <button class="button"><span class="mif-calendar"></span></button>
+                            <div class="input-control">
+                                <input type="text" name="dateCompleted" id="dateCompleted"  value="@Model.selectedDate.ToString("yyyy/MM/dd")"  data-role="calendarpicker" data-dialog-mode="true" data-format="%d %b %Y" />
                             </div>
                         </td>
                     </tr>
@@ -57,7 +56,7 @@
             </td>
         </tr>
     </table>
-
+    <br /><br /><br />
     <ul class="step-list">
         <h5 class="title">@Model.question.Name</h5>
         <hr class="bg-blue" />
@@ -177,5 +176,8 @@
 
     </ul>
     <input type="submit" id="submit" style="display:none;" />
-    <button class="image-button success" onclick="$('#submit').trigger('click');"><span class="icon mif-floppy-disk"></span> Submit Answers</button>
+    <button class="image-button warning" onclick="$('#submit').click();">
+        <span class="mif-floppy-disk icon"></span>
+        <span class="caption">Submit</span>
+    </button>
     </form>

@@ -13,22 +13,21 @@
     AllowSave = false;
 }
 
-@*<button class="image-button success" onclick="$('#form0').submit();"><span class="icon mif-floppy-disk"></span> Save</button>*@
-<a class="image-button warning" href="~/Home/CreateUpdateQuestion?ID=@Model.question.ID"><span class="icon mif-pencil"></span> Edit Question</a>
-<a class="image-button warning" href="~/Home/Questions"><span class="icon mif-question"></span> Questions</a>
-@*<a class="image-button warning" href="~/Home/CreateUpdateQuestion?ID=@Model.question.ID"><span class="icon mif-cancel"></span> Cancel</a>*@
+<button class="image-button warning" onclick="window.location.href = '/Home/CreateUpdateQuestion?ID=@Model.question.ID';">
+    <span class="mif-pencil icon"></span>
+    <span class="caption">Edit Question</span>
+</button>
+<button class="image-button warning" onclick="window.location.href = '/Home/Questions';">
+    <span class="mif-question icon"></span>
+    <span class="caption">Questions</span>
+</button>
 <hr class="thin bg-grayLighter">
 
 @* Question Summary *@
 <div class="grid" style="width:100%;">
     <div class="row" style="width:100%;">
-        <div class="" style="width:100%;">
-            <div class="panel" style="width:100%;height:100%;padding:5px;">
-                <div class="heading" style="background-color:#1F1C53;">
-                    <span class="icon mif-question" style="background-color:#1F1C53;"></span>
-                    <span class="title">Question</span>
-                </div>
-                <div class="content" style="padding:20px;">
+        <div class="cell">
+                <div class="content" style="padding:20px;background-color:#eff3f7;">
                     <br />
                     <table style="width: 95%;" align="center">
                         <tr>
@@ -113,7 +112,10 @@
                                         }
 
                                     </select>
-                                    <button type="submit" class="image-button success"><span class="icon mif-plus"></span> Import</button>
+                                    <button class="image-button warning" type="submit">
+                                        <span class="mif-plus icon"></span>
+                                        <span class="caption">Import</span>
+                                    </button>
                                 </form>
                             </td>
                         </tr>
@@ -121,121 +123,8 @@
                     </table>
 
                 </div>
-            </div>
 
         </div>
-
-        @*   <div class="" style="width:100%;">
-                <div class="panel" style="width:100%;height:100%;padding:5px;">
-                    <div class="heading">
-                        <span class="icon mif-info"></span>
-                        <span class="title">@Model.question.CalculationModel.Name</span>
-                    </div>
-                    <div class="content">
-                        <br />
-                        <br />
-                        <table style="width: 60%;" align="center">
-                            <tr style="width:100%;">
-                                <td style="width:100%;">
-                                    @if (Model.question.CalculationModel.eNumMapping == 1)
-                                    {
-
-                                        <label>A list of standard descriptions can be recorded against a question. Each description has an associated score.</label>
-                                            <br />
-                                            <br />
-                                            <label>The descriptions will be presented as a drop down list of options in the results gathering screens</label>
-                                            <br />
-                                            <br />
-                                            <br />
-                                            <br />
-                                            <br />
-                                            <br />
-                                            <br />
-                                            <br />
-                                    }
-                                    @if (Model.question.CalculationModel.eNumMapping == 2)
-                                    {
-                                        <label>For a question a numeric value range is mapped to a score value (e.g. range 0-10 maps to score 1, range 10-20 maps to score 2 etc. etc. above 100 maps to score 10).</label>
-                                            <br />
-                                            <br />
-                                            <label>The results gathering will allow for the input of numbers</label>
-                                            <br />
-                                            <br />
-                                            <br />
-                                            <br />
-                                            <br />
-                                            <br />
-                                            <br />
-                                                                            <br />
-                                    }
-                                    @if (Model.question.CalculationModel.eNumMapping == 3)
-                                    {
-                                        <label>The results gathering will allow for the input of a date.</label>
-                                            <br />
-                                            <br />
-                                            <label>For the question you can define a calculation of a number based on the difference between the input date and date the score is being calculated to. The number can be in days, weeks, months or years</label>
-                                            <br />
-                                            <br />
-                                            <label>This numeric value is then mapped via a range to a score value (as per numeric value above)</label>
-                                            <br />
-                                            <br />
-                                            <br />
-                                            <br />
-                                            <br />
-                                    }
-                                    @if (Model.question.CalculationModel.eNumMapping == 4)
-                                    {
-                                        <label>This allows for a set of questions to be gathered based on a questionnaire that has been created for the purpose. The results of all of the questions in the sub-questionnaire will be accumulated to a single score.</label>
-                                            <br />
-                                            <br />
-                                            <label>The accumulation can be done by averaging the results of the questionnaire answers or summing them. (Summing will need to be treated with caution to avoid the possibility of exceeding 10)</label>
-                                            <br />
-                                            <br />
-                                            <label>Summing has been offered as the “Condition of Worst Stacking” in the current spreadsheet sums the results of two questions Optionally the questionnaire can be specified to be asked once or multiple times. If it can be asked multiple times each instance must be tagged with a user input name (e.g. Counterparty)</label>
-                                    }
-                                    @if (Model.question.CalculationModel.eNumMapping == 5)
-                                    {
-                                        <label>A fall back for difficult situations where the score can be input directly and an explanation of the decision recorded</label>
-                                            <br />
-                                            <br />
-                                            <br />
-                                            <br />
-                                            <br />
-                                            <br />
-                                            <br />
-                                                                            <br />
-                                                                            <br />
-                                                                            <br />
-                                                                            <br />
-                                    }
-                                    @if (Model.question.CalculationModel.eNumMapping == 6)
-                                    {
-                                        <label>Question which allows only Yes or No as answers</label>
-                                        <br />
-                                            <br />
-                                            <br />
-                                            <br />
-                                            <br />
-                                            <br />
-                                            <br />
-                                            <br />
-                                                                            <br />
-                                                                            <br />
-                                                                            <br />
-                                    }
-                                </td>
-                            </tr>
-                        </table>
-                        @if (Model.question.CalculationModel.eNumMapping != 4)
-                        {
-                            <br />
-                        }
-                        <br />
-                        <br />
-                        <br />
-                    </div>
-                </div>
-            </div>*@
     </div>
 </div>
 
@@ -244,779 +133,801 @@
 {
     <div class="grid" style="width:100%;">
            <div class="row" style="width:100%;">
-               <div class="" style="width:100%;">
+               <div class="cell">
+                   <div class="content" style="padding:20px;background-color:#eff3f7;">
+                       <h3>Existing Answers</h3>
+                       <table id="jobDataTable" class="table striped table-border mt-4" data-rows="-1" data-show-table-info="false" data-role="table" data-auto-width="false" style="width:100%;" data-show-rows-steps="false" data-show-pagination="false">
 
-                   <div class="panel success" style="width:100%;padding:5px;">
-
-                       <div class="heading" style="background-color:#36CAB2;">
-                           <span class="title">Existing Answers</span>
-                       </div>
-                       <div class="content">
-                           <table id="ddlAnswers" class="border bordered">
-                               <thead>
+                           <thead>
+                               <tr>
+                                   <td>Description</td>
+                                   <td>Operator</td>
+                                   <td>Score</td>
+                                   <td></td>
+                               </tr>
+                           </thead>
+                           <tbody>
+                               @foreach (var answers in Model.ExistingAnswers.OrderByDescending(x => x.Score).ToList())
+                               {
                                    <tr>
-                                       <td>Description</td>
-                                       <td>Operator</td>
-                                       <td>Score</td>
-                                       <td></td>
+                                       <td>@answers.Description</td>
+                                       <td>=</td>
+                                       <td>@answers.Score</td>
+                                       <td>
+                                           @if (AllowSave)
+                                           {
+                                            <button class="image-button warning" onclick="window.location.href = '/Home/RemoveAnswer?ID=@answers.ID&qID=@Model.question.ID';">
+                                                <span class="mif-bin icon"></span>
+                                                <span class="caption">Delete</span>
+                                            </button>
+                                           }
+                                           else
+                                           {
+                                            <button class="image-button" onclick="alert('Unable to amend answers, this question has been answered'); return false;">
+                                                <span class="mif-bin icon"></span>
+                                                <span class="caption">Delete</span>
+                                            </button>
+                                                }
+
+                                       </td>
                                    </tr>
-                               </thead>
-                               <tbody>
-                                   @foreach (var answers in Model.ExistingAnswers.OrderByDescending(x => x.Score).ToList())
-                                   {
-                                       <tr>
-                                           <td>@answers.Description</td>
-                                           <td>=</td>
-                                           <td>@answers.Score</td>
-                                           <td>
-                                               @if (AllowSave)
-                                               {
-                                                   <a class="image-button warning" href="~/Home/RemoveAnswer?ID=@answers.ID&qID=@Model.question.ID"><span class="icon mif-bin"></span> Delete</a>
-                                               }
-                                               else
-                                               {
-                                                   <button class="image-button bg-lightGray fg-white" onclick="alert('Unable to amend answers, this question has been answered')"><span class="icon mif-bin"></span> Delete</button>
-                                               }
-
-                                           </td>
-                                       </tr>
-                                   }
+                               }
 
 
-                               </tbody>
-                           </table>
-                           <script>
-                               $(document).ready(function () {
-                                   $('#ddlAnswers').DataTable({
-                                       "order": [[1, "desc"]]
-                                   });
+                           </tbody>
+                       </table>
+                       <script>
+                           $(document).ready(function () {
+                               $('#ddlAnswers').DataTable({
+                                   "order": [[1, "desc"]]
                                });
-                           </script>
-                       </div>
+                           });
+                       </script>
                    </div>
-               </div>   <div class="" style="width:100%;">
-                <div class="panel success" style="width:100%;padding:5px;">
 
-                    <div class="heading" style="background-color:#36CAB2;">
-                        <span class="title">Add New Answer</span>
-                    </div>
-                    <div class="content">
-                        <form id="form1" action="/Home/AddAnswer" method="post">
-                            <input type="submit" id="submit" style="display:none;" />
-                            <br />
-                            <br />
-                            <div class="grid">
-                                <div class="row cells3">
+                   </div>   
+               <div class="cell">
+                   <div class="content" style="padding:20px;background-color:#eff3f7;">
+                       <h3>Add New Answer</h3>
+                       <form id="form1" action="/Home/AddAnswer" method="post">
+                           <input type="submit" id="submit" style="display:none;" />
+                           <br />
+                           <br />
+                           <div class="grid">
+                               <div class="row cells3">
 
-                                    <input type="hidden" name="QuestionID" value="@Model.question.ID" />
-                                    <div class="" style="width:100%;height:100%;padding:5px;">
-                                        <div class="heading">
-                                            <span class="title">Value</span>
-                                        </div>
-                                        <div class="input-control text" style="width:100%;">
-                                            @if (AllowSave)
-                                            {
-                                                <input type="text" name="value" style="width: 100%;" required />
-                                            }
-                                            else
-                                            {
-                                                <input type="text" name="value" style="width: 100%;" disabled />
-                                            }
-                                        </div>
-                                    </div>
-                                    <div class="" style="width:100%;height:100%;padding:5px;">
-                                        <div class="heading">
-                                            <span class="title">Operator</span>
-                                        </div>
-                                        <div class="input-control text" style="width:100%;">
+                                   <input type="hidden" name="QuestionID" value="@Model.question.ID" />
+                                   <div class="" style="width:100%;height:100%;padding:5px;">
+                                       <div class="heading">
+                                           <span class="title">Value</span>
+                                       </div>
+                                       <div class="input-control text" style="width:100%;">
+                                           @if (AllowSave)
+                                           {
+                                               <input type="text" name="value" style="width: 100%;" required />
+                                           }
+                                           else
+                                           {
+                                               <input type="text" name="value" style="width: 100%;" disabled />
+                                           }
+                                       </div>
+                                   </div>
+                                   <div class="" style="width:100%;height:100%;padding:5px;">
+                                       <div class="heading">
+                                           <span class="title">Operator</span>
+                                       </div>
+                                       <div class="input-control text" style="width:100%;">
 
-                                            <input type="text" name="operator" style="width: 100%;" value="=" disabled />
-                                        </div>
-                                    </div>
-                                    <div class="" style="width:100%;height:100%;padding:5px;">
-                                        <div class="heading">
-                                            <span class="title">Score</span>
-                                        </div>
-                                        <div class="input-control text" style="width:100%;">
-                                            @if (AllowSave)
-                                            {
-                                                <input type="number" name="score" style="width: 100%;" min="0" max="10" required />
-                                            }
-                                            else
+                                           <input type="text" name="operator" style="width: 100%;" value="=" disabled />
+                                       </div>
+                                   </div>
+                                   <div class="" style="width:100%;height:100%;padding:5px;">
+                                       <div class="heading">
+                                           <span class="title">Score</span>
+                                       </div>
+                                       <div class="input-control text" style="width:100%;">
+                                           @if (AllowSave)
+                                           {
+                                               <input type="number" name="score" style="width: 100%;" min="0" max="10" required />
+                                           }
+                                           else
 
-                                            {
-                                                <input type="number" name="score" style="width: 100%;" min="0" max="10" disabled />
-                                            }
-                                        </div>
-                                    </div>
+                                           {
+                                               <input type="number" name="score" style="width: 100%;" min="0" max="10" disabled />
+                                           }
+                                       </div>
+                                   </div>
 
-                                </div>
-                            </div>
-                            <br />
-                            <br />
-                            @if (AllowSave)
-                            {
-                                <button class="image-button success" onclick="$('#submit').trigger('click');"><span class="icon mif-plus"></span> Add Answer</button>
+                               </div>
+                           </div>
+                           <br />
+                           <br />
+                           @if (AllowSave)
+                           {
+                            <button class="image-button warning" onclick="$('#submit').trigger('click');">
+                                <span class="mif-plus icon"></span>
+                                <span class="caption">Add Answer</span>
+                            </button>
+                           }
+                           else
+                           {
+                            <button class="image-button" onclick="alert('Unable to amend answers, this question has been answered'); return false;">
+                                <span class="mif-plus icon"></span>
+                                <span class="caption">Add Answer</span>
+                            </button>
                             }
-                            else
-                            {
-                                <button class="image-button bg-lightGray fg-white" onclick="alert('Unable to amend answers, this question has been answered')"><span class="icon mif-plus"></span> Add Answer</button>
-                            }
 
 
-                            <br />
-                            <br />
-                        </form>
-                    </div>
+                           <br />
+                           <br />
+                       </form>
+                   </div>
+
+
 
                 </div>
 
             </div>
         </div>
-    </div>
 }
 
 @if (Model.question.CalculationModel.eNumMapping == 2) //Numeric
 {
     <div class="grid" style="width:100%;">
            <div class="row" style="width:100%;">
-            <div class="" style="width:100%;">
-                <div class="panel success" style="width:100%;padding:5px;">
-
-                    <div class="heading" style="background-color:#36CAB2;">
-                        <span class="title">Existing Answers</span>
-                    </div>
-                    <div class="content">
-                        <table id="numAnswers" class="border bordered">
-                            <thead>
+            <div class="cell">
+                <div class="content" style="padding:20px;background-color:#eff3f7;">
+                    <h3>Existing Answers</h3>
+                    <table id="numAnswers" class="border bordered">
+                        <thead>
+                            <tr>
+                                <td>Description</td>
+                                <td>Range</td>
+                                <td class="column"></td>
+                                <td>Score</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var answers in Model.ExistingAnswers.OrderByDescending(x => x.Score).ToList())
+                            {
                                 <tr>
-                                    <td>Description</td>
-                                    <td>Range</td>
-                                    <td class="column"></td>
-                                    <td>Score</td>
+                                    <td>@answers.Description</td>
+                                    <td>@Model.AnswerDescriptions.FirstOrDefault(x => x.Key == answers.ID).Value</td>
+                                    <td>
+                                        @if (AllowSave)
+                                        {
+                                            if (answers.CatchAll == false)
+                                            {
+                                            <button class="image-button warning" onclick="$('#submit').trigger('click');">
+                                                <span class="mif-plus icon"></span>
+                                                <span class="caption">Add Answer</span>
+                                            </button>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (answers.CatchAll == false)
+                                            {
+                                            <button class="image-button" onclick="alert('Unable to amend answers, this question has been answered'); return false;">
+                                                <span class="mif-plus icon"></span>
+                                                <span class="caption">Add Answer</span>
+                                            </button>
+                                            }
+                                        }
+
+                                    </td>
+                                    <td>@answers.Score</td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var answers in Model.ExistingAnswers.OrderByDescending(x => x.Score).ToList())
-                                {
-                                    <tr>
-                                        <td>@answers.Description</td>
-                                        <td>@Model.AnswerDescriptions.FirstOrDefault(x => x.Key == answers.ID).Value</td>
-                                        <td>
-                                            @if (AllowSave)
-                                            {
-                                                if (answers.CatchAll == false)
-                                                {
-                                                    <a class="image-button warning" href="~/Home/RemoveAnswer?ID=@answers.ID&qID=@Model.question.ID"><span class="icon mif-bin"></span> Delete</a>
-                                                }
-                                            }
-                                            else
-                                            {
-                                                if (answers.CatchAll == false)
-                                                {
-                                                    <button class="image-button bg-lightGray fg-white" onclick="alert('Unable to amend answers, this question has been answered')"><span class="icon mif-bin"></span> Delete</button>
-
-                                                }
-                                            }
-
-                                        </td>
-                                        <td>@answers.Score</td>
-                                    </tr>
-                                }
+                            }
 
 
-                            </tbody>
-                        </table>
-                        <script>
-                            $(document).ready(function () {
-                                $('#numAnswers').DataTable({
-                                    "order": [[3, "desc"]]
-                                });
+                        </tbody>
+                    </table>
+                    <script>
+                        $(document).ready(function () {
+                            $('#numAnswers').DataTable({
+                                "order": [[3, "desc"]]
                             });
-                        </script>
-                    </div>
+                        });
+                    </script>
                 </div>
-            </div>
-            <div class="" style="width:100%;">
-                <div class="panel success" style="width:100%;padding:5px;">
 
-                    <div class="heading" style="background-color:#36CAB2;">
-                        <span class="title">Add New Answer</span>
-                    </div>
-                    <div class="content">
-                        <form id="form1" action="/Home/AddAnswer" method="post">
-                            <input type="submit" id="submit" style="display:none;" />
-                            <br />
-                            <br />
-                            <div class="grid">
-                                <div class="row cells3">
+                </div>
+            <div class="cell">
+                <div class="content" style="padding:20px;background-color:#eff3f7;">
+                    <h3>Add New Answer</h3>
+                    <form id="form1" action="/Home/AddAnswer" method="post">
+                        <input type="submit" id="submit" style="display:none;" />
+                        <br />
+                        <br />
+                        <div class="grid">
+                            <div class="row cells3">
 
-                                    <input type="hidden" name="QuestionID" value="@Model.question.ID" />
-                                    <div class="" style="width:100%;height:100%;padding:5px;">
-                                        <div class="heading">
-                                            <span class="title">Operator</span>
-                                        </div>
-                                        <div class="input-control text" style="width:100%;">
-                                            @*<span class="mif-expand-more prepend-icon"></span>*@
-                                            @if (AllowSave)
-                                            {
-                                                <select name="OperatorID" style="width: 100%;" required>
-                                                    @foreach (var op in Model.Operators.ToList())
-                                                    {
-                                                        if (op.Operator.Trim() != "=")
-                                                        {
-                                                            <option value="@op.ID">@op.OperatorDescription</option>
-                                                        }
-
-                                                    }
-
-                                                </select>
-                                            }
-                                            else
-                                            {
-                                                <select name="OperatorID" style="width: 100%;" disabled>
-                                                    @foreach (var op in Model.Operators.ToList())
-                                                    {
-                                                        if (op.Operator.Trim() != "=")
-                                                        {
-                                                            <option value="@op.ID">@op.OperatorDescription</option>
-                                                        }
-                                                    }
-
-                                                </select>
-                                            }
-                                        </div>
+                                <input type="hidden" name="QuestionID" value="@Model.question.ID" />
+                                <div class="" style="width:100%;height:100%;padding:5px;">
+                                    <div class="heading">
+                                        <span class="title">Operator</span>
                                     </div>
-                                    <div class="" style="width:100%;height:100%;padding:5px;">
-                                        <div class="heading">
-                                            <span class="title">Value</span>
-                                        </div>
-                                        <div class="input-control text" style="width:100%;">
-                                            @if (AllowSave)
-                                            {
-                                                <input type="number" name="value" style="width: 100%;" required />
-                                            }
-                                            else
-                                            {
-                                                <input type="number" name="value" style="width: 100%;" disabled />
-                                            }
-                                        </div>
-                                    </div>
-                                    <div class="" style="width:100%;height:100%;padding:5px;">
-                                        <div class="heading">
-                                            <span class="title">Score</span>
-                                        </div>
-                                        <div class="input-control text" style="width:100%;">
-                                            @if (AllowSave)
-                                            {
-                                                <input type="number" name="score" style="width: 100%;" min="0" max="10" required />
-                                            }
-                                            else
-                                            {
-                                                <input type="number" name="score" style="width: 100%;" min="0" max="10" disabled />
-                                            }
-
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="row cells3">
-                                    <div class="" style="width:33%;height:100%;padding:5px;">
-                                        <div class="heading">
-                                            <span class="title">Catch All Score</span>
-                                        </div>
-                                        <div class="input-control text" style="width:100%;">
-                                            @if (AllowSave)
-                                            {
-                                                <input type="number" name="catchallscore" style="width: 100%;" min="0" value="@Model.CatchAllScore" required />
-                                            }
-                                            else
-                                            {
-                                                <input type="number" name="catchallscore" style="width: 100%;" min="0" value="@Model.CatchAllScore" disabled />
-                                            }
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="moreAND" class="row cells3" style="display:none;">
-
-                                    <div class="" style="width:100%;height:100%;padding:5px;">
-                                        <label>AND</label>
-                                    </div>
-                                </div>
-                                <div id="more" class="row cells3" style="display:none;">
-                                    <div class="" style="width:100%;height:100%;padding:5px;">
-                                        <div class="heading">
-                                            <span class="title">Operator</span>
-                                        </div>
-                                        <div class="input-control text" style="width:100%;">
-                                            @*<span class="mif-expand-more prepend-icon"></span>*@
-
-                                            <select name="MORE_OperatorID" style="width: 100%;">
+                                    <div class="input-control text" style="width:100%;">
+                                        @*<span class="mif-expand-more prepend-icon"></span>*@
+                                        @if (AllowSave)
+                                        {
+                                            <select name="OperatorID" style="width: 100%;" required>
                                                 @foreach (var op in Model.Operators.ToList())
                                                 {
-                                                    <option value="@op.ID">@op.OperatorDescription</option>
+                                                    if (op.Operator.Trim() != "=")
+                                                    {
+                                                        <option value="@op.ID">@op.OperatorDescription</option>
+                                                    }
+
                                                 }
 
                                             </select>
-                                        </div>
-                                    </div>
-                                    <div class="" style="width:100%;height:100%;padding:5px;">
-                                        <div class="heading">
-                                            <span class="title">Value</span>
-                                        </div>
-                                        <div class="input-control text" style="width:100%;">
-                                            <input type="number" id="MORE_value" name="MORE_value" style="width: 100%;" />
-                                        </div>
-                                    </div>
+                                        }
+                                        else
+                                        {
+                                            <select name="OperatorID" style="width: 100%;" disabled>
+                                                @foreach (var op in Model.Operators.ToList())
+                                                {
+                                                    if (op.Operator.Trim() != "=")
+                                                    {
+                                                        <option value="@op.ID">@op.OperatorDescription</option>
+                                                    }
+                                                }
 
-                                    <div class="" style="width:100%;height:100%;padding:5px;">
-                                        <div class="input-control text" style="width:100%;">
-                                        </div>
+                                            </select>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="" style="width:100%;height:100%;padding:5px;">
+                                    <div class="heading">
+                                        <span class="title">Value</span>
+                                    </div>
+                                    <div class="input-control text" style="width:100%;">
+                                        @if (AllowSave)
+                                        {
+                                            <input type="number" name="value" style="width: 100%;" required />
+                                        }
+                                        else
+                                        {
+                                            <input type="number" name="value" style="width: 100%;" disabled />
+                                        }
+                                    </div>
+                                </div>
+                                <div class="" style="width:100%;height:100%;padding:5px;">
+                                    <div class="heading">
+                                        <span class="title">Score</span>
+                                    </div>
+                                    <div class="input-control text" style="width:100%;">
+                                        @if (AllowSave)
+                                        {
+                                            <input type="number" name="score" style="width: 100%;" min="0" max="10" required />
+                                        }
+                                        else
+                                        {
+                                            <input type="number" name="score" style="width: 100%;" min="0" max="10" disabled />
+                                        }
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row cells3">
+                                <div class="" style="width:33%;height:100%;padding:5px;">
+                                    <div class="heading">
+                                        <span class="title">Catch All Score</span>
+                                    </div>
+                                    <div class="input-control text" style="width:100%;">
+                                        @if (AllowSave)
+                                        {
+                                            <input type="number" name="catchallscore" style="width: 100%;" min="0" value="@Model.CatchAllScore" required />
+                                        }
+                                        else
+                                        {
+                                            <input type="number" name="catchallscore" style="width: 100%;" min="0" value="@Model.CatchAllScore" disabled />
+                                        }
+
                                     </div>
                                 </div>
                             </div>
-                            <br />
-                            <br />
-                            @if (AllowSave)
-                            {
-                                @*<button class="image-button warning" onclick="$('#MORE_value').val(''); $('#more').toggle(); $('#moreAND').toggle(); return false;"><span class="icon mif-more-vert"></span> And...</button>*@
+                            <div id="moreAND" class="row cells3" style="display:none;">
 
-                                <button class="image-button success" onclick="$('#submit').trigger('click');"><span class="icon mif-plus"></span> Add Answer</button>
-                            }
-                            else
-                            {
-                                @*<button class="image-button bg-lightGray fg-white" onclick="alert('Unable to amend answers, this question has been answered')"><span class="icon mif-more-vert"></span> And...</button>*@
+                                <div class="" style="width:100%;height:100%;padding:5px;">
+                                    <label>AND</label>
+                                </div>
+                            </div>
+                            <div id="more" class="row cells3" style="display:none;">
+                                <div class="" style="width:100%;height:100%;padding:5px;">
+                                    <div class="heading">
+                                        <span class="title">Operator</span>
+                                    </div>
+                                    <div class="input-control text" style="width:100%;">
+                                        @*<span class="mif-expand-more prepend-icon"></span>*@
 
-                                <button class="image-button bg-lightGray fg-white" onclick="alert('Unable to amend answers, this question has been answered')"><span class="icon mif-plus"></span> Add Answer</button>
-                            }
+                                        <select name="MORE_OperatorID" style="width: 100%;">
+                                            @foreach (var op in Model.Operators.ToList())
+                                            {
+                                                <option value="@op.ID">@op.OperatorDescription</option>
+                                            }
 
-                            <br />
-                            <br />
-                        </form>
-                    </div>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="" style="width:100%;height:100%;padding:5px;">
+                                    <div class="heading">
+                                        <span class="title">Value</span>
+                                    </div>
+                                    <div class="input-control text" style="width:100%;">
+                                        <input type="number" id="MORE_value" name="MORE_value" style="width: 100%;" />
+                                    </div>
+                                </div>
+
+                                <div class="" style="width:100%;height:100%;padding:5px;">
+                                    <div class="input-control text" style="width:100%;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <br />
+                        @if (AllowSave)
+                        {
+                         
+                                <button class="image-button warning" onclick="$('#submit').trigger('click');">
+                                    <span class="mif-plus icon"></span>
+                                    <span class="caption">Add Answer</span>
+                                </button>
+                            
+                        }
+                        else
+                        {
+                                                            <button class="image-button" onclick="alert('Unable to amend answers, this question has been answered'); return false;">
+                                    <span class="mif-plus icon"></span>
+                                    <span class="caption">Add Answer</span>
+                                </button>
+                         
+                        }
+
+                        <br />
+                        <br />
+                    </form>
+                </div>
+
+
 
                 </div>
 
             </div>
         </div>
-    </div>
 }
 
 @if (Model.question.CalculationModel.eNumMapping == 3) //TimeSinceDate
 {
     <div class="grid" style="width:100%;">
         <div class="row cells2" style="width:100%;">
-               <div class="" style="width:100%;">
-                <div class="panel success" style="width:100%;padding:5px;">
+               <div class="cell">
+                   <div class="content" style="padding:20px;background-color:#eff3f7;">
+                       <h3>Existing Answers</h3>
+                       <table id="TimeSinceDateTable" class="border bordered">
+                           <thead>
+                               <tr>
+                                   <td>Description</td>
+                                   <td>Score</td>
+                                   <td></td>
+                               </tr>
+                           </thead>
+                           <tbody>
+                               @foreach (var answers in Model.ExistingAnswers.OrderByDescending(x => x.Score).ToList())
+                               {
+                                   <tr>
+                                       <td>@answers.Description</td>
+                                       <td>@answers.Score</td>
+                                       <td>
+                                           @if (AllowSave)
+                                           {
+                                               if (answers.CatchAll == false)
+                                               {
+                                                   <button class="image-button warning" onclick="window.location.href = '/Home/RemoveAnswer?ID=@answers.ID&qID=@Model.question.ID';">
+                                                       <span class="mif-bin icon"></span>
+                                                       <span class="caption">Delete</span>
+                                                   </button>
+                                               }
+                                           }
+                                           else
+                                           {
+                                               if (answers.CatchAll == false)
+                                               {
+                                                   <button class="image-button" onclick="alert('Unable to amend answers, this question has been answered'); return false;">
+                                                       <span class="mif-bin icon"></span>
+                                                       <span class="caption">Delete</span>
+                                                   </button>
+                                               }
+                                           }
 
-                    <div class="heading" style="background-color:#36CAB2;">
-                        <span class="title">Existing Answers</span>
-                    </div>
-                    <div class="content">
-                        <table id="TimeSinceDateTable" class="border bordered">
-                            <thead>
-                                <tr>
-                                    <td>Description</td>
-                                    <td>Score</td>
-                                    <td></td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var answers in Model.ExistingAnswers.OrderByDescending(x => x.Score).ToList())
-                                {
-                                    <tr>
-                                        <td>@answers.Description</td>
-                                        <td>@answers.Score</td>
-                                        <td>
-                                            @if (AllowSave)
-                                            {
-                                                if (!answers.CatchAll)
-                                                {
-                                                    <a class="image-button warning" href="~/Home/RemoveAnswer?ID=@answers.ID&qID=@Model.question.ID"><span class="icon mif-bin"></span> Delete</a>
-                                                }
-                                            }
-                                            else
-                                            {
-                                                if (!answers.CatchAll)
-                                                {
-                                                    <button class="image-button bg-lightGray fg-white" onclick="alert('Unable to amend answers, this question has been answered')"><span class="icon mif-bin"></span> Delete</button>
-                                                }
-                                            }
-
-                                        </td>
-                                    </tr>
-                                }
+                                       </td>
+                                   </tr>
+                               }
 
 
-                            </tbody>
-                        </table>
-                        <script>
-                            $(document).ready(function () {
-                                $('#TimeSinceDateTable').DataTable({
-                                    "order": [[1, "desc"]]
-                                });
-                            });
-                        </script>
-                    </div>
+                           </tbody>
+                       </table>
+                       <script>
+                           $(document).ready(function () {
+                               $('#TimeSinceDateTable').DataTable({
+                                   "order": [[1, "desc"]]
+                               });
+                           });
+                       </script>
+                   </div>
+
                 </div>
-            </div>
-               <div class="" style="width:100%;">
-                <div class="panel success" style="width:100%;padding:5px;">
+               <div class="cell">
+                   <div class="content" style="padding:20px;background-color:#eff3f7;">
+                       <h3>Add New Answer</h3>
+                       <form id="form1" action="/Home/AddAnswer" method="post">
+                           <input type="submit" id="submit" style="display:none;" />
+                           <br />
+                           <br />
+                           <div class="grid">
+                               <div class="row cells1">
 
-                    <div class="heading" style="background-color:#36CAB2;">
-                        <span class="title">Add New Answer</span>
-                    </div>
-                    <div class="content">
-                        <form id="form1" action="/Home/AddAnswer" method="post">
-                            <input type="submit" id="submit" style="display:none;" />
-                            <br />
-                            <br />
-                            <div class="grid">
-                                <div class="row cells1">
+                                   <input type="hidden" name="QuestionID" value="@Model.question.ID" />
+                                   <div class="" style="width:33%;height:100%;padding:5px;">
 
-                                    <input type="hidden" name="QuestionID" value="@Model.question.ID" />
-                                    <div class="" style="width:33%;height:100%;padding:5px;">
+                                   </div>
+                                   @*<div class="" style="width:33%;height:100%;padding:5px;">
+                                                                    <div class="heading">
+                                                                        <span class="title">Date</span>
+                                                                    </div>
+                                                                    <div class="input-control text" data-role="datepicker" style="width:100%;"   data-format="d mmm yy">
+                        @if (AllowSave)
+                        {
+                                                                        <input type="text" name="Date" id="Date" style="width: 100%;" />
+                        }
+                        else
+                        {
+                            <input type="text" name="Date" id="Date" style="width: 100%;" disabled/>
+                        }
+                                                                        <button class="button"><span class="mif-calendar"></span></button>
+                                                                    </div>
+                                                                </div>*@
+                               </div>
+                               <div class="row cells3">
+                                   <div class="" style="width:100%;height:100%;padding:5px;">
+                                       <div class="heading">
+                                           <span class="title">Within</span>
+                                       </div>
+                                       <div class="input-control text" style="width:100%;">
+                                           @if (AllowSave)
+                                           {
+                                               <input type="number" name="Within" style="width: 100%;" required />
+                                           }
+                                           else
+                                           {
+                                               <input type="number" name="Within" style="width: 100%;" disabled />
+                                           }
+                                       </div>
+                                   </div>
+                                   <div class="" style="width:100%;height:100%;padding:5px;">
+                                       <div class="heading">
+                                           <span class="title">Unit</span>
+                                       </div>
+                                       <div class="input-control text" style="width:100%;">
+                                           @*<span class="mif-expand-more prepend-icon"></span>*@
+                                           @if (AllowSave)
+                                           {
+                                               <select name='Unit' style='width: 100%;'>
+                                                   <option value="days">Days</option>
+                                                   <option value="weeks">Weeks</option>
+                                                   <option value="months">Months</option>
+                                                   <option value="years">Years</option>
+                                               </select>
+                                           }
+                                           else
+                                           {
+                                               <select name='Unit' style='width: 100%;' disabled>
+                                                   <option value="days">Days</option>
+                                                   <option value="weeks">Weeks</option>
+                                                   <option value="months">Months</option>
+                                                   <option value="years">Years</option>
+                                               </select>
+                                           }
+                                       </div>
+                                   </div>
+                                   <div class="" style="width:100%;height:100%;padding:5px;">
+                                       <div class="heading">
+                                           <span class="title">Score</span>
+                                       </div>
+                                       <div class="input-control text" style="width:100%;">
+                                           @if (AllowSave)
+                                           {
+                                               <input type="number" name="score" style="width: 100%;" min="0" max="10" required />
+                                           }
+                                           else
+                                           {
+                                               <input type="number" name="score" style="width: 100%;" min="0" max="10" disabled />
+                                           }
+                                       </div>
+                                   </div>
+                               </div>
+                               <div class="row cells3">
+                                   <div class="" style="width:33%;height:100%;padding:5px;">
+                                       <div class="heading">
+                                           <span class="title">Catch All Score</span>
+                                       </div>
+                                       <div class="input-control text" style="width:100%;">
+                                           @if (AllowSave)
+                                           {
+                                               <input type="number" name="catchallscore" style="width: 100%;" min="0" value="@Model.CatchAllScore" required />
+                                           }
+                                           else
+                                           {
+                                               <input type="number" name="catchallscore" style="width: 100%;" min="0" value="@Model.CatchAllScore" disabled />
+                                           }
 
-                                    </div>
-                                    @*<div class="" style="width:33%;height:100%;padding:5px;">
-                                                                                    <div class="heading">
-                                                                                        <span class="title">Date</span>
-                                                                                    </div>
-                                                                                    <div class="input-control text" data-role="datepicker" style="width:100%;"   data-format="d mmm yy">
-                                        @if (AllowSave)
-                                        {
-                                                                                        <input type="text" name="Date" id="Date" style="width: 100%;" />
-                                        }
-                                        else
-                                        {
-                                            <input type="text" name="Date" id="Date" style="width: 100%;" disabled/>
-                                        }
-                                                                                        <button class="button"><span class="mif-calendar"></span></button>
-                                                                                    </div>
-                                                                                </div>*@
-                                </div>
-                                <div class="row cells3">
-                                    <div class="" style="width:100%;height:100%;padding:5px;">
-                                        <div class="heading">
-                                            <span class="title">Within</span>
-                                        </div>
-                                        <div class="input-control text" style="width:100%;">
-                                            @if (AllowSave)
-                                            {
-                                                <input type="number" name="Within" style="width: 100%;" required />
-                                            }
-                                            else
-                                            {
-                                                <input type="number" name="Within" style="width: 100%;" disabled />
-                                            }
-                                        </div>
-                                    </div>
-                                    <div class="" style="width:100%;height:100%;padding:5px;">
-                                        <div class="heading">
-                                            <span class="title">Unit</span>
-                                        </div>
-                                        <div class="input-control text" style="width:100%;">
-                                            @*<span class="mif-expand-more prepend-icon"></span>*@
-                                            @if (AllowSave)
-                                            {
-                                                <select name='Unit' style='width: 100%;'>
-                                                    <option value="days">Days</option>
-                                                    <option value="weeks">Weeks</option>
-                                                    <option value="months">Months</option>
-                                                    <option value="years">Years</option>
-                                                </select>
-                                            }
-                                            else
-                                            {
-                                                <select name='Unit' style='width: 100%;' disabled>
-                                                    <option value="days">Days</option>
-                                                    <option value="weeks">Weeks</option>
-                                                    <option value="months">Months</option>
-                                                    <option value="years">Years</option>
-                                                </select>
-                                            }
-                                        </div>
-                                    </div>
-                                    <div class="" style="width:100%;height:100%;padding:5px;">
-                                        <div class="heading">
-                                            <span class="title">Score</span>
-                                        </div>
-                                        <div class="input-control text" style="width:100%;">
-                                            @if (AllowSave)
-                                            {
-                                                <input type="number" name="score" style="width: 100%;" min="0" max="10" required />
-                                            }
-                                            else
-                                            {
-                                                <input type="number" name="score" style="width: 100%;" min="0" max="10" disabled />
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row cells3">
-                                    <div class="" style="width:33%;height:100%;padding:5px;">
-                                        <div class="heading">
-                                            <span class="title">Catch All Score</span>
-                                        </div>
-                                        <div class="input-control text" style="width:100%;">
-                                            @if (AllowSave)
-                                            {
-                                                <input type="number" name="catchallscore" style="width: 100%;" min="0" value="@Model.CatchAllScore" required />
-                                            }
-                                            else
-                                            {
-                                                <input type="number" name="catchallscore" style="width: 100%;" min="0" value="@Model.CatchAllScore" disabled />
-                                            }
+                                       </div>
+                                   </div>
+                               </div>
 
-                                        </div>
-                                    </div>
-                                </div>
+                           </div>
+                           <br />
+                           <br />
+                           @if (AllowSave)
+                           {
+                              
+                                   <button class="image-button warning" onclick="$('#submit').trigger('click');">
+                                       <span class="mif-plus icon"></span>
+                                       <span class="caption">Add Answer</span>
+                                   </button>
+                              
+                           }
+                           else
+                           {
 
-                            </div>
-                            <br />
-                            <br />
-                            @if (AllowSave)
-                            {
-                                <button class="image-button success" onclick="$('#submit').trigger('click');"><span class="icon mif-plus"></span> Add Answer</button>
-                            }
-                            else
-                            {
-                                <button class="image-button bg-lightGray fg-white" onclick="alert('Unable to amend answers, this question has been answered')"><span class="icon mif-plus"></span> Add Answer</button>
-                            }
-                            <br />
-                            <br />
-                        </form>
-                    </div>
+                                   <button class="image-button" onclick="alert('Unable to amend answers, this question has been answered'); return false;">
+                                       <span class="mif-plus icon"></span>
+                                       <span class="caption">Add Answer</span>
+                                   </button>
+                              
+                           }
+                           <br />
+                           <br />
+                       </form>
+                   </div>
+
+
 
                 </div>
 
             </div>
         </div>
-    </div>
 }
 @if (Model.question.CalculationModel.eNumMapping == 4) //QuestionnaireResults
 {
     <div class="grid" style="width:100%;">
         <div class="row cells2" style="width:100%;">
-               <div class="" style="width:100%;">
-                <div class="panel success" style="width:100%;padding:5px;">
-
-                    <div class="heading" style="background-color:#36CAB2;">
-                        <span class="title">Existing Answers</span>
-                    </div>
-                    <div class="content">
-                        <table id="quResults" class="border bordered">
-                            <thead>
-                                <tr>
-                                    <td>Description</td>
-                                    <td>>Score</td>
-                                    <td></td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var answers in Model.ExistingAnswers.OrderByDescending(x => x.Score).ToList())
+            <div class="cell">
+                <div class="content" style="padding:20px;background-color:#eff3f7;">
+                    <h3>Existing Answers</h3>
+                    <table id="quResults" class="border bordered">
+                        <thead>
+                            <tr>
+                                <td>Description</td>
+                                <td>>Score</td>
+                                <td></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var answers in Model.ExistingAnswers.OrderByDescending(x => x.Score).ToList())
                                 {
-                                    <tr>
-                                        <td>@answers.Description</td>
-                                        <td>@answers.Score</td>
-                                        <td>
-                                            @if (AllowSave)
+                                <tr>
+                                    <td>@answers.Description</td>
+                                    <td>@answers.Score</td>
+                                    <td>
+                                        @if (AllowSave)
+                                        {
+                                            if (answers.CatchAll == false)
                                             {
-                                                if (!answers.CatchAll)
-                                                {
-                                                    <a class="image-button warning" href="~/Home/RemoveAnswer?ID=@answers.ID&qID=@Model.question.ID"><span class="icon mif-bin"></span> Delete</a>
-                                                }
+                                                <button class="image-button warning" onclick="window.location.href = '/Home/RemoveAnswer?ID=@answers.ID&qID=@Model.question.ID';">
+                                                    <span class="mif-bin icon"></span>
+                                                    <span class="caption">Delete</span>
+                                                </button>
                                             }
-                                            else
+                                        }
+                                        else
+                                        {
+                                            if (answers.CatchAll == false)
                                             {
-                                                if (!answers.CatchAll)
-                                                {
-                                                    <button class="image-button bg-lightGray fg-white" onclick="alert('Unable to amend answers, this question has been answered')"><span class="icon mif-bin"></span> Delete</button>
-                                                }
+                                                <button class="image-button" onclick="alert('Unable to amend answers, this question has been answered'); return false;">
+                                                    <span class="mif-bin icon"></span>
+                                                    <span class="caption">Delete</span>
+                                                </button>
                                             }
+                                        }
 
-                                        </td>
-                                    </tr>
+                                    </td>
+                                </tr>
                                 }
 
 
-                            </tbody>
-                        </table>
-                        <script>
+                        </tbody>
+                    </table>
+                    <script>
                             $(document).ready(function () {
                                 $('#quResults').DataTable({
                                     "order": [[1, "desc"]]
                                 });
                             });
-                        </script>
-                    </div>
+                    </script>
                 </div>
             </div>
-               <div class="" style="width:100%;">
-                <div class="panel success" style="width:100%;padding:5px;">
 
-                    <div class="heading" style="background-color:#36CAB2;">
-                        <span class="title">Add New Answer</span>
-                    </div>
-                    <div class="content">
-                        <form id="form1" action="/Home/AddAnswer" method="post">
-                            <input type="submit" id="submit" style="display:none;" />
-                            <br />
-                            <br />
-                            <div class="grid">
-                                <div class="row cells3">
+            <div class="cell">
+                <div class="content" style="padding:20px;background-color:#eff3f7;">
+                    <h3>Add New Answer</h3>
+                    <form id="form1" action="/Home/AddAnswer" method="post">
+                        <input type="submit" id="submit" style="display:none;" />
+                        <br />
+                        <br />
+                        <div class="grid">
+                            <div class="row cells3">
 
-                                    <input type="hidden" name="QuestionID" value="@Model.question.ID" />
-                                    <div class="" style="width:100%;height:100%;padding:5px;">
-                                        <div class="heading">
-                                            <span class="title">Operator</span>
-                                        </div>
-                                        <div class="input-control text" style="width:100%;">
-                                            @* <span class="mif-expand-more prepend-icon"></span>*@
-                                            @if (AllowSave)
-                                            {
-                                                <select name="OperatorID" style="width: 100%;" required>
-                                                    @foreach (var op in Model.Operators.ToList())
-                                                    {
-                                                        if (op.Operator.Trim() != "=")
-                                                        {
-                                                            <option value="@op.ID">@op.OperatorDescription</option>
-                                                        }
-                                                    }
-
-
-
-                                                </select>
-                                            }
-                                            else
-                                            {
-                                                <select name="OperatorID" style="width: 100%;" disabled>
-                                                    @foreach (var op in Model.Operators.ToList())
-                                                    {
-                                                        if (op.Operator.Trim() != "=")
-                                                        {
-                                                            <option value="@op.ID">@op.OperatorDescription</option>
-                                                        }
-                                                    }
-
-
-
-                                                </select>
-                                            }
-                                        </div>
+                                <input type="hidden" name="QuestionID" value="@Model.question.ID" />
+                                <div class="" style="width:100%;height:100%;padding:5px;">
+                                    <div class="heading">
+                                        <span class="title">Operator</span>
                                     </div>
-                                    <div class="" style="width:100%;height:100%;padding:5px;">
-                                        <div class="heading">
-                                            <span class="title">Questionnaire Result</span>
-                                        </div>
-                                        <div class="input-control text" style="width:100%;">
-                                            @if (AllowSave)
-                                            {
-                                                <input type="number" name="value" style="width: 100%;" required />
-                                            }
-                                            else
-                                            {
-                                                <input type="number" name="value" style="width: 100%;" disabled />
-                                            }
-                                        </div>
-                                    </div>
-                                    <div class="" style="width:100%;height:100%;padding:5px;">
-                                        <div class="heading">
-                                            <span class="title">Score</span>
-                                        </div>
-                                        <div class="input-control text" style="width:100%;">
-                                            @if (AllowSave)
-                                            {
-                                                <input type="number" name="score" style="width: 100%;" min="0" max="10" required />
-                                            }
-                                            else
-                                            {
-                                                <input type="number" name="score" style="width: 100%;" min="0" max="10" disabled />
-                                            }
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="row cells3">
-                                    <div class="" style="width:33%;height:100%;padding:5px;">
-                                        <div class="heading">
-                                            <span class="title">Catch All Score</span>
-                                        </div>
-                                        <div class="input-control text" style="width:100%;">
-                                            @if (AllowSave)
-                                            {
-                                                <input type="number" name="catchallscore" style="width: 100%;" min="0" value="@Model.CatchAllScore" required />
-                                            }
-                                            else
-                                            {
-                                                <input type="number" name="catchallscore" style="width: 100%;" min="0" value="@Model.CatchAllScore" disabled />
-                                            }
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="moreAND" class="row cells3" style="display:none;">
-
-                                    <div class="" style="width:100%;height:100%;padding:5px;">
-                                        <label>AND</label>
-                                    </div>
-                                </div>
-                                <div id="more" class="row cells3" style="display:none;">
-                                    <div class="" style="width:100%;height:100%;padding:5px;">
-                                        <div class="heading">
-                                            <span class="title">Operator</span>
-                                        </div>
-                                        <div class="input-control text" style="width:100%;">
-                                            @*<span class="mif-expand-more prepend-icon"></span>*@
-                                            <select name="MORE_OperatorID" style="width: 100%;">
+                                    <div class="input-control text" style="width:100%;">
+                                        @* <span class="mif-expand-more prepend-icon"></span>*@
+                                        @if (AllowSave)
+                                        {
+                                            <select name="OperatorID" style="width: 100%;" required>
                                                 @foreach (var op in Model.Operators.ToList())
                                                 {
-                                                    <option value="@op.ID">@op.OperatorDescription</option>
+                                                    if (op.Operator.Trim() != "=")
+                                                    {
+                                                        <option value="@op.ID">@op.OperatorDescription</option>
+                                                    }
                                                 }
 
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="" style="width:100%;height:100%;padding:5px;">
-                                        <div class="heading">
-                                            <span class="title">Questionnaire Result</span>
-                                        </div>
-                                        <div class="input-control text" style="width:100%;">
-                                            <input type="number" id="MORE_value" name="MORE_value" style="width: 100%;" />
-                                        </div>
-                                    </div>
 
-                                    <div class="" style="width:100%;height:100%;padding:5px;">
-                                        <div class="input-control text" style="width:100%;">
-                                        </div>
+
+                                            </select>
+                                        }
+                                        else
+                                        {
+                                            <select name="OperatorID" style="width: 100%;" disabled>
+                                                @foreach (var op in Model.Operators.ToList())
+                                                {
+                                                    if (op.Operator.Trim() != "=")
+                                                    {
+                                                        <option value="@op.ID">@op.OperatorDescription</option>
+                                                    }
+                                                }
+
+
+
+                                            </select>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="" style="width:100%;height:100%;padding:5px;">
+                                    <div class="heading">
+                                        <span class="title">Questionnaire Result</span>
+                                    </div>
+                                    <div class="input-control text" style="width:100%;">
+                                        @if (AllowSave)
+                                        {
+                                            <input type="number" name="value" style="width: 100%;" required />
+                                        }
+                                        else
+                                        {
+                                            <input type="number" name="value" style="width: 100%;" disabled />
+                                        }
+                                    </div>
+                                </div>
+                                <div class="" style="width:100%;height:100%;padding:5px;">
+                                    <div class="heading">
+                                        <span class="title">Score</span>
+                                    </div>
+                                    <div class="input-control text" style="width:100%;">
+                                        @if (AllowSave)
+                                        {
+                                            <input type="number" name="score" style="width: 100%;" min="0" max="10" required />
+                                        }
+                                        else
+                                        {
+                                            <input type="number" name="score" style="width: 100%;" min="0" max="10" disabled />
+                                        }
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row cells3">
+                                <div class="" style="width:33%;height:100%;padding:5px;">
+                                    <div class="heading">
+                                        <span class="title">Catch All Score</span>
+                                    </div>
+                                    <div class="input-control text" style="width:100%;">
+                                        @if (AllowSave)
+                                        {
+                                            <input type="number" name="catchallscore" style="width: 100%;" min="0" value="@Model.CatchAllScore" required />
+                                        }
+                                        else
+                                        {
+                                            <input type="number" name="catchallscore" style="width: 100%;" min="0" value="@Model.CatchAllScore" disabled />
+                                        }
+
                                     </div>
                                 </div>
                             </div>
-                            <br />
-                            <br />
-                            @if (AllowSave)
-                            {
-                                @*<button class="image-button warning" onclick="$('#MORE_value').val(''); $('#more').toggle(); $('#moreAND').toggle(); return false;"><span class="icon mif-more-vert"></span> And...</button>*@
+                            <div id="moreAND" class="row cells3" style="display:none;">
 
-                                <button class="image-button success" onclick="$('#submit').trigger('click');"><span class="icon mif-plus"></span> Add Answer</button>
-                            }
-                            else
-                            {
-                                @*<button class="image-button bg-lightGray fg-white" onclick="alert('Unable to amend answers, this question has been answered')"><span class="icon mif-more-vert"></span> And...</button>*@
+                                <div class="" style="width:100%;height:100%;padding:5px;">
+                                    <label>AND</label>
+                                </div>
+                            </div>
+                            <div id="more" class="row cells3" style="display:none;">
+                                <div class="" style="width:100%;height:100%;padding:5px;">
+                                    <div class="heading">
+                                        <span class="title">Operator</span>
+                                    </div>
+                                    <div class="input-control text" style="width:100%;">
+                                        @*<span class="mif-expand-more prepend-icon"></span>*@
+                                        <select name="MORE_OperatorID" style="width: 100%;">
+                                            @foreach (var op in Model.Operators.ToList())
+                                            {
+                                                <option value="@op.ID">@op.OperatorDescription</option>
+                                            }
 
-                                <button class="image-button bg-lightGray fg-white" onclick="alert('Unable to amend answers, this question has been answered')"><span class="icon mif-plus"></span> Add Answer</button>
-                            }
-                            <br />
-                            <br />
-                        </form>
-                    </div>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="" style="width:100%;height:100%;padding:5px;">
+                                    <div class="heading">
+                                        <span class="title">Questionnaire Result</span>
+                                    </div>
+                                    <div class="input-control text" style="width:100%;">
+                                        <input type="number" id="MORE_value" name="MORE_value" style="width: 100%;" />
+                                    </div>
+                                </div>
 
+                                <div class="" style="width:100%;height:100%;padding:5px;">
+                                    <div class="input-control text" style="width:100%;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <br />
+                        @if (AllowSave)
+                        {
+                          
+                                <button class="image-button warning" onclick="$('#submit').trigger('click');">
+                                    <span class="mif-plus icon"></span>
+                                    <span class="caption">Add Answer</span>
+                                </button>
+                           
+                        }
+                        else
+                        {
+                            
+                                <button class="image-button" onclick="alert('Unable to amend answers, this question has been answered'); return false;">
+                                    <span class="mif-plus icon"></span>
+                                    <span class="caption">Add Answer</span>
+                                </button>
+                         
+                        }
+                        <br />
+                        <br />
+                    </form>
                 </div>
 
             </div>
+
         </div>
-    </div>
+
+        </div>
 }
 @if (Model.question.CalculationModel.eNumMapping == 5) //ManualEntry
 {
@@ -1027,152 +938,157 @@
 {
     <div class="grid" style="width:100%;">
         <div class="row cells2" style="width:100%;">
-               <div class="" style="width:100%;">
-
-                <div class="panel success" style="width:100%;padding:5px;">
-
-                    <div class="heading" style="background-color:#36CAB2;">
-                        <span class="title">Existing Answers</span>
-                    </div>
-                    <div class="content">
-                        <table id="ddlAnswers" class="border bordered">
-                            <thead>
+            <div class="cell">
+                <div class="content" style="padding:20px;background-color:#eff3f7;">
+                    <h3>Existing Answers</h3>
+                    <table id="ddlAnswers" class="border bordered">
+                        <thead>
+                            <tr>
+                                <td>Description</td>
+                                <td>Operator</td>
+                                <td>Score</td>
+                                <td></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var answers in Model.ExistingAnswers.OrderByDescending(x => x.Score).ToList())
+                            {
                                 <tr>
-                                    <td>Description</td>
-                                    <td>Operator</td>
-                                    <td>Score</td>
-                                    <td></td>
+                                    <td>@answers.Description</td>
+                                    <td>=</td>
+                                    <td>@answers.Score</td>
+                                    <td>
+                                        @if (AllowSave)
+                                        {
+                                            <button class="image-button warning" onclick="window.location.href = '/Home/RemoveAnswer?ID=@answers.ID&qID=@Model.question.ID';">
+                                                <span class="mif-bin icon"></span>
+                                                <span class="caption">Delete</span>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button class="image-button" onclick="alert('Unable to amend answers, this question has been answered'); return false;">
+                                                <span class="mif-bin icon"></span>
+                                                <span class="caption">Delete</span>
+                                            </button>
+                                        }
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var answers in Model.ExistingAnswers.OrderByDescending(x => x.Score).ToList())
-                                {
-                                    <tr>
-                                        <td>@answers.Description</td>
-                                        <td>=</td>
-                                        <td>@answers.Score</td>
-                                        <td>
-                                            @if (AllowSave)
-                                            {
-                                                <a class="image-button warning" href="~/Home/RemoveAnswer?ID=@answers.ID&qID=@Model.question.ID"><span class="icon mif-bin"></span> Delete</a>
-                                            }
-                                            else
-                                            {
-                                                <button class="image-button bg-lightGray fg-white" onclick="alert('Unable to amend answers, this question has been answered')"><span class="icon mif-bin"></span> Delete</button>
-                                            }
-
-                                        </td>
-                                    </tr>
-                                }
+                            }
 
 
-                            </tbody>
-                        </table>
-                        <script>
-                            $(document).ready(function () {
-                                $('#ddlAnswers').DataTable({
-                                    "order": [[1, "desc"]]
-                                });
+                        </tbody>
+                    </table>
+                    <script>
+                        $(document).ready(function () {
+                            $('#ddlAnswers').DataTable({
+                                "order": [[1, "desc"]]
                             });
-                        </script>
-                    </div>
+                        });
+                    </script>
                 </div>
             </div>
-               <div class="" style="width:100%;">
-                <div class="panel success" style="width:100%;padding:5px;">
+            <div class="cell">
+                <div class="content" style="padding:20px;background-color:#eff3f7;">
+                    <h3>Add New Answer</h3>
+                    <form id="form1" action="/Home/AddAnswer" method="post">
+                        <input type="submit" id="submit" style="display:none;" />
+                        <br />
+                        <br />
+                        <div class="grid">
+                            <div class="row cells3">
 
-                    <div class="heading" style="background-color:#36CAB2;">
-                        <span class="title">Add New Answer</span>
-                    </div>
-                    <div class="content">
-                        <form id="form1" action="/Home/AddAnswer" method="post">
-                            <input type="submit" id="submit" style="display:none;" />
-                            <br />
-                            <br />
-                            <div class="grid">
-                                <div class="row cells3">
-
-                                    <input type="hidden" name="QuestionID" value="@Model.question.ID" />
-                                    <div class="" style="width:100%;height:100%;padding:5px;">
-                                        <div class="heading">
-                                            <span class="title">Value</span>
-                                        </div>
-                                        <div class="input-control text" style="width:100%;">
-                                            @if (AllowSave)
-                                            {
-                                                if (Model.ExistingAnswers.Count == 0)
-                                                {
-                                                    <input type="text" name="value" style="width: 100%;" value="Yes" />
-                                                }
-                                                if (Model.ExistingAnswers.Count == 1)
-                                                {
-                                                    <input type="text" name="value" style="width: 100%;" value="No" />
-                                                }
-
-
-                                            }
-                                            else
-                                            {
-                                                <input type="text" name="value" style="width: 100%;" disabled />
-                                            }
-                                        </div>
+                                <input type="hidden" name="QuestionID" value="@Model.question.ID" />
+                                <div class="" style="width:100%;height:100%;padding:5px;">
+                                    <div class="heading">
+                                        <span class="title">Value</span>
                                     </div>
-                                    <div class="" style="width:100%;height:100%;padding:5px;">
-                                        <div class="heading">
-                                            <span class="title">Operator</span>
-                                        </div>
-                                        <div class="input-control text" style="width:100%;">
-
-                                            <input type="text" name="operator" style="width: 100%;" value="=" disabled />
-                                        </div>
-                                    </div>
-                                    <div class="" style="width:100%;height:100%;padding:5px;">
-                                        <div class="heading">
-                                            <span class="title">Score</span>
-                                        </div>
-                                        <div class="input-control text" style="width:100%;">
-                                            @if (AllowSave)
+                                    <div class="input-control text" style="width:100%;">
+                                        @if (AllowSave)
+                                        {
+                                            if (Model.ExistingAnswers.Count == 0)
                                             {
-                                                <input type="number" name="score" style="width: 100%;" min="0" max="10" required />
+                                                <input type="text" name="value" style="width: 100%;" value="Yes" />
                                             }
-                                            else
-
+                                            if (Model.ExistingAnswers.Count == 1)
                                             {
-                                                <input type="number" name="score" style="width: 100%;" min="0" max="10" disabled />
+                                                <input type="text" name="value" style="width: 100%;" value="No" />
                                             }
-                                        </div>
-                                    </div>
 
+
+                                        }
+                                        else
+                                        {
+                                            <input type="text" name="value" style="width: 100%;" disabled />
+                                        }
+                                    </div>
                                 </div>
-                            </div>
-                            <br />
-                            <br />
-                            @if (AllowSave)
-                            {
-                                if (Model.ExistingAnswers.Count < 2)
-                                {
-                                    <button class="image-button success" onclick="$('#submit').trigger('click');"><span class="icon mif-plus"></span> Add Answer</button>
-                                }
-                                else
-                                {
-                                    <button class="image-button bg-lightGray fg-white" onclick="alert('Yes and no have already been added')"><span class="icon mif-plus"></span> Add Answer</button>
-                                }
+                                <div class="" style="width:100%;height:100%;padding:5px;">
+                                    <div class="heading">
+                                        <span class="title">Operator</span>
+                                    </div>
+                                    <div class="input-control text" style="width:100%;">
 
+                                        <input type="text" name="operator" style="width: 100%;" value="=" disabled />
+                                    </div>
+                                </div>
+                                <div class="" style="width:100%;height:100%;padding:5px;">
+                                    <div class="heading">
+                                        <span class="title">Score</span>
+                                    </div>
+                                    <div class="input-control text" style="width:100%;">
+                                        @if (AllowSave)
+                                        {
+                                            <input type="number" name="score" style="width: 100%;" min="0" max="10" required />
+                                        }
+                                        else
+
+                                        {
+                                            <input type="number" name="score" style="width: 100%;" min="0" max="10" disabled />
+                                        }
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <br />
+                        <br />
+                        @if (AllowSave)
+                        {
+                            if (Model.ExistingAnswers.Count < 2)
+                            {
+                                <button class="image-button warning" onclick="$('#submit').trigger('click');">
+                                    <span class="mif-plus icon"></span>
+                                    <span class="caption">Add Answer</span>
+                                </button>
                             }
                             else
                             {
-                                <button class="image-button bg-lightGray fg-white" onclick="alert('Unable to amend answers, this question has been answered')"><span class="icon mif-plus"></span> Add Answer</button>
+                                <button class="image-button warning" onclick="alert('Yes and no have already been added'); return false;">
+                                    <span class="mif-plus icon"></span>
+                                    <span class="caption">Add Answer</span>
+                                </button>
                             }
+                        }
+                        else
+                        {
+
+                                <button class="image-button" onclick="alert('Unable to amend answers, this question has been answered'); return false;">
+                                    <span class="mif-plus icon"></span>
+                                    <span class="caption">Add Answer</span>
+                                </button>
+                            
+                        }
 
 
-                            <br />
-                            <br />
-                        </form>
-                    </div>
-
+                        <br />
+                        <br />
+                    </form>
                 </div>
 
             </div>
+
         </div>
-    </div>
+
+        </div>
 }

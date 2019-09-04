@@ -1,33 +1,45 @@
 ﻿@model SITSAS.Models.QuestionsModel
 <script>
     function NewQuestion() {
-            @Html.Raw("$.ajax({ url: '/Home/CreateUpdateQuestion?', data: 'json', type: 'GET', data: 'IsPart=true', cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
-                        @Html.Raw("metroDialog.open('#popUp');")
+        $('#popUpContent').empty();
+            @Html.Raw("$.ajax({ url: '/Home/CreateUpdateQuestion?', data: 'json', type: 'GET', data: 'IsPart=true', cache: false, success: function (result) { $('#popUpContent').empty().append(result); }});")
+ @Html.Raw("Metro.dialog.open('#popUp');")
     }
     function EditQuestion(id) {
-        @Html.Raw("$.ajax({ url: '/Home/CreateUpdateQuestion?', data: 'json', type: 'GET', data: 'ID=' + id + '&IsPart=true', cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
-                    @Html.Raw("metroDialog.open('#popUp');")
+        $('#popUpContent').empty();
+        @Html.Raw("$.ajax({ url: '/Home/CreateUpdateQuestion?', data: 'json', type: 'GET', data: 'ID=' + id + '&IsPart=true', cache: false, success: function (result) { $('#popUpContent').empty().append(result); }});")
+ @Html.Raw("Metro.dialog.open('#popUp');")
     }
     function AddUpdateQuestionAnswers(id) {
-    @Html.Raw("$.ajax({ url: '/Home/AddUpdateQuestionAnswers?', data: 'json', type: 'GET', data: 'QuestionID=' + id + '&IsPart=true', cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
-                @Html.Raw("metroDialog.open('#popUp');")
+        $('#popUpContent').empty();
+    @Html.Raw("$.ajax({ url: '/Home/AddUpdateQuestionAnswers?', data: 'json', type: 'GET', data: 'QuestionID=' + id + '&IsPart=true', cache: false, success: function (result) { $('#popUpContent').empty().append(result); }});")
+ @Html.Raw("Metro.dialog.open('#popUp');")
     }
 </script>
 <h1 class="text-light">Questions<span class="mif-question place-left" style="padding-right:5px;"></span></h1>
 <hr class="thin bg-grayLighter">
 @if (Model.rights.CanAdd)
 {
-    <a class="image-button warning" onclick="NewQuestion();"><span class="icon mif-plus"></span> Create</a>
+    <button class="image-button warning" onclick="NewQuestion();">
+        <span class="mif-clipboard icon"></span>
+        <span class="caption">Create</span>
+    </button>
 }
 @if (Model.rights.CanView)
 {
-
-    <a class="image-button warning" href="~/Home/RetiredQuestions"><span class="icon mif-undo"></span> Retired Questions</a>
-    <a class="image-button warning" href="~/Home/FutureQuestions"><span class="icon mif-redo"></span> Future Questions</a>
+    <button class="image-button warning" onclick="window.location.href = '/Home/RetiredQuestions';">
+        <span class="mif-undo icon"></span>
+        <span class="caption">Retired Questions</span>
+    </button>
+    <button class="image-button warning" onclick="window.location.href = '/Home/FutureQuestions';">
+        <span class="mif-redo icon"></span>
+        <span class="caption">Future Questions</span>
+    </button>
 }
 <hr class="thin bg-grayLighter">
 <hr class="thin bg-grayLighter">
-<table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+<table id="jobDataTable" class="table striped table-border mt-4" data-rows="-1" data-show-table-info="false" data-role="table" data-auto-width="false" style="width:100%;" data-show-rows-steps="false" data-show-pagination="false">
+
     <thead>
         <tr>
             <td style="width: 30%" class="sortable-column">Name</td>
@@ -45,24 +57,29 @@
             foreach (var rCategories in Model.ExistingQuestions)
             {
                 <tr>
-                    <td>@rCategories.Name</td>
+                    <td><p class="fg-black" style="width:400px;  display:block;  word-break: break-word;white-space:normal;line-height:20px;">@rCategories.Name</p></td>
                     @*<td>@rCategories.CalculationModel.Name</td>*@
                     <td>@rCategories.SubCategory.Name</td>
                     <td>@rCategories.SubCategory.Category.Name</td>
                     <td>
                         @if (Model.rights.CanEdit)
                         {
-                            <a class="image-button warning" onclick="EditQuestion('@rCategories.ID');"><span class="icon mif-pencil"></span> Edit</a>
+                            <button class="image-button warning" onclick="EditQuestion('@rCategories.ID')">
+                                <span class="mif-pencil icon"></span>
+                                <span class="caption">Edit</span>
+                            </button>
                         }
                     </td>
                     <td>
                         @if (Model.rights.CanEdit)
                         {
-                            <a class="image-button warning" href="~/Home/AddUpdateQuestionAnswers?QuestionID=@rCategories.ID"><span class="icon mif-pencil"></span> Answer Options</a>
-                            @*<a class="image-button warning" onclick="AddUpdateQuestionAnswers('@rCategories.ID')"><span class="icon mif-pencil"></span> Answer Options</a>*@
-                        }
+                            <button class="image-button warning" onclick="window.location.href = '/Home/AddUpdateQuestionAnswers?QuestionID=@rCategories.ID';">
+                                <span class="mif-pencil icon"></span>
+                                <span class="caption">Answer Options</span>
+                            </button>
+                                                }
                     </td>
-                    
+
                 </tr>
             }
         }

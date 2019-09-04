@@ -43,7 +43,6 @@ namespace SITSAS
         public virtual DbSet<Question> Questions { get; set; }
         public virtual DbSet<Result_Answers> Result_Answers { get; set; }
         public virtual DbSet<Result_Answers_Fixings> Result_Answers_Fixings { get; set; }
-        public virtual DbSet<Result_Headers> Result_Headers { get; set; }
         public virtual DbSet<Result_Headers_Fixings> Result_Headers_Fixings { get; set; }
         public virtual DbSet<Role_Permissions> Role_Permissions { get; set; }
         public virtual DbSet<Role_User_PermissionMapping> Role_User_PermissionMapping { get; set; }
@@ -51,15 +50,15 @@ namespace SITSAS
         public virtual DbSet<StalenessProfile> StalenessProfiles { get; set; }
         public virtual DbSet<SubCategory> SubCategories { get; set; }
         public virtual DbSet<SystemSetting> SystemSettings { get; set; }
-        public virtual DbSet<vFixingResult> vFixingResults { get; set; }
-        public virtual DbSet<vQuestionnaireAnswer> vQuestionnaireAnswers { get; set; }
         public virtual DbSet<Area> Areas { get; set; }
         public virtual DbSet<FrequencyProfile> FrequencyProfiles { get; set; }
         public virtual DbSet<FrequencyProfile_Dates> FrequencyProfile_Dates { get; set; }
-        public virtual DbSet<Task> Tasks { get; set; }
         public virtual DbSet<TaskStatu> TaskStatus { get; set; }
         public virtual DbSet<Page> Pages { get; set; }
         public virtual DbSet<Page_Role_Mappings> Page_Role_Mappings { get; set; }
+        public virtual DbSet<Result_Headers> Result_Headers { get; set; }
+        public virtual DbSet<Task> Tasks { get; set; }
+        public virtual DbSet<Location_PermissionGroupTemplate> Location_PermissionGroupTemplate { get; set; }
     
         public virtual ObjectResult<Questionnaire> GetQuestionnairesForUser(string userID, Nullable<bool> includeDeleted)
         {
@@ -137,6 +136,24 @@ namespace SITSAS
                 new ObjectParameter("IncludeDeleted", typeof(bool));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Location>("GetLocationsForUser", mergeOption, userIDParameter, includeDeletedParameter);
+        }
+    
+        public virtual int ClearPartEnteredQuestionnaire(Nullable<System.Guid> iD)
+        {
+            var iDParameter = iD.HasValue ?
+                new ObjectParameter("ID", iD) :
+                new ObjectParameter("ID", typeof(System.Guid));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("ClearPartEnteredQuestionnaire", iDParameter);
+        }
+    
+        public virtual int ApproveQuestionnaire(Nullable<System.Guid> iD)
+        {
+            var iDParameter = iD.HasValue ?
+                new ObjectParameter("ID", iD) :
+                new ObjectParameter("ID", typeof(System.Guid));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("ApproveQuestionnaire", iDParameter);
         }
     }
 }

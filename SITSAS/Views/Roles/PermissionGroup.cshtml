@@ -3,8 +3,11 @@
 <h1 class="text-light">Permission Groups<span class="mif-users place-left" style="padding-right:5px;"></span></h1>
 <hr class="thin bg-grayLighter">
 @if (Model.Item2.CanAdd == true)
-    {
-<a class="image-button warning" href="~/Roles/PermissionGroupCreateNewScreen"><span class="icon mif-plus"></span> Create</a>
+{
+    <button class="image-button warning" onclick="window.location.href = '/Roles/PermissionGroupCreateNewScreen';">
+        <span class="mif-plus icon"></span>
+        <span class="caption">Create</span>
+    </button>
 }
 <hr class="thin bg-grayLighter">
 <hr class="thin bg-grayLighter">
@@ -22,7 +25,8 @@
     else
     {
 
-        <table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+        <table id="jobDataTable" class="table striped table-border mt-4" data-rows="-1" data-show-table-info="false" data-role="table" data-auto-width="false" style="width:100%;" data-show-rows-steps="false" data-show-pagination="false">
+
             <thead>
                 <tr>
                     <th>
@@ -39,7 +43,7 @@
             </thead>
             <tbody>
 
-                @foreach (var ExistingPermissionGroup in Model.Item1.ExistingPermissionGroups)
+                @foreach (var ExistingPermissionGroup in Model.Item1.ExistingPermissionGroups.Where(x => x.Hidden != true))
                 {
                     <tr>
                         <td>
@@ -48,13 +52,19 @@
                         <td>
                             @if (Model.Item2.CanEdit == true)
                             {
-                                <a class="image-button warning" href="~/Roles/AddUsersToGroup?GroupID=@ExistingPermissionGroup.ID"><span class="icon mif-user-plus"></span> Add Users</a>
+                                <button class="image-button warning" onclick="window.location.href = '/Roles/AddUsersToGroup?GroupID=@ExistingPermissionGroup.ID';">
+                                    <span class="mif-plus icon"></span>
+                                    <span class="caption">Add Users</span>
+                                </button>
                             }
                         </td>
                         <td>
                             @if (Model.Item2.CanEdit == true)
                             {
-                                <a class="image-button warning" href="~/Roles/PermissionGroupCreateNewScreen?ID=@ExistingPermissionGroup.ID"><span class="icon mif-pencil"></span> Edit</a>
+                                <button class="image-button warning" onclick="window.location.href = '/Roles/PermissionGroupCreateNewScreen?ID=@ExistingPermissionGroup.ID';">
+                                    <span class="mif-pencil icon"></span>
+                                    <span class="caption">Edit</span>
+                                </button>
                             }
                         </td>
                     </tr>

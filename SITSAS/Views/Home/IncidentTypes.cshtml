@@ -1,10 +1,12 @@
 ﻿@model SITSAS.Models.IncidentTypesModel
 <script>
     function NewIncidentType() {
+        $('#popUpItem').empty();
             @Html.Raw("$.ajax({ url: '/Home/CreateUpdateIncidentType?', data: 'json', type: 'GET', data: 'IsPart=true', cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
                         @Html.Raw("metroDialog.open('#popUp');")
     }
     function EditIncidentType(id) {
+        $('#popUpItem').empty();
         @Html.Raw("$.ajax({ url: '/Home/CreateUpdateIncidentType?', data: 'json', type: 'GET', data: 'ID=' + id + '&IsPart=true', cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
                     @Html.Raw("metroDialog.open('#popUp');")
     }
@@ -33,7 +35,8 @@
         }
     }
 </script>
-<table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+<table id="jobDataTable" class="table striped table-border mt-4" data-rows="-1" data-show-table-info="false" data-role="table" data-auto-width="false" style="width:100%;" data-show-rows-steps="false" data-show-pagination="false">
+
     <thead>
         <tr>
             <td style="width: 30%" class="sortable-column">Name of Incident Type</td>

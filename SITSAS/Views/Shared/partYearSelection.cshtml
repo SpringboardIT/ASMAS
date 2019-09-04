@@ -1,0 +1,35 @@
+﻿@model SITSAS.Models.DateSelectionModel
+
+<script>
+    function LoadMonthDropdown() {
+        @if (Model.header != null) {
+            @Html.Raw("$.ajax({ url: '/Home/LoadMonthsAvailableForQuestionnaireByYear?', data: 'json', type: 'GET', data: 'HeaderID=" + Model.header.ID + "&Year=' + $('#YearSelection').val(), cache: false, success: function (result) { $('#Month').empty().append(result); LoadPreviousAnswers(); } });")
+        }
+        else {
+            @Html.Raw("$.ajax({ url: '/Home/LoadMonthsAvailableForQuestionnaireByYear?', data: 'json', type: 'GET', data: 'QuestionnaireID=" + Model.QuestionnaireID + "&LocationID="+ Model.LocationID + "&Year=' + $('#YearSelection').val(), cache: false, success: function (result) { $('#Month').empty().append(result); }});")
+        }
+    }
+     @if (Model.SelectedValue > 0)
+     {
+                 @Html.Raw("$(document).ready(function() { LoadMonthDropdown(); });")
+
+     }
+</script>
+
+
+<div class="input-control text" style="width: 100%;">
+    <select id="YearSelection" name="YearSelection" style="width:100%;" class="text-small" onchange="LoadMonthDropdown();" required>
+        <option value="" disabled="disabled" selected="selected">Please select...</option>
+        @foreach (var option in Model.DropdownOptions.OrderBy(x => x).ToList())
+        {
+            if (Model.SelectedValue == option.Value)
+            {
+                <option value="@option.Value" selected>@option.Value</option>
+            }
+            else
+            {
+                <option value="@option.Value" @if (option.Disabled) { @Html.Raw("disabled")  }>@option.Value</option>
+            }
+        }
+    </select>
+</div>

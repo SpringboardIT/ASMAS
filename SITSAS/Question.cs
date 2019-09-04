@@ -34,6 +34,7 @@ namespace SITSAS
         public Nullable<System.Guid> StalenessProfileID { get; set; }
         public int DefaultValue { get; set; }
         public bool CanBeNotAnswered { get; set; }
+        public Nullable<System.Guid> PreviousQuestionID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Answer> Answers { get; set; }

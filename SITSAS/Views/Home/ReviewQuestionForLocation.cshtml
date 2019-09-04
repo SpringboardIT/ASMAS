@@ -1,0 +1,33 @@
+﻿@model SITSAS.Models.QuestionReviewLocationModel
+@{
+    ViewBag.Title = "ReviewLocation";
+}
+
+<h2>Location: @Model.location.Name</h2>
+<h4>Question: @Model.question.Name</h4>
+<hr class="thin bg-grayLighter">
+
+
+<table id="jobDataTable" class="table striped table-border mt-4" data-rows="-1" data-show-table-info="false" data-role="table" data-auto-width="false" style="width:100%;" data-show-rows-steps="false" data-show-pagination="false">
+
+    <thead>
+        <tr>
+            <td style="width: 24%" class="sortable-column">Completed By</td>
+            <td style="width: 25%" class="sortable-column">Answer</td>
+            <td style="width: 15%" class="sortable-column">Completed Date</td>
+            <td style="width: 15%" class="sortable-column">Selected Date</td>
+            <td style="width: 13%" class="sortable-column"></td>
+        </tr>
+    </thead>
+    @foreach (var answer in Model.answers)
+    {
+        <tr>
+            <td> @answer.Result_Headers.CompletedBy</td>
+            <td> @answer.RawAnswer</td>
+            <td> @answer.Result_Headers.CreatedDate.ToString("d MMM yy")</td>
+            <td> @answer.Result_Headers.SelectedDate.ToString("d MMM yy")</td>
+            <td><a class="image-button warning" href="~/Home/ShowQuestionnaireResults?HeaderID=@answer.Result_Headers.ID"><span class="icon mif-file-text"></span> Questionnaire</a></td>
+        </tr>
+
+    }
+</table>

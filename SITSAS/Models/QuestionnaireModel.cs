@@ -5,11 +5,31 @@ using System.Web;
 
 namespace SITSAS.Models
 {
+    public class DateSelectionModel
+    {
+        public int SelectedValue { get; set; }
+        public Result_Headers header { get; set; }
+        public List<QuestionnaireDropDown> DropdownOptions { get; set; }
+
+        public Guid QuestionnaireID { get; set; }
+        public Guid LocationID { get; set; }
+    }
+    public class QuestionnaireDropDown
+    {
+        public int Value { get; set; }
+        public bool Disabled { get; set; }
+    }
     public class QuestionnairesModel
     {
         public List<Questionnaire> ExistingQuestionnaires { get; set; }
         public AccessRights rights { get; set; }
+
+        public List<Result_Headers> ContinueQuestionnaires { get; set; }
+
+        public Guid ContinueHeaderID { get; set; }
+        public Guid ContinueQuestionnaireID { get; set; }
     }
+
       public class CreateUpdateQuestionnaireModel
     {
         public bool QuestionnaireExists { get; set; }
@@ -29,6 +49,10 @@ namespace SITSAS.Models
 
         public Guid IncidentTypeID { get; set; }
         public AccessRights rights { get; set; }
+        public Result_Headers ExistingHeader { get; set; }
+        public List<Result_Answers> ExistingAnswers { get; set; }
+
+        public Guid NewID { get; set; }
 
     }
     public class QuestionnaireGroupQuestions

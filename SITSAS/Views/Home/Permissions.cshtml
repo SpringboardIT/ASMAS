@@ -5,11 +5,26 @@
     }*@
 
 <h1 class="text-light">Permissions<span class="mif-unlock place-left" style="padding-right:5px;"></span></h1>
+<script>
+    function loadpermAccordionData(formName) {
+        if (formName != '') {
 
+
+
+            //if has customer or worker or whatever - filter here!!!!!  Guid? CustomerID = null, Guid? SiteID = null, Guid? WorkerID = null
+            @{ string URL = string.Empty;
+
+                URL = "$.ajax({ url: '/Home/GetRolePermissions?', data: 'json', type: 'GET', data: 'PageID=' + formName, cache: false, success: function (result) { $('#permissions-' + formName).empty().append(result); }});";
+            }
+            @Html.Raw(URL)
+        }
+    }
+
+</script>
 <div class="grid" style="width:75%;margin:auto">
     <div class="row">
         <div class="cell auto-size">
-            <div class="accordion" data-role="accordion" data-on-frame-opened="loadJobAccordionData(frame.find('.internalHeading').text())">
+            <div data-role="accordion" data-show-active="false" data-on-frame-open="loadpermAccordionData(arguments[0].find('.internalHeading').text())">
                 @foreach (var page in Model.OrderBy(x => x.DisplayOrder).ToList())
                 {
                     <div class="frame">
@@ -26,22 +41,7 @@
     </div>
 </div>
 
-<script>
-    function loadJobAccordionData(formName) {
-        if (formName != '') {
 
-
-
-            //if has customer or worker or whatever - filter here!!!!!  Guid? CustomerID = null, Guid? SiteID = null, Guid? WorkerID = null
-            @{ string URL = string.Empty;
-
-                URL = "$.ajax({ url: '/Home/GetRolePermissions?', data: 'json', type: 'GET', data: 'PageID=' + formName, cache: false }).success(function (result) { $('#permissions-' + formName).empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });";
-            }
-            @Html.Raw(URL)
-        }
-    }
-
-</script>
 
 
 

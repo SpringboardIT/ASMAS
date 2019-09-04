@@ -1,0 +1,6 @@
+﻿@model List<SITSAS.Models.MyTasksModel>
+
+@foreach(var item in Model)
+{
+    <div style="background-color:@item.Colour;width:30px;margin-right: 10px;float: left;text-align: center;">@item.NumberOfTasks</div>
+}

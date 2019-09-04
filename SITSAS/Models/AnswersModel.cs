@@ -33,4 +33,10 @@ namespace SITSAS.Models
         public Questionnaire questionnaire { get; set; }
         public List<Result_Headers> Header { get; set; }
     }
+   
+    public class ApprovedResults
+    {
+        public Questionnaire questionnaire { get; set; }
+        public List<Result_Headers_Fixings> Header { get; set; }
+    }
 }

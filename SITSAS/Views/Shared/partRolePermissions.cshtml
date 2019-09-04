@@ -2,10 +2,13 @@
 
 @if (Model.rights.CanEdit)
 {
-    <button class="image-button primary" onclick="$('#RolePermissionsubmit').trigger('click');"><span class="icon mif-floppy-disk"></span> Save</button>
+    <button class="image-button warning" onclick="$('#@Model.PageID.ToString()submit').trigger('click');">
+        <span class="mif-floppy-disk icon"></span>
+        <span class="caption">Save</span>
+    </button>
 }
-<form id="form0" action="/Home/SaveRolePermission" method="post">
-    <input type="submit" id="RolePermissionsubmit" style="display:none;" />
+<form action="/Home/SaveRolePermission" method="post">
+    <input type="submit" id="@Model.PageID.ToString()submit" style="display:none;" />
     <input type="hidden" name="PageID" value="@Model.PageID" />
     @if (Model.rights.CanEdit)
     {

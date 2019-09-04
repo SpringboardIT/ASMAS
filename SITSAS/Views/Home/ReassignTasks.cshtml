@@ -1,0 +1,36 @@
+﻿@model List<SITSAS.Models.DirectoryUser>
+
+<form id="form0" action="/Home/ReassignTasksToNewUser" method="post">
+    <input type="submit" id="submittask" style="display:none;" />
+    <label>From</label>
+
+    <div class="input-control text" style="width:100%;">
+        <select id='From' name='From' style='width: 100%;' required>
+
+            @foreach (var user in Model.OrderBy(x => x.Name))
+            {
+                                    <option value="@user.SN">@user.Name</option>
+            }
+
+        </select>
+
+    </div>
+    <label>To</label>
+    <div class="input-control text" style="width:100%;">
+        <select id='To' name='To' style='width: 100%;' required>
+
+            @foreach (var user in Model.OrderBy(x => x.Name))
+            {
+                <option value="@user.SN">@user.Name</option>
+            }
+
+        </select>
+
+    </div>
+
+    <button class="image-button warning" onclick="$('#submittask').click();">
+        <span class="mif-floppy-disk icon"></span>
+        <span class="caption">Apply</span>
+    </button>
+</form>
+

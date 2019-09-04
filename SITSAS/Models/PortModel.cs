@@ -10,6 +10,7 @@ namespace SITSAS.Models
         public List<LocationItem> ExistingLocations { get; set; }
         public List<Area> AllAreas { get; set; }
         public AccessRights rights { get; set; }
+        public List<Location_PermissionGroupTemplate> AllLocationPermissionGroups { get; set; }
     }
 
     public class LocationItem
@@ -17,6 +18,11 @@ namespace SITSAS.Models
         public Guid ID { get; set; }
         public string Name { get; set; }
         public string AreaName { get; set; }
+
+        public string User { get; set; }
+
+        public SortedList<Guid, string> PermissionGroupToUsername { get; set; }
+
     }
       public class CreateUpdateLocationModel
     {
@@ -24,5 +30,22 @@ namespace SITSAS.Models
         public Location ExistingLocation { get; set; }
         public List<Area> AllAreas { get; set; }
         public AccessRights rights { get; set; }
+
+        public List<DirectoryUser> AllUsers { get; set; }
+        public List<Location_PermissionGroupTemplate> AllLocationPermissionGroups { get; set; }
+        public SortedList<Guid, List<string>> PermissionGroupToUsername { get; set; }
+
+    }
+    public class ReviewLocationModel
+    {
+        public Location location { get; set; }
+        public List<Result_Headers> headers { get; set; }
+        public List<Question> questions { get; set; }
+    }
+    public class QuestionReviewLocationModel
+    {
+        public Location location { get; set; }
+        public List<Result_Answers> answers { get; set; }
+        public Question question { get; set; }
     }
 }

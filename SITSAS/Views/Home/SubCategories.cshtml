@@ -1,23 +1,29 @@
 ﻿@model SITSAS.Models.SubCategoriesModel
 <script>
     function NewSubCategory() {
-            @Html.Raw("$.ajax({ url: '/Home/CreateUpdateSubCategory?', data: 'json', type: 'GET', data: 'IsPart=true', cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
-                        @Html.Raw("metroDialog.open('#popUp');")
+        $('#popUpContent').empty();
+            @Html.Raw("$.ajax({ url: '/Home/CreateUpdateSubCategory?', data: 'json', type: 'GET', data: 'IsPart=true', cache: false, success: function (result) { $('#popUpContent').empty().append(result); } });")
+                    @Html.Raw("Metro.dialog.open('#popUp');")
     }
     function EditSubCategory(id) {
-        @Html.Raw("$.ajax({ url: '/Home/CreateUpdateSubCategory?', data: 'json', type: 'GET', data: 'ID=' + id + '&IsPart=true', cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
-                    @Html.Raw("metroDialog.open('#popUp');")
+        $('#popUpContent').empty();
+        @Html.Raw("$.ajax({ url: '/Home/CreateUpdateSubCategory?', data: 'json', type: 'GET', data: 'ID=' + id + '&IsPart=true', cache: false, success: function (result) { $('#popUpContent').empty().append(result); } });")
+                    @Html.Raw("Metro.dialog.open('#popUp');")
     }
 </script>
 <h1 class="text-light">Sub Categories<span class="mif-paragraph-left place-left" style="padding-right:5px;"></span></h1>
 <hr class="thin bg-grayLighter">
 @if (Model.rights.CanAdd)
 {
-    <a class="image-button warning" onclick="NewSubCategory();"><span class="icon mif-plus"></span> Create</a>
+    <button class="image-button warning" onclick="NewSubCategory();">
+        <span class="mif-clipboard icon"></span>
+        <span class="caption">Create</span>
+    </button>
 }
 <hr class="thin bg-grayLighter">
 <hr class="thin bg-grayLighter">
-<table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+<table id="jobDataTable" class="table striped table-border mt-4" data-rows="-1" data-show-table-info="false" data-role="table" data-auto-width="false" style="width:100%;" data-show-rows-steps="false" data-show-pagination="false">
+
     <thead>
         <tr>
             <td style="width: 30.83%" class="sortable-column">Name</td>
@@ -38,7 +44,10 @@
                     <td>
                         @if (Model.rights.CanEdit)
                         {
-                            <a class="image-button warning" onclick="EditSubCategory('@rCategories.ID');"><span class="icon mif-pencil"></span> Edit</a>
+                            <button class="image-button warning" onclick="EditSubCategory('@rCategories.ID')">
+                                <span class="mif-pencil icon"></span>
+                                <span class="caption">Edit</span>
+                            </button>
                         }
                         @*<a class="image-button alert"><span class="icon mif-bin"></span> Delete</a>*@
                     </td>

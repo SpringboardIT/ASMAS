@@ -27,6 +27,8 @@ namespace SITSAS.Models
         public bool ShowStalenessProfile { get; set; }
 
         public Guid DefaultStalenessID { get; set; }
+
+        public List<Question> RetiredQuestions { get; set; }
     }
     public class AnswerOneQuestionModel
     {

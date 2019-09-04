@@ -19,7 +19,12 @@ namespace SITSAS.Models
         public Task ExistingTask { get; set; }
         public AccessRights rights { get; set; }
         public List<DirectoryUser> AllUsers { get; set; }
+        public List<string> AssignedUsers { get; set; }
         public List<TaskStatu> AllTaskStatuses { get; set; }
+
+        public Guid HeaderID { get; set; }
+
+        public string CreatedFrom { get; set; }
     }
     public class MyTasksModel
     {
@@ -29,5 +34,7 @@ namespace SITSAS.Models
     public class GetTasksModel
     {
         public List<Task> Tasks { get; set; }
+        public List<Result_Headers> Headers { get; set; }
+        public List<Result_Headers_Fixings> FixedHeaders { get; set; }
     }
 }

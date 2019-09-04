@@ -1,3 +1,73 @@
-﻿<h3 class="text-light">Welcome to Milestones Trust Self Assessment System...</h3>
-<hr class="thin bg-grayLighter">
-<iframe width="1300" height="790" src="https://app.powerbi.com/view?r=eyJrIjoiYTFlOGJmNTQtZGJiNy00NzRiLTg1NTMtYTZmYmM0ZTA4NzE1IiwidCI6IjdhMWI3MzZlLWU3ODctNGM4ZS1hZTMxLTgzNmM5OTAwNWQxZCJ9" frameborder="0" allowFullScreen="false"></iframe>
+﻿@model SITSAS.Models.IndexModel
+<script>
+    $(document).ready(function () {
+    $("#questionnaireID").change(function () {
+        window.location.href = "?ID=" + $("#questionnaireID option:selected").val();
+
+    });
+    });
+</script>
+<label>Calculation Model</label>
+<div class="input-control text" style="width:100%;">
+    <select id='questionnaireID' name='questionnaireID' style='width: 100%;'>
+
+        @foreach (var questionnaire in Model.questionnaires.OrderBy(x => x.Name))
+        {
+
+            if (questionnaire.ID == Model.SelectedQuestionnaire)
+            {
+
+                <option value="@questionnaire.ID" selected="selected">@questionnaire.Name</option>
+            }
+            else
+            {
+                <option value="@questionnaire.ID">@questionnaire.Name</option>
+            }
+        }
+
+    </select>
+
+</div>
+
+
+<table class="table" data-rows="-1" data-show-table-info="false" data-auto-width="false" style="width:100%;padding:0.2rem;" data-show-pagination="false">
+    <thead>
+        <tr>
+            <td>Location</td>
+            @{ DateTime now = DateTime.Now.Date.AddMonths(1);
+                DateTime SixMonths = DateTime.Now.Date.AddMonths(-10); }
+            @foreach (FrequencyProfile_Dates date in Model.freqProfile.FrequencyProfile_Dates.Where(x => x.StartDate > SixMonths && x.EndDate < now && x.LocationID == Model.locations.FirstOrDefault().ID).OrderBy(x => x.StartDate))
+            {
+                <td>@date.EndDate.ToString("MM yyyy")</td>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Location location in Model.locations.OrderBy(x => x.Name))
+            {
+            <tr>
+
+                <td>@location.Name</td>
+                @foreach (FrequencyProfile_Dates date in Model.freqProfile.FrequencyProfile_Dates.Where(x => x.StartDate > SixMonths && x.EndDate < now && x.LocationID == Model.locations.FirstOrDefault().ID).OrderBy(x => x.StartDate))
+                {
+                    if (Model.questionnaires.FirstOrDefault(x => x.ID == Model.SelectedQuestionnaire).Result_Headers.Where(x => x.LocationID == location.ID && x.Submitted == true && x.SelectedDate >= date.StartDate && x.SelectedDate <= date.EndDate).ToList().Count > 0)
+                    {
+                        <td style="background-color:#19841a;border:solid;border-color:#e4e4e4;"></td>
+                    }
+                    else
+                    {
+                        if (Model.questionnaires.FirstOrDefault(x => x.ID == Model.SelectedQuestionnaire).Result_Headers.Where(x => x.LocationID == location.ID && x.Submitted == false && x.SelectedDate >= date.StartDate && x.SelectedDate <= date.EndDate).ToList().Count > 0)
+                        {
+                            <td style="background-color:#f87626;border:solid;border-color:#e4e4e4;"></td>
+                        }
+                        else
+                        {
+                            <td style="background-color:#e00039;border:solid;border-color:#e4e4e4;"></td>
+                        }
+                    }
+
+                }
+            </tr>
+        }
+    </tbody>
+</table>

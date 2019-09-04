@@ -1,27 +1,18 @@
 ﻿@model  SITSAS.Models.CreateUpdateRoleModel
-<button class="image-button warning" onclick="$('#submit').trigger('click');"><span class="icon mif-floppy-disk"></span> Save</button>
+
+<button class="image-button warning" onclick="$('#submit').click();">
+    <span class="mif-floppy-disk icon"></span>
+    <span class="caption">Save</span>
+</button>
+
 @if (Model.RoleExists)
 {
-    <a class="image-button warning" href="~/Home/DeleteRole?ID=@Model.ExistingRole.RoleID" onclick="return confirm('Are you sure you want to delete this item?')"><span class="icon mif-bin"></span> Delete</a>
-}
+        <button class="image-button warning" onclick="if (confirm('Are you sure you want to delete this item?') == true) { window.location.href = '/Home/DeleteRole?ID=@Model.ExistingRole.RoleID'; }">
+            <span class="mif-bin icon"></span>
+            <span class="caption">Delete</span>
+        </button>
+    }
 <hr class="thin bg-grayLighter">
-
-<div class="panel">
-    <div class="heading" style="background-color:#36CAB2;">
-        <span class="icon mif-location-city" style="background-color:#1F1C53;"></span>
-
-        @if (Model.RoleExists)
-        {
-            <span class="title">Update Role</span>
-
-        }
-        else
-        {
-            <span class="title">Create New Role</span>
-        }
-
-   
-    </div>
     <div class="content" style="background-color:#d7f4ef;">
 
         <form id="form0" action="/Home/SaveRole" method="post">
@@ -48,94 +39,6 @@
                         </div>
                     </td>
                 </tr>
-                @*<tr style="height: 40px;">
-                    <td>
-                        <label>Can Add:</label>
-                        @if (Model.RoleExists)
-                        {
-                            if (Model.ExistingRole.Role_Permissions.Where(x => x.CanAdd == true).ToList().Count > 0)
-                            {
-
-                                <input type="checkbox" name="PermAdd" id="PermAdd" checked="checked" style="width: 3%;" />
-                            }
-                            else
-                            {
-                                <input type="checkbox" name="PermAdd" id="PermAdd" style="width: 3%;" />
-                            }
-
-                        }
-                        else
-                        {
-                            <input type="checkbox" name="PermAdd" id="PermAdd" style="width: 3%;" />
-                        }
-                    </td>
-                </tr>
-                <tr style="height: 40px;">
-                    <td>
-                        <label>Can Edit:</label>
-                        @if (Model.RoleExists)
-                        {
-                            if (Model.ExistingRole.Role_Permissions.Where(x => x.CanEdit == true).ToList().Count > 0)
-                            {
-                                <input type="checkbox" name="PermEdit" id="PermEdit" checked="checked" style="width: 3%;" />
-                            }
-                            else
-                            {
-                                <input type="checkbox" name="PermEdit" id="PermEdit" style="width: 3%;" />
-                            }
-
-                        }
-                        else
-                        {
-                            <input type="checkbox" name="PermEdit" id="PermEdit" style="width: 3%;" />
-                        }
-                    </td>
-                </tr>
-                <tr style="height: 40px;">
-                    <td>
-                        <label>Can View:</label>
-                    
-                        @if (Model.RoleExists)
-                        {
-                            if (Model.ExistingRole.Role_Permissions.Where(x => x.CanView == true).ToList().Count > 0)
-                            {
-                                <input type="checkbox" name="PermView" id="PermView" checked="checked" style="width: 3%;" />
-                            }
-                            else
-                            {
-                                <input type="checkbox" name="PermView" id="PermView" style="width: 3%;" />
-                            }
-
-                        }
-                        else
-                        {
-                            <input type="checkbox" name="PermView" id="PermView" style="width: 3%;" />
-                        }
-                    </td>
-                </tr>
-
-                <tr style="height: 40px;">
-                    <td>
-                        <label>Can Delete:</label>
-                   
-                       @if (Model.RoleExists)
-                       {
-                           if (Model.ExistingRole.Role_Permissions.Where(x => x.CanDelete == true).ToList().Count > 0)
-                           {
-                                <input type="checkbox" name="PermDelete" id="PermDelete" checked="checked" style="width: 3%;" />
-                            }
-                            else
-                            {
-                                <input type="checkbox" name="PermDelete" id="PermDelete" style="width: 3%;" />
-                            }
-
-                        }
-                        else
-                        {
-                            <input type="checkbox" name="PermDelete" id="PermDelete" style="width: 3%;" />
-                        }
-                    </td>
-                </tr>*@
             </table>
 
         </form>
@@ -143,4 +46,3 @@
         <br />
 
     </div>
-</div>

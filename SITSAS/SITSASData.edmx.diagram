@@ -21,7 +21,6 @@
         <EntityTypeShape EntityType="SITSASModel.Question" Width="1.5" PointX="3" PointY="6.625" />
         <EntityTypeShape EntityType="SITSASModel.Result_Answers" Width="1.5" PointX="13.5" PointY="8.125" />
         <EntityTypeShape EntityType="SITSASModel.Result_Answers_Fixings" Width="1.5" PointX="10.5" PointY="8.125" />
-        <EntityTypeShape EntityType="SITSASModel.Result_Headers" Width="1.5" PointX="8.25" PointY="10.125" />
         <EntityTypeShape EntityType="SITSASModel.Result_Headers_Fixings" Width="1.5" PointX="5.25" PointY="10.125" />
         <EntityTypeShape EntityType="SITSASModel.Role_Permissions" Width="1.5" PointX="10" PointY="1.125" />
         <EntityTypeShape EntityType="SITSASModel.Role_User_PermissionMapping" Width="1.5" PointX="12.75" PointY="0.875" />
@@ -29,8 +28,6 @@
         <EntityTypeShape EntityType="SITSASModel.StalenessProfile" Width="1.5" PointX="0.75" PointY="4.875" />
         <EntityTypeShape EntityType="SITSASModel.SubCategory" Width="1.5" PointX="0.75" PointY="15.625" />
         <EntityTypeShape EntityType="SITSASModel.SystemSetting" Width="1.5" PointX="14.75" PointY="0.875" />
-        <EntityTypeShape EntityType="SITSASModel.vFixingResult" Width="1.5" PointX="14.75" PointY="3.875" />
-        <EntityTypeShape EntityType="SITSASModel.vQuestionnaireAnswer" Width="1.5" PointX="5.75" PointY="14.875" />
         <AssociationConnector Association="SITSASModel.FK_Answer_ScoreMappings_Answer_Operators" />
         <AssociationConnector Association="SITSASModel.FK_Answer_ScoreMappings_Answers" />
         <AssociationConnector Association="SITSASModel.FK_Answers_Questions" />
@@ -41,19 +38,14 @@
         <AssociationConnector Association="SITSASModel.FK_DataMappings_DataMappingTypes" />
         <AssociationConnector Association="SITSASModel.FK_IncidentTypes_Questionnaires" />
         <AssociationConnector Association="SITSASModel.FK_Result_Headers_Fixings_IncidentTypes" />
-        <AssociationConnector Association="SITSASModel.FK_Result_Headers_IncidentTypes" />
         <AssociationConnector Association="SITSASModel.FK_Result_Headers_Fixings_Ports" />
-        <AssociationConnector Association="SITSASModel.FK_Result_Headers_Ports" />
         <AssociationConnector Association="SITSASModel.FK_PermissionGroup_User_Mapping_PermissionGroup" />
         <AssociationConnector Association="SITSASModel.FK_QuestionnaireGroups_Questionnaires" />
         <AssociationConnector Association="SITSASModel.FK_Questions_Questionnaires" />
         <AssociationConnector Association="SITSASModel.FK_Result_Headers_Fixings_Questionnaires" />
-        <AssociationConnector Association="SITSASModel.FK_Result_Headers_Questionnaires" />
         <AssociationConnector Association="SITSASModel.FK_Questions_DashboardCategories" />
         <AssociationConnector Association="SITSASModel.FK_Questions_StalenessProfile" />
-        <AssociationConnector Association="SITSASModel.FK_Result_Answers_Result_Headers" />
         <AssociationConnector Association="SITSASModel.FK_Result_Answers_Fixings_Result_Headers_Fixings" />
-        <AssociationConnector Association="SITSASModel.FK_Result_Headers_Result_Headers" />
         <AssociationConnector Association="SITSASModel.FK_Result_Headers_Fixings_Result_Headers_Fixings" />
         <AssociationConnector Association="SITSASModel.FK_Permissions_Permissions" />
         <EntityTypeShape EntityType="SITSASModel.Area" Width="1.5" PointX="0.75" PointY="1" />
@@ -61,12 +53,20 @@
         <EntityTypeShape EntityType="SITSASModel.FrequencyProfile" Width="1.5" PointX="0.75" PointY="22.875" />
         <AssociationConnector Association="SITSASModel.FK_Questionnaires_FrequencyProfile" />
         <EntityTypeShape EntityType="SITSASModel.FrequencyProfile_Dates" Width="1.5" PointX="3.375" PointY="23.25" />
-        <EntityTypeShape EntityType="SITSASModel.Task" Width="1.5" PointX="11" PointY="16" />
         <EntityTypeShape EntityType="SITSASModel.TaskStatu" Width="1.5" PointX="8.75" PointY="16.5" />
         <AssociationConnector Association="SITSASModel.FK_FrequencyProfile_Dates_FrequencyProfile" />
-        <AssociationConnector Association="SITSASModel.FK_Tasks_TaskStatus" />
         <EntityTypeShape EntityType="SITSASModel.Page" Width="1.5" PointX="15.375" PointY="12.75" />
         <EntityTypeShape EntityType="SITSASModel.Page_Role_Mappings" Width="1.5" PointX="13.375" PointY="15.75" />
+        <EntityTypeShape EntityType="SITSASModel.Result_Headers" Width="1.5" PointX="8.25" PointY="9" />
+        <AssociationConnector Association="SITSASModel.FK_Result_Headers_IncidentTypes" />
+        <AssociationConnector Association="SITSASModel.FK_Result_Headers_Ports" />
+        <AssociationConnector Association="SITSASModel.FK_Result_Headers_Questionnaires" />
+        <AssociationConnector Association="SITSASModel.FK_Result_Answers_Result_Headers" />
+        <AssociationConnector Association="SITSASModel.FK_Result_Headers_Result_Headers" />
+        <EntityTypeShape EntityType="SITSASModel.Task" Width="1.5" PointX="11" PointY="15.75" />
+        <AssociationConnector Association="SITSASModel.FK_Tasks_TaskStatus" />
+        <EntityTypeShape EntityType="SITSASModel.Location_PermissionGroupTemplate" Width="1.5" PointX="7.5" PointY="19.625" />
+        <AssociationConnector Association="SITSASModel.FK_PermissionGroup_Location_PermissionGroupTemplate" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

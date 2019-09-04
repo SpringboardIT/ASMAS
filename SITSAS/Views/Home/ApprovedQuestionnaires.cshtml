@@ -1,0 +1,96 @@
+﻿@model SITSAS.Models.QuestionnairesModel
+<script>
+    function AnswerQuestionnaire(id) {
+        $('#popUpItem').empty();
+       @Html.Raw("$.ajax({ url: '/Home/AnswerQuestionnaire?', data: 'json', type: 'GET', data: 'ID=' + id + '&IsPart=true', cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
+                   @Html.Raw("metroDialog.open('#popUp');")
+    }
+    function ContinueQuestionnaire(id, headerid) {
+        $('#popUpItem').empty();
+     @Html.Raw("$.ajax({ url: '/Home/AnswerQuestionnaire?', data: 'json', type: 'GET', data: 'ID=' + id + '&IsPart=true&HeaderID=' + headerid, cache: false }).success(function (result) { $('#popUpItem').empty().append(result); }).error(function (xhr, textStatus, errorThrown) { });")
+                 @Html.Raw("metroDialog.open('#popUp');")
+    }
+</script>
+<h1 class="text-light">Approved Assessments<span class="mif-move-down place-left" style="padding-right:5px;"></span></h1>
+<hr class="thin bg-grayLighter">
+<script>
+                        // Close the dropdown if the user clicks outside of it
+                        window.onclick = function (event) {
+                            if (!event.target.matches('.sitdropbtn')) {
+
+                                var dropdowns = document.getElementsByClassName("sitdropdown-content");
+                                var i;
+                                for (i = 0; i < dropdowns.length; i++) {
+                                    var openDropdown = dropdowns[i];
+                                    if (openDropdown.classList.contains('show')) {
+                                        openDropdown.classList.remove('show');
+                                    }
+                                }
+                            }
+                        }
+</script>
+<table id="questionnaires" class="border bordered">
+    <thead>
+        <tr>
+            <td style="width: 65%" class="sortable-column">Name</td>
+            @*<td style="width: 7.5%"></td>*@
+            @*<td style="width: 7.5%"></td>*@
+            <td style="width: 7.5%"></td>
+        </tr>
+    </thead>
+    <tbody>
+@if (Model.rights.CanView)
+{
+    foreach (var rCategories in Model.ExistingQuestionnaires)
+    {
+            <tr>
+                <td>@rCategories.Name</td>
+                @*<td>
+@if (Model.rights.CanEdit)
+{
+                    <a class="image-button warning" onclick="AnswerQuestionnaire('@rCategories.ID')"><span class="icon mif-list-numbered"></span> Answer</a>
+}
+                </td>*@
+                <td>
+@if (Model.rights.CanView)
+{
+                    <a class="image-button warning" href="~/Home/ShowApprovedResults?QuestionnaireID=@rCategories.ID"><span class="icon mif-file-text"></span> Results</a>
+}
+                </td>
+                @*<td>
+@if (Model.rights.CanView)
+{
+                    <div class="sitdropdown">
+                        <a onclick="id_@rCategories.ID.ToString().Replace("-", "")Dropdown();" class="sitdropbtn image-button warning dropdown-toggle"><span class="icon mif-print"></span> Print</a>
+                        <div id="@rCategories.ID.ToString().Replace(" ", "").Replace("-", "")" class="sitdropdown-content">
+                            <a class="image-button danger" href="~/Home/PrintQuestionnaire?ID=@rCategories.ID&Type=PDF" target="_blank"><span class="icon mif-file-pdf"></span> PDF</a>
+                            <a class="image-button primary" href="~/Home/PrintQuestionnaire?ID=@rCategories.ID&Type=Docx"><span class="icon mif-file-word"></span> Word</a>
+                        </div>
+                    </div>
+                    <script>
+                        function id_@rCategories.ID.ToString().Replace("-", "")Dropdown() {
+                            document.getElementById('@rCategories.ID.ToString().Replace(" ", "").Replace("-", "")').classList.toggle("sitshow");
+                        }
+                    </script>
+}
+                </td>*@
+
+            </tr>
+    }
+}
+
+
+    </tbody>
+</table>
+
+<br />
+<br />
+
+
+<script>
+                            $(document).ready(function () {
+                                $('#questionnaires').DataTable({
+                                    "order": [[0, "asc"]]
+                                });
+                            });
+</script>

@@ -24,6 +24,8 @@ namespace SITSAS.Models
     {
         public bool PermissionGroupExists { get; set; }
         public PermissionGroup ExistingPermissionGroup { get; set; }
+
+        public List<PermissionGroup> AllPermissionGroups { get; set; }
         public bool HasUsers { get; set; }
 
         public List<Questionnaire> AllQuestionnaires { get; set; }

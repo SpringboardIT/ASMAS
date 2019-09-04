@@ -14,7 +14,33 @@ namespace SITSAS.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+        public ActionResult Index(Guid? ID)
+        {
+            using (SITSASEntities context = new SITSASEntities())
+            {
+                IndexModel model = new IndexModel();
+                model.locations = GetLocationsWhereAreaIsLive(context, true);
+                model.questionnaires = context.Questionnaires.Include("Result_Headers").Where(x => x.Deleted == false).ToList();
+                if (ID.HasValue)
+                {
+                    model.SelectedQuestionnaire = ID.Value;
+                }
+                else
+                {
+                    model.SelectedQuestionnaire = model.questionnaires.OrderBy(x => x.Name).FirstOrDefault().ID;
+                }
+                Guid FrequencyProfileID = model.questionnaires.FirstOrDefault(x => x.ID == model.SelectedQuestionnaire).FrequencyProfileID.Value;
+
+                model.freqProfile = context.FrequencyProfiles.Include("FrequencyProfile_Dates").FirstOrDefault(x => x.ID == FrequencyProfileID);
+                return View(model);
+
+            }
+
+
+
+
+        }
+        public ActionResult Home()
         {
             //using (SITSASEntities context = new SITSASEntities())
             //{
@@ -23,10 +49,202 @@ namespace SITSAS.Controllers
             return View();
         }
 
+        public ActionResult LoadPreviousAnswer(Guid QuestionnaireID, Guid QuestionID, int Year, int Month, Guid LocationID)
+        {
+            string model = "No Previous Answer";
+            using (SITSASEntities context = new SITSASEntities())
+            {
+                DateTime SelectedDate = new DateTime(Year, Month, 1);
+                List<Result_Headers> previousHeaders = context.Result_Headers.Where(x => x.SelectedDate < SelectedDate && x.Submitted == true).OrderByDescending(x => x.SelectedDate).ToList();
+                if (previousHeaders != null)
+                {
+                    foreach (Result_Headers previousHeader in previousHeaders)
+                    {
+                        Result_Answers previousAnswer = previousHeader.Result_Answers.Where(x => x.Answer.QuestionID == QuestionID).FirstOrDefault();
+                        if (previousAnswer != null)
+                        {
+                            model = "Previous Answer: " + previousAnswer.RawAnswer + " (" + previousHeader.SelectedDate.ToString("MM yyyy") + ")";
+                            if (!string.IsNullOrEmpty(previousAnswer.Comments))
+                            {
+                                model = model + "<br/><br/>Comments:" + previousAnswer.Comments;
+                            }
+                            break;
+                        }
+                    }
+                }
+
+
+            }
+            return this.Json(model, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public ActionResult ReassignTasks()
+        {
+            using (SITSASEntities context = new SITSASEntities())
+            {
+                List<DirectoryUser> usrs = ContextModel.GetUsersFromActiveDirectory(context);
+                return View(usrs);
+            }
+        }
+        public ActionResult ReassignTasksToNewUser(FormCollection form)
+        {
+            //from //to
+            string OldUser = form["From"];
+            string NewUser = form["To"];
+            using (SITSASEntities context = new SITSASEntities())
+            {
+                List<DataMapping> dMaps = context.DataMappings.Where(x => x.SecondaryID == OldUser.ToString() && x.DataMappingType.eNumMapping == (int)eDataMappingType.TaskToUser).ToList();
+                foreach (DataMapping dMap in dMaps)
+                {
+                    dMap.SecondaryID = NewUser;
+                }
+                context.SaveChanges();
+            }
+            return RedirectToAction("Tasks");
+        }
+
         public ActionResult Success()
         {
 
             return View();
+        }
+
+        public ActionResult LoadYearsAvailableForQuestionnaire(Guid? HeaderID, Guid? LocationID, Guid? QuestionnaireID)
+        {
+            DateSelectionModel model = new DateSelectionModel();
+            using (SITSASEntities context = new SITSASEntities())
+            {
+
+                List<Result_Headers> headers = null;
+                List<Result_Headers_Fixings> headers_fixings = null;
+                Result_Headers currentHeader = context.Result_Headers.FirstOrDefault(x => x.ID == HeaderID);
+                model.header = currentHeader;
+                if (currentHeader != null)
+                {
+                    headers = context.Result_Headers.Where(x => x.QuestionnaireID == currentHeader.QuestionnaireID && x.LocationID == currentHeader.LocationID && x.ID != currentHeader.ID).ToList();
+                    headers_fixings = context.Result_Headers_Fixings.Where(x => x.QuestionnaireID == currentHeader.QuestionnaireID && x.LocationID == currentHeader.LocationID).ToList();
+                    model.SelectedValue = currentHeader.SelectedDate.Year;
+                }
+                else
+                {
+
+                    model.LocationID = LocationID.Value;
+                    model.QuestionnaireID = QuestionnaireID.Value;
+                    headers = context.Result_Headers.Where(x => x.QuestionnaireID == QuestionnaireID && x.LocationID == LocationID).ToList();
+                    headers_fixings = context.Result_Headers_Fixings.Where(x => x.QuestionnaireID == QuestionnaireID && x.LocationID == LocationID).ToList();
+                }
+                SortedList<int, int> processedYears = new SortedList<int, int>();
+                foreach (Result_Headers header in headers)
+                {
+                    if (processedYears.ContainsKey(header.SelectedDate.Year))
+                    {
+                        processedYears[header.SelectedDate.Year] += 1;
+                    }
+                    else
+                    {
+                        processedYears.Add(header.SelectedDate.Year, 1);
+                    }
+                }
+                foreach (Result_Headers_Fixings headers_fixing in headers_fixings)
+                {
+                    if (processedYears.ContainsKey(headers_fixing.SelectedDate.Year))
+                    {
+                        processedYears[headers_fixing.SelectedDate.Year] += 1;
+                    }
+                    else
+                    {
+                        processedYears.Add(headers_fixing.SelectedDate.Year, 1);
+                    }
+                }
+
+                model.DropdownOptions = new List<QuestionnaireDropDown>();
+
+                int StartYear = 2019;
+                int CurrentYear = DateTime.Now.Year;
+                for (int i = StartYear; i <= CurrentYear; i++)
+                {
+                    QuestionnaireDropDown qDD = new QuestionnaireDropDown();
+                    qDD.Value = i;
+                    if (processedYears.ContainsKey(i))
+                    {
+                        if (processedYears[i] >= 12)
+                        {
+                            qDD.Disabled = true;
+                        }
+                        else
+                        {
+                            qDD.Disabled = false;
+                        }
+                    }
+                    else
+                    {
+                        qDD.Disabled = false;
+                    }
+                    model.DropdownOptions.Add(qDD);
+                }
+
+
+            }
+
+            return PartialView("partYearSelection", model);
+        }
+        public ActionResult LoadMonthsAvailableForQuestionnaireByYear(Guid? HeaderID, int Year, Guid? LocationID, Guid? QuestionnaireID)
+        {
+            DateSelectionModel model = new DateSelectionModel();
+            using (SITSASEntities context = new SITSASEntities())
+            {
+                List<Result_Headers> headers = null;
+                List<Result_Headers_Fixings> headers_fixings = null;
+                Result_Headers currentHeader = context.Result_Headers.FirstOrDefault(x => x.ID == HeaderID);
+                model.header = currentHeader;
+
+                if (currentHeader != null)
+                {
+                    model.SelectedValue = currentHeader.SelectedDate.Month;
+                    headers = context.Result_Headers.Where(x => x.QuestionnaireID == currentHeader.QuestionnaireID && x.LocationID == currentHeader.LocationID && x.ID != currentHeader.ID && x.SelectedDate.Year == Year).ToList();
+                    headers_fixings = context.Result_Headers_Fixings.Where(x => x.QuestionnaireID == currentHeader.QuestionnaireID && x.LocationID == currentHeader.LocationID && x.SelectedDate.Year == Year).ToList();
+                }
+                else
+                {
+                    model.LocationID = LocationID.Value;
+                    model.QuestionnaireID = QuestionnaireID.Value;
+                    headers = context.Result_Headers.Where(x => x.QuestionnaireID == QuestionnaireID && x.LocationID == LocationID && x.SelectedDate.Year == Year).ToList();
+                    headers_fixings = context.Result_Headers_Fixings.Where(x => x.QuestionnaireID == QuestionnaireID && x.LocationID == LocationID && x.SelectedDate.Year == Year).ToList();
+                }
+                List<int> processedMonths = new List<int>();
+                foreach (Result_Headers header in headers)
+                {
+                    if (!processedMonths.Contains(header.SelectedDate.Month))
+                    {
+                        processedMonths.Add(header.SelectedDate.Month);
+                    }
+                }
+                foreach (Result_Headers_Fixings headers_fixing in headers_fixings)
+                {
+                    if (!processedMonths.Contains(headers_fixing.SelectedDate.Month))
+                    {
+                        processedMonths.Add(headers_fixing.SelectedDate.Month);
+                    }
+                }
+                model.DropdownOptions = new List<QuestionnaireDropDown>();
+                for (int i = 1; i <= 12; i++)
+                {
+                    QuestionnaireDropDown qDD = new QuestionnaireDropDown();
+                    qDD.Value = i;
+                    if (processedMonths.Contains(i))
+                    {
+                        qDD.Disabled = true;
+                    }
+                    else
+                    {
+                        qDD.Disabled = false;
+                    }
+                    model.DropdownOptions.Add(qDD);
+                }
+            }
+
+            return PartialView("partMonthSelection", model);
         }
         #region Areas
         public ActionResult Areas()
@@ -49,7 +267,14 @@ namespace SITSAS.Controllers
                 return View(model);
             }
         }
-
+        public ActionResult ApproveQuestionnaire(Guid ID)
+        {
+            using (SITSASEntities context = new SITSASEntities())
+            {
+                context.ApproveQuestionnaire(ID);
+                return RedirectToAction("ApprovedQuestionnaires");
+            }
+        }
         public ActionResult CreateUpdateArea(Guid? ID, bool IsPart = false)
         {
             CreateUpdateAreaModel model = new CreateUpdateAreaModel();
@@ -278,7 +503,7 @@ namespace SITSAS.Controllers
                     rCat.DisplayName = form["DisplayName"];
                 }
 
-                    if (ID == new Guid())
+                if (ID == new Guid())
                 {
                     context.Categories.Add(rCat);
                 }
@@ -403,13 +628,53 @@ namespace SITSAS.Controllers
             {
                 //AccessRights Rights = ContextModel.DetermineAccess();
                 model.ExistingLocations = new List<LocationItem>();
+                model.AllLocationPermissionGroups = context.Location_PermissionGroupTemplate.ToList();
                 List<Location> locations = GetLocationsWhereAreaIsLive(context, true);
-                foreach(Location location in locations)
+                List<DirectoryUser> usrs = ContextModel.GetUsersFromActiveDirectory(context);
+                foreach (Location location in locations)
                 {
                     LocationItem lItem = new LocationItem();
                     lItem.ID = location.ID;
                     lItem.Name = location.Name;
                     lItem.AreaName = location.Area.Name;
+                    //lItem.User = "Not Assigned";
+                    //if (location.UserID != null)
+                    //{
+                    //    DirectoryUser usr = usrs.Where(x => x.SN == location.UserID).FirstOrDefault();
+                    //    if (usr != null)
+                    //    {
+                    //        lItem.User = usr.Name;
+                    //    }
+                    //}
+                    lItem.PermissionGroupToUsername = new SortedList<Guid, string>();
+                    foreach (Location_PermissionGroupTemplate permGroupTemplate in model.AllLocationPermissionGroups)
+                    {
+                        PermissionGroup pGroup = context.PermissionGroups.Where(x => x.TemplateID == permGroupTemplate.ID && x.GroupName.StartsWith(lItem.ID.ToString())).FirstOrDefault();
+                        if (pGroup != null)
+                        {
+                            if (pGroup.PermissionGroup_User_Mapping.ToList() != null)
+                            {
+                                string usersInGroup = "";
+                                foreach (var user in pGroup.PermissionGroup_User_Mapping.ToList())
+                                {
+
+
+                                    DirectoryUser usr = usrs.Where(x => x.SN == user.UserID).FirstOrDefault();
+                                    if (usr != null)
+                                    {
+                                        usersInGroup = usersInGroup + usr.Name + ", ";
+
+                                    }
+                                }
+                                if (!string.IsNullOrEmpty(usersInGroup))
+                                {
+                                    lItem.PermissionGroupToUsername.Add(permGroupTemplate.ID, usersInGroup.Trim().Substring(0, usersInGroup.Trim().Length - 1));
+                                }
+                            }
+
+                        }
+
+                    }
                     model.ExistingLocations.Add(lItem);
                 }
                 //model.ExistingLocations = context.Locations.Where(x => x.Deleted == false).ToList();
@@ -430,20 +695,49 @@ namespace SITSAS.Controllers
 
             using (SITSASEntities context = new SITSASEntities())
             {
+                List<DirectoryUser> usrs = ContextModel.GetUsersFromActiveDirectory(context);
+                model.AllLocationPermissionGroups = context.Location_PermissionGroupTemplate.ToList();
+                model.PermissionGroupToUsername = new SortedList<Guid, List<string>>();
                 if (ID.HasValue)
                 {
+
                     Location rCategory = context.Locations.Where(x => x.ID == ID.Value).FirstOrDefault();
                     if (rCategory != null)
                     {
                         model.ExistingLocation = rCategory;
                         model.LocationExists = true;
+                        CreatePermissionGroupsForLocation(ID.Value, context);
+                        model.PermissionGroupToUsername = new SortedList<Guid, List<string>>();
+                        foreach (Location_PermissionGroupTemplate permGroupTemplate in model.AllLocationPermissionGroups)
+                        {
+                            PermissionGroup pGroup = context.PermissionGroups.Where(x => x.TemplateID == permGroupTemplate.ID && x.GroupName.StartsWith(rCategory.ID.ToString())).FirstOrDefault();
+                            if (pGroup != null)
+                            {
+                                if (pGroup.PermissionGroup_User_Mapping.ToList() != null)
+                                {
+                                    List<string> SelectedValues = new List<string>();
+                                    foreach (var userMap in pGroup.PermissionGroup_User_Mapping)
+                                    {
+                                        SelectedValues.Add(userMap.UserID);
+                                    }
+                                    if (SelectedValues != null)
+                                    {
+                                        model.PermissionGroupToUsername.Add(permGroupTemplate.ID, SelectedValues);
+                                    }
+                                }
+
+                            }
+
+                        }
                     }
+
 
                 }
             }
             using (SITSASEntities context = new SITSASEntities())
             {
                 model.AllAreas = context.Areas.ToList();
+                model.AllUsers = ContextModel.GetUsersFromActiveDirectory(context);
             }
             if (IsPart)
             {
@@ -453,6 +747,25 @@ namespace SITSAS.Controllers
             {
                 return View(model);
             }
+        }
+        public void CreatePermissionGroupsForLocation(Guid ID, SITSASEntities context)
+        {
+            List<Location_PermissionGroupTemplate> template = context.Location_PermissionGroupTemplate.ToList();
+            foreach (Location_PermissionGroupTemplate temp in template)
+            {
+                PermissionGroup pg = context.PermissionGroups.FirstOrDefault(x => x.GroupName == ID + "-" + temp.Name);
+                if (pg == null)
+                {
+                    PermissionGroup newPG = new PermissionGroup();
+                    newPG.ID = Guid.NewGuid();
+                    newPG.GroupName = ID + "-" + temp.Name;
+                    newPG.Hidden = true;
+                    newPG.Deleted = false;
+                    newPG.TemplateID = temp.ID;
+                    context.PermissionGroups.Add(newPG);
+                }
+            }
+            context.SaveChanges();
         }
         public ActionResult DeleteLocation(Guid? ID)
         {
@@ -482,7 +795,6 @@ namespace SITSAS.Controllers
                 if (ID != new Guid())
                 {
                     Location = context.Locations.Where(x => x.ID == ID).FirstOrDefault();
-
                 }
                 else
                 {
@@ -494,10 +806,38 @@ namespace SITSAS.Controllers
                 Guid racID = new Guid();
                 Guid.TryParse(form["AreaID"], out racID);
                 Location.AreaID = racID;
+                Location.UserID = form["UserID"];
                 if (ID == new Guid())
                 {
                     context.Locations.Add(Location);
                 }
+
+
+                var allLocationPermissionGroups = context.Location_PermissionGroupTemplate.ToList();
+                foreach (var pGroupTemplate in allLocationPermissionGroups)
+                {
+                    PermissionGroup pg = context.PermissionGroups.FirstOrDefault(x => x.TemplateID == pGroupTemplate.ID && x.GroupName.StartsWith(Location.ID.ToString()));
+                    if (pg != null)
+                    {
+                        List<PermissionGroup_User_Mapping> permGroupUserColl = context.PermissionGroup_User_Mapping.Where(x => x.GroupID == pg.ID).ToList();
+                        context.PermissionGroup_User_Mapping.RemoveRange(permGroupUserColl);
+                        if (form.AllKeys.ToList().Contains(pGroupTemplate.ID.ToString()))
+                        {
+
+                            List<string> lgEmployeeIDs = SITMVCFormHelper.GetStringCollectionFromForm(form, pGroupTemplate.ID.ToString());
+                            foreach (string lgEmployeeID in lgEmployeeIDs)
+                            {
+                                PermissionGroup_User_Mapping permGroupUser = new PermissionGroup_User_Mapping();
+                                permGroupUser.MappingID = Guid.NewGuid();
+                                permGroupUser.UserID = lgEmployeeID;
+                                permGroupUser.GroupID = pg.ID;
+                                context.PermissionGroup_User_Mapping.Add(permGroupUser);
+                            }
+
+                        }
+                    }
+                }
+
 
                 context.SaveChanges();
             }
@@ -505,7 +845,45 @@ namespace SITSAS.Controllers
         }
         #endregion
 
-
+        public void CheckLocationPermissionsGroupByName(SITSASEntities context, Location Location, string PermissionName)
+        {
+            if (Location.UserID != null)
+            {
+                PermissionGroup PG = context.PermissionGroups.Where(x => x.GroupName == Location.Name && x.Hidden == true).FirstOrDefault();
+                if (PG == null)
+                {
+                    PG = new PermissionGroup();
+                    PG.ID = Guid.NewGuid();
+                    PG.GroupName = Location.Name;
+                    PG.Hidden = true;
+                    PG.Deleted = false;
+                    context.PermissionGroups.Add(PG);
+                    context.SaveChanges();
+                    PermissionGroup_User_Mapping PGum = new PermissionGroup_User_Mapping();
+                    PGum.GroupID = PG.ID;
+                    PGum.MappingID = Guid.NewGuid();
+                    PGum.UserID = Location.UserID;
+                    context.PermissionGroup_User_Mapping.Add(PGum);
+                    //Create User Link
+                }
+                else
+                {
+                    PermissionGroup_User_Mapping PGum = context.PermissionGroup_User_Mapping.Where(x => x.GroupID == PG.ID).FirstOrDefault();
+                    if (PGum == null)
+                    {
+                        PGum = new PermissionGroup_User_Mapping();
+                        PGum.GroupID = PG.ID;
+                        PGum.MappingID = Guid.NewGuid();
+                        PGum.UserID = Location.UserID;
+                        context.PermissionGroup_User_Mapping.Add(PGum);
+                    }
+                    else
+                    {
+                        PGum.UserID = Location.UserID;
+                    }
+                }
+            }
+        }
         #region QuestionnaireGroups
         public ActionResult QuestionnaireGroups()
         {
@@ -679,6 +1057,7 @@ namespace SITSAS.Controllers
                         {
                             QuestionWithOrder qWithOrder = new QuestionWithOrder();
                             qWithOrder.DisplayOrder = dataMap.DisplayOrder;
+                            //get previous answer here
                             qWithOrder.Question = model.AllQuestions.Where(x => x.ID == new Guid(dataMap.PrimaryID)).FirstOrDefault();
                             if (qWithOrder.Question != null)
                             {
@@ -893,6 +1272,24 @@ namespace SITSAS.Controllers
 
             return RedirectToAction("QuestionnaireGroupQuestions", new { ID = QuestionnaireGroupID });
         }
+
+        public ActionResult RemoveQuestionFromQuestionnaire(Guid QuestionnaireID, Guid QuestionID)
+        {
+
+            using (SITSASEntities context = new SITSASEntities())
+            {
+
+                DataMapping dMap = context.DataMappings.Where(x => x.DataMappingType.eNumMapping == (int)eDataMappingType.QuestionToQuestionnaire && x.PrimaryID == QuestionID.ToString() && x.SecondaryID == QuestionnaireID.ToString()).FirstOrDefault();
+                if (dMap != null)
+                {
+                    context.DataMappings.Remove(dMap);
+                    context.SaveChanges();
+                }
+
+            }
+
+            return RedirectToAction("QuestionnaireQuestions", new { ID = QuestionnaireID });
+        }
         #endregion
 
         #region Questionnaires
@@ -903,8 +1300,8 @@ namespace SITSAS.Controllers
                 //AccessRights Rights = ContextModel.DetermineAccess();
                 QuestionnairesModel model = new QuestionnairesModel();
                 model.rights = ContextModel.DetermineAccess();
-               List<Questionnaire> tempQuestionnaires = context.Questionnaires.Include("FrequencyProfile").Where(x => x.Deleted == false).ToList();
-               List<Questionnaire> userQuestionnaires = context.GetQuestionnairesForUser(ContextModel.GetCurrentUserSID(), false).ToList();
+                List<Questionnaire> tempQuestionnaires = context.Questionnaires.Include("FrequencyProfile").Where(x => x.Deleted == false).ToList();
+                List<Questionnaire> userQuestionnaires = context.GetQuestionnairesForUser(ContextModel.GetCurrentUserSID(), false).ToList();
                 model.ExistingQuestionnaires = new List<Questionnaire>();
                 foreach (Questionnaire uQuestionnaire in tempQuestionnaires)
                 {
@@ -912,12 +1309,37 @@ namespace SITSAS.Controllers
                     {
                         model.ExistingQuestionnaires.Add(uQuestionnaire);
                     }
-                   
+
+                }
+
+                return View(model);
+            }
+        }
+        public ActionResult AnswerQuestionnaires(Guid? ID)
+        {
+            using (SITSASEntities context = new SITSASEntities())
+            {
+                //AccessRights Rights = ContextModel.DetermineAccess();
+                QuestionnairesModel model = new QuestionnairesModel();
+                model.rights = ContextModel.DetermineAccess();
+                //model.ExistingQuestionnaires = context.Questionnaires.Where(x => x.Deleted == false).ToList();
+                model.ExistingQuestionnaires = context.GetQuestionnairesForUser(ContextModel.GetCurrentUserSID(), false).ToList();
+                model.ContinueQuestionnaires = new List<Result_Headers>();
+                string UserName = User.Identity.Name.Substring(User.Identity.Name.LastIndexOf(@"\") + 1, (User.Identity.Name.Length - User.Identity.Name.LastIndexOf(@"\")) - 1);
+                model.ContinueQuestionnaires = context.Result_Headers.Include("Questionnaire").Include("Location").Where(x => x.Submitted == false && x.CompletedBy == UserName).ToList();
+                if (ID.HasValue)
+                {
+                    var continues = model.ContinueQuestionnaires.FirstOrDefault(x => x.ID == ID);
+                    if (continues != null)
+                    {
+                        model.ContinueHeaderID = continues.ID;
+                        model.ContinueQuestionnaireID = continues.QuestionnaireID;
+                    }
                 }
                 return View(model);
             }
         }
-        public ActionResult AnswerQuestionnaires()
+        public ActionResult ReviewQuestionnaires()
         {
             using (SITSASEntities context = new SITSASEntities())
             {
@@ -929,13 +1351,24 @@ namespace SITSAS.Controllers
                 return View(model);
             }
         }
-
+        public ActionResult ApprovedQuestionnaires()
+        {
+            using (SITSASEntities context = new SITSASEntities())
+            {
+                //AccessRights Rights = ContextModel.DetermineAccess();
+                QuestionnairesModel model = new QuestionnairesModel();
+                model.rights = ContextModel.DetermineAccess();
+                //model.ExistingQuestionnaires = context.Questionnaires.Where(x => x.Deleted == false).ToList();
+                model.ExistingQuestionnaires = context.GetQuestionnairesForUser(ContextModel.GetCurrentUserSID(), false).ToList();
+                return View(model);
+            }
+        }
         public ActionResult CreateUpdateQuestionnaire(Guid? ID, bool IsPart = false)
         {
             CreateUpdateQuestionnaireModel model = new CreateUpdateQuestionnaireModel();
             model.rights = ContextModel.DetermineAccess();
             model.QuestionnaireExists = false;
-            
+
             using (SITSASEntities context = new SITSASEntities())
             {
                 model.AllFrequencyProfiles = context.FrequencyProfiles.Where(x => x.Deleted == false).ToList();
@@ -1012,13 +1445,51 @@ namespace SITSAS.Controllers
                 model.questionnaire = context.Questionnaires.Where(x => x.ID == QuestionnaireID).FirstOrDefault();
                 if (IncidentType)
                 {
-                    model.Header = context.Result_Headers.Include("Result_Answers").Include("Result_Answers.Answer").Include("Result_Answers.Answer.Question").Include("Location").Where(x => x.QuestionnaireID == QuestionnaireID && x.ParentID == null && x.IncidentTypeID == IncidentTypeID.Value).ToList();
+                    model.Header = context.Result_Headers.Include("Result_Answers").Include("Result_Answers.Answer").Include("Result_Answers.Answer.Question").Include("Location").Where(x => x.QuestionnaireID == QuestionnaireID && x.ParentID == null && x.IncidentTypeID == IncidentTypeID.Value && x.Submitted == true).ToList();
 
                 }
                 else
                 {
-                    model.Header = context.Result_Headers.Include("Result_Answers").Include("Result_Answers.Answer").Include("Result_Answers.Answer.Question").Include("Location").Where(x => x.QuestionnaireID == QuestionnaireID && x.ParentID == null && x.IncidentTypeID == null).ToList();
+                    model.Header = context.Result_Headers.Include("Result_Answers").Include("Result_Answers.Answer").Include("Result_Answers.Answer.Question").Include("Location").Where(x => x.QuestionnaireID == QuestionnaireID && x.ParentID == null && x.IncidentTypeID == null && x.Submitted == true).ToList();
 
+                }
+            }
+            return View(model);
+        }
+        public ActionResult ShowApprovedResults(Guid QuestionnaireID, bool IncidentType = false, Guid? IncidentTypeID = null)
+        {
+            ApprovedResults model = new ApprovedResults();
+            using (SITSASEntities context = new SITSASEntities())
+            {
+                model.questionnaire = context.Questionnaires.Where(x => x.ID == QuestionnaireID).FirstOrDefault();
+                if (IncidentType)
+                {
+                    model.Header = context.Result_Headers_Fixings.Include("Result_Answers_Fixings").Include("Result_Answers_Fixings.Answer").Include("Result_Answers_Fixings.Answer.Question").Include("Location").Where(x => x.QuestionnaireID == QuestionnaireID && x.ParentID == null && x.IncidentTypeID == IncidentTypeID.Value).ToList();
+
+                }
+                else
+                {
+                    model.Header = context.Result_Headers_Fixings.Include("Result_Answers_Fixings").Include("Result_Answers_Fixings.Answer").Include("Result_Answers_Fixings.Answer.Question").Include("Location").Where(x => x.QuestionnaireID == QuestionnaireID && x.ParentID == null && x.IncidentTypeID == null).ToList();
+
+                }
+            }
+            return View(model);
+        }
+
+        public ActionResult ShowApprovedQuestionnaireResults(Guid HeaderID, Guid? SubQuestionnaireID)
+        {
+            ApprovedResults model = new ApprovedResults();
+            using (SITSASEntities context = new SITSASEntities())
+            {
+                if (SubQuestionnaireID.HasValue)
+                {
+                    model.Header = context.Result_Headers_Fixings.Include("Result_Answers_Fixings").Include("Result_Answers_Fixings.Answer").Include("Result_Answers_Fixings.Answer.Question").Include("Location").Where(x => x.ParentID == HeaderID && x.QuestionnaireID == SubQuestionnaireID).ToList();
+                    model.questionnaire = model.Header.FirstOrDefault().Questionnaire;
+                }
+                else
+                {
+                    model.Header = context.Result_Headers_Fixings.Include("Result_Answers_Fixings").Include("Result_Answers_Fixings.Answer").Include("Result_Answers_Fixings.Answer.Question").Include("Location").Where(x => x.ID == HeaderID).ToList();
+                    model.questionnaire = model.Header.FirstOrDefault().Questionnaire;
                 }
             }
             return View(model);
@@ -1042,8 +1513,10 @@ namespace SITSAS.Controllers
             }
             return View(model);
         }
-        public ActionResult AnswerQuestionnaire(Guid ID, bool IsSub = false, Guid? IncidentTypeID = null, bool IsPart = false)
+        public ActionResult AnswerQuestionnaire(Guid ID, bool IsSub = false, Guid? IncidentTypeID = null, bool IsPart = false, Guid? HeaderID = null)
         {
+
+            //Create Questionnaire Results here!!!! - pass back to model lineID's (assign tasks to lines)
             AnswerQuestionnaireModel model = new AnswerQuestionnaireModel();
             model.rights = ContextModel.DetermineAccess();
             List<Area> Areas = new List<Area>();
@@ -1071,6 +1544,14 @@ namespace SITSAS.Controllers
                 {
                     model.IncidentTypeID = new Guid();
                 }
+
+                if (HeaderID != null)
+                {
+                    model.ExistingHeader = context.Result_Headers.FirstOrDefault(x => x.ID == HeaderID);
+                    model.ExistingAnswers = context.Result_Answers.Include("Answer").Where(x => x.HeaderID == HeaderID).ToList();
+                }
+
+                model.NewID = Guid.NewGuid();
             }
             if (IsSub || IsPart)
             {
@@ -1121,6 +1602,8 @@ namespace SITSAS.Controllers
 
         public ActionResult SubmitAnswers(FormCollection form, string submit)
         {
+
+            //Dont create Questionnaire - just update answers!!!!!!
             Result_Headers headerInfo = GetHeaderInfoFromForm(form);
             using (SITSASEntities context = new SITSASEntities())
             {
@@ -1182,14 +1665,41 @@ namespace SITSAS.Controllers
                     QuestionsAnswered += 1;
                     //}
                 }
+                bool SaveAndContinue = false;
                 if (QuestionsAnswered > 0)
                 {
+                    if (form.AllKeys.Contains("submit"))
+                    {
+                        headerInfo.Submitted = true;
+                    }
+                    Guid PartEnteredID = SITMVCFormHelper.GetGuidFromForm(form, "ContinuationID");
+                    if (PartEnteredID != null)
+                    {
+                        if (PartEnteredID != new Guid())
+                        {
+                            //clear header and lines
+                            context.ClearPartEnteredQuestionnaire(PartEnteredID);
+
+                            foreach (Task task in context.Tasks.Where(x => x.HeaderID == PartEnteredID).ToList())
+                            {
+                                task.HeaderID = headerInfo.ID;
+                            }
+                        }
+                    }
+
+
                     context.Result_Headers.Add(headerInfo);
                     context.SaveChanges();
 
+                    if (headerInfo.Submitted == true)
+                    {
+                        CreateDocument(headerInfo.QuestionnaireID, "PDF", headerInfo.ID);
+                    }
+                    else
+                    {
+                        return this.Json(headerInfo.ID, JsonRequestBehavior.AllowGet);
 
-                    CreateDocument(headerInfo.QuestionnaireID, "PDF", headerInfo.ID);
-
+                    }
                 }
                 else
                 {
@@ -1545,11 +2055,14 @@ namespace SITSAS.Controllers
 
             //model.CompletedBy = form["username"];
             model.CompletedBy = User.Identity.Name.Substring(User.Identity.Name.LastIndexOf(@"\") + 1, (User.Identity.Name.Length - User.Identity.Name.LastIndexOf(@"\")) - 1);
-            DateTime selectedDate = DateTime.MinValue;
-            DateTime.TryParse(form["dateCompleted"], out selectedDate);
+            DateTime selectedDate = new DateTime(SITMVCFormHelper.GetIntegerFromForm(form, "YearSelection"), SITMVCFormHelper.GetIntegerFromForm(form, "MonthSelection"), 1);
             model.CreatedDate = DateTime.Now;
             model.SelectedDate = selectedDate;
-            model.ID = Guid.NewGuid();
+            if (form.AllKeys.Contains("NewID"))
+            {
+                model.ID = SITMVCFormHelper.GetGuidFromForm(form, "NewID");
+            }
+
             Guid lgLocationID = new Guid();
             Guid.TryParse(form["LocationID"], out lgLocationID);
             model.LocationID = lgLocationID;
@@ -1880,6 +2393,7 @@ namespace SITSAS.Controllers
                             {
                                 QuestionWithOrder questWorder = new QuestionWithOrder();
                                 questWorder.DisplayOrder = dataMap.DisplayOrder;
+                                //get previous answer here
                                 questWorder.Question = question;
                                 qgdCategory.questions.Add(questWorder);
                             }
@@ -1905,6 +2419,16 @@ namespace SITSAS.Controllers
 
             //}
         }
+
+        public Result_Answers GetPreviousAnswer(Question question, Location location)
+        {
+            using (SITSASEntities context = new SITSASEntities())
+            {
+                Result_Answers answer = context.Result_Answers.Where(x => x.Answer.QuestionID == question.ID && x.Result_Headers.LocationID == location.ID && x.Result_Headers.Submitted == true).OrderByDescending(x => x.Result_Headers.SelectedDate).FirstOrDefault();
+                return answer;
+            }
+        }
+
         #region Questions
         public ActionResult Questions()
         {
@@ -1963,6 +2487,8 @@ namespace SITSAS.Controllers
                 model.AllCalculationModels = context.CalculationModels.Where(x => x.Deleted == false).ToList();
                 model.AllSubCategories = context.SubCategories.Where(x => x.Deleted == false).ToList();
                 model.AllQuestionnaires = context.Questionnaires.Where(x => x.Deleted == false).ToList();
+                DateTime ldNow = DateTime.Now.Date;
+                model.RetiredQuestions = context.Questions.Include("CalculationModel").Where(x => x.Deleted == false && x.EndDate < ldNow).ToList();
                 SystemSetting includeStaleness = context.SystemSettings.FirstOrDefault(x => x.Name == "ShowStaleness");
                 bool lbIncludeStaleness = false;
                 bool.TryParse(includeStaleness.Value, out lbIncludeStaleness);
@@ -2148,27 +2674,16 @@ namespace SITSAS.Controllers
                 }
                 if (form.AllKeys.Contains("StartDate"))
                 {
-                    DateTime ldStartDate = DateTime.MinValue;
-                    DateTime.TryParse(form["StartDate"], out ldStartDate);
-                    question.StartDate = ldStartDate;
+                    question.StartDate = SITMVCFormHelper.GetDateTimeFromForm(form, "StartDate");
                 }
                 if (form.AllKeys.Contains("EndDate"))
                 {
-                    CultureInfo ci = new CultureInfo(CultureInfo.CurrentCulture.LCID);
-                    ci.Calendar.TwoDigitYearMax = 2099;
-                    //Parse the date using our custom culture.
-                    string da = form["EndDate"];
-                    DateTime ldEndDate = DateTime.MinValue;
-                    if (da.Length == 8)
+                    question.EndDate = SITMVCFormHelper.GetDateTimeFromForm(form, "EndDate");
+                    if (question.EndDate == DateTime.MinValue)
                     {
-                        ldEndDate = DateTime.ParseExact(form["EndDate"], "d MMM yy", ci);
-                    }
-                    else
-                    {
-                        ldEndDate = DateTime.ParseExact(form["EndDate"], "dd MMM yy", ci);
-                    }
 
-                    question.EndDate = ldEndDate;
+                        question.EndDate = new DateTime(2099, 1, 1);
+                    }
                 }
                 //if (form.AllKeys.Contains("EndDate"))
                 //{
@@ -2192,7 +2707,10 @@ namespace SITSAS.Controllers
 
 
 
-
+                if (form.AllKeys.Contains("PreviousQuestionID"))
+                {
+                    question.PreviousQuestionID = SITMVCFormHelper.GetGuidFromForm(form, "PreviousQuestionID");
+                }
 
 
                 context.SaveChanges();
@@ -2204,6 +2722,30 @@ namespace SITSAS.Controllers
             return RedirectToAction("Questions");
         }
         #endregion
+        public ActionResult ReviewLocation(Guid LocationID)
+        {
+            ReviewLocationModel model = new ReviewLocationModel();
+            using (SITSASEntities context = new SITSASEntities())
+            {
+                model.questions = context.Questions.Where(x => x.Deleted == false).ToList();
+                model.headers = context.Result_Headers.Where(x => x.LocationID == LocationID && x.Submitted == true).ToList();
+                model.location = context.Locations.FirstOrDefault(x => x.ID == LocationID);
+            }
+            return View(model);
+        }
+        public ActionResult ReviewQuestionForLocation(FormCollection form)
+        {
+            Guid QuestionID = SITMVCFormHelper.GetGuidFromForm(form, "QuestionID");
+            Guid LocationID = SITMVCFormHelper.GetGuidFromForm(form, "LocationID");
+            QuestionReviewLocationModel model = new QuestionReviewLocationModel();
+            using (SITSASEntities context = new SITSASEntities())
+            {
+                model.question = context.Questions.FirstOrDefault(x => x.Deleted == false && x.ID == QuestionID);
+                model.answers = context.Result_Answers.Include("Result_Headers").Where(x => x.Result_Headers.LocationID == LocationID && x.Result_Headers.Submitted == true && x.Answer.Question.ID == QuestionID).ToList();
+                model.location = context.Locations.FirstOrDefault(x => x.ID == LocationID);
+            }
+            return View(model);
+        }
 
         private string GetDomain(SITSASEntities context)
         {
@@ -2440,7 +2982,7 @@ namespace SITSAS.Controllers
                 model.Questions = context.Questions.Where(x => x.Deleted == false && x.StartDate < ldNow && x.EndDate > ldNow && x.CalculationModelID == model.question.CalculationModelID && x.ID != model.question.ID).ToList();
             }
 
-          
+
             if (IsPart)
             {
                 return PartialView(model);
@@ -2459,7 +3001,7 @@ namespace SITSAS.Controllers
             {
                 List<Answer> answers = context.Answers.Where(x => x.QuestionID == CopyFromID && x.Deleted == false).ToList();
 
-                foreach(Answer answer in answers)
+                foreach (Answer answer in answers)
                 {
 
                     Answer newAnswer = new Answer();
@@ -2470,7 +3012,7 @@ namespace SITSAS.Controllers
                     newAnswer.QuestionID = QuestionID;
                     newAnswer.Score = answer.Score;
                     context.Answers.Add(newAnswer);
-                    
+
                     foreach (Answer_ScoreMappings ansScoreMap in newAnswer.Answer_ScoreMappings)
                     {
                         Answer_ScoreMappings newScoreMap = new Answer_ScoreMappings();
@@ -2480,8 +3022,8 @@ namespace SITSAS.Controllers
                         newScoreMap.OperatorID = ansScoreMap.OperatorID;
                         newScoreMap.Value = ansScoreMap.Value;
                         context.Answer_ScoreMappings.Add(ansScoreMap);
-                    } 
-                   
+                    }
+
 
                 }
                 context.SaveChanges();
@@ -2980,6 +3522,14 @@ namespace SITSAS.Controllers
                 return File(rHeader.PDFDocument, "application/pdf");
             }
         }
+        public ActionResult PrintApprovedResults(Guid ResultHeaderID)
+        {
+            using (SITSASEntities context = new SITSASEntities())
+            {
+                Result_Headers_Fixings rHeader = context.Result_Headers_Fixings.FirstOrDefault(x => x.ID == ResultHeaderID);
+                return File(rHeader.PDFDocument, "application/pdf");
+            }
+        }
         public ActionResult CreateDocument(Guid ID, string Type, Guid ResultHeaderID)
         {
             using (SITSASEntities context = new SITSASEntities())
@@ -3108,122 +3658,125 @@ namespace SITSAS.Controllers
             {
                 DateTime ldNow = DateTime.Now;
                 Question q = context.Questions.Where(x => x.ID == new Guid(dataMap.PrimaryID) && x.Deleted == false && x.StartDate < ldNow && x.EndDate > ldNow && x.SubCategory.Category.StartDate < ldNow && x.SubCategory.Category.EndDate > ldNow).FirstOrDefault();
-                DataRow qRow = dtQuestion.NewRow();
-                qRow["QuestionID"] = q.ID;
-                qRow["Name"] = q.Name;
-                if (header != null)
+                if (q != null)
                 {
-                    Result_Answers answer = header.Result_Answers.FirstOrDefault(x => x.Answer.QuestionID == q.ID);
-                    if (answer != null)
+                    DataRow qRow = dtQuestion.NewRow();
+                    qRow["QuestionID"] = q.ID;
+                    qRow["Name"] = q.Name;
+                    if (header != null)
                     {
-                        if (!string.IsNullOrEmpty(answer.RawAnswer))
+                        Result_Answers answer = header.Result_Answers.FirstOrDefault(x => x.Answer.QuestionID == q.ID);
+                        if (answer != null)
                         {
-                            qRow["RawAnswer"] = answer.RawAnswer;
-                        }
-                        if (!string.IsNullOrEmpty(answer.Comments))
-                        {
-                            qRow["Comments"] = answer.Comments;
-                        }
-
-                    }
-
-                }
-
-                if (!dashCatIDs.Contains(q.SubCategory.ID))
-                {
-                    DataRow dashboardCat = dtSubCategory.NewRow();
-                    dashboardCat["SubCategoryID"] = q.SubCategory.ID;
-                    dashboardCat["Name"] = q.SubCategory.DisplayName;
-                    dashboardCat["CategoryID"] = q.SubCategory.CategoryID;
-                    if (q.SubCategory.CategoryID.HasValue)
-                    {
-                        if (!assRiskIDs.Contains(q.SubCategory.CategoryID.Value))
-                        {
-                            DataRow assCat = dtCategory.NewRow();
-                            assCat["CategoryID"] = q.SubCategory.Category.ID;
-                            assCat["Name"] = q.SubCategory.Category.DisplayName;
-                            //assCat["QuestionnaireGroupID"] = qGroup.ID;
-                            assRiskIDs.Add(q.SubCategory.Category.ID);
-                            dtCategory.Rows.Add(assCat);
-                        }
-                    }
-                    dtSubCategory.Rows.Add(dashboardCat);
-                    dashCatIDs.Add(q.SubCategory.ID);
-                }
-
-                qRow["SubCategoryID"] = q.SubCategoryID;
-                dtQuestion.Rows.Add(qRow);
-                List<SystemSetting> settings = context.SystemSettings.ToList();
-                switch (q.CalculationModel.eNumMapping)
-                {
-                    case (int)eCalculationModels.DropDownLists:
-                        {
-                            foreach (Answer ans in q.Answers.Where(x => x.Deleted == false))
+                            if (!string.IsNullOrEmpty(answer.RawAnswer))
                             {
-                                DataRow nar = dtAnswers.NewRow();
-                                nar["QuestionID"] = q.ID;
-                                //nar["ImagePath"] = settings.FirstOrDefault(x => x.Name == "Image_DropDownList").Value;
-                                nar["Description"] = ans.Description;
-                                dtAnswers.Rows.Add(nar);
+                                qRow["RawAnswer"] = answer.RawAnswer;
                             }
-                            break;
-                        }
-                    case (int)eCalculationModels.NumericValue:
-                        {
-                            DataRow nar = dtAnswers.NewRow();
-                            nar["QuestionID"] = q.ID;
-                            //nar["ImagePath"] = settings.FirstOrDefault(x => x.Name == "Image_Numeric").Value;
-                            dtAnswers.Rows.Add(nar);
-                            break;
+                            if (!string.IsNullOrEmpty(answer.Comments))
+                            {
+                                qRow["Comments"] = answer.Comments;
+                            }
+
                         }
 
-                    case (int)eCalculationModels.QuestionnaireResult:
+                    }
+
+                    if (!dashCatIDs.Contains(q.SubCategory.ID))
+                    {
+                        DataRow dashboardCat = dtSubCategory.NewRow();
+                        dashboardCat["SubCategoryID"] = q.SubCategory.ID;
+                        dashboardCat["Name"] = q.SubCategory.DisplayName;
+                        dashboardCat["CategoryID"] = q.SubCategory.CategoryID;
+                        if (q.SubCategory.CategoryID.HasValue)
                         {
-                            if (q.SubQuestionnaireID != null)
+                            if (!assRiskIDs.Contains(q.SubCategory.CategoryID.Value))
                             {
-                                DataSet ds = GenerateDataSetFromQuestionnaire(q.Questionnaire, context);
-                                string path = CreateQuestionnaire(ds, SaveFormat.Docx, true, q.SubQuestionnaireID.Value);
-                                if (path != string.Empty)
+                                DataRow assCat = dtCategory.NewRow();
+                                assCat["CategoryID"] = q.SubCategory.Category.ID;
+                                assCat["Name"] = q.SubCategory.Category.DisplayName;
+                                //assCat["QuestionnaireGroupID"] = qGroup.ID;
+                                assRiskIDs.Add(q.SubCategory.Category.ID);
+                                dtCategory.Rows.Add(assCat);
+                            }
+                        }
+                        dtSubCategory.Rows.Add(dashboardCat);
+                        dashCatIDs.Add(q.SubCategory.ID);
+                    }
+
+                    qRow["SubCategoryID"] = q.SubCategoryID;
+                    dtQuestion.Rows.Add(qRow);
+                    List<SystemSetting> settings = context.SystemSettings.ToList();
+                    switch (q.CalculationModel.eNumMapping)
+                    {
+                        case (int)eCalculationModels.DropDownLists:
+                            {
+                                foreach (Answer ans in q.Answers.Where(x => x.Deleted == false))
                                 {
                                     DataRow nar = dtAnswers.NewRow();
                                     nar["QuestionID"] = q.ID;
-                                    nar["QuestionaiirePath"] = path;
+                                    //nar["ImagePath"] = settings.FirstOrDefault(x => x.Name == "Image_DropDownList").Value;
+                                    nar["Description"] = ans.Description;
                                     dtAnswers.Rows.Add(nar);
                                 }
+                                break;
                             }
-                            //Create Questionnaire.
-                            break;
-                        }
-
-                    case (int)eCalculationModels.TimeSinceARecordedDate:
-                        {
-                            DataRow nar = dtAnswers.NewRow();
-                            nar["QuestionID"] = q.ID;
-                            // nar["ImagePath"] = settings.FirstOrDefault(x => x.Name == "Image_DateTime").Value;
-                            dtAnswers.Rows.Add(nar);
-                            break;
-                        }
-
-                    case (int)eCalculationModels.ManualEntry:
-                        {
-                            DataRow nar = dtAnswers.NewRow();
-                            nar["QuestionID"] = q.ID;
-                            //nar["ImagePath"] = settings.FirstOrDefault(x => x.Name == "Image_Manual").Value;
-                            dtAnswers.Rows.Add(nar);
-                            break;
-                        }
-                    case (int)eCalculationModels.YesNo:
-                        {
-                            foreach (Answer ans in q.Answers.Where(x => x.Deleted == false))
+                        case (int)eCalculationModels.NumericValue:
                             {
                                 DataRow nar = dtAnswers.NewRow();
                                 nar["QuestionID"] = q.ID;
-                                //nar["ImagePath"] = settings.FirstOrDefault(x => x.Name == "Image_DropDownList").Value;
-                                nar["Description"] = ans.Description;
+                                //nar["ImagePath"] = settings.FirstOrDefault(x => x.Name == "Image_Numeric").Value;
                                 dtAnswers.Rows.Add(nar);
+                                break;
                             }
-                            break;
-                        }
+
+                        case (int)eCalculationModels.QuestionnaireResult:
+                            {
+                                if (q.SubQuestionnaireID != null)
+                                {
+                                    DataSet ds = GenerateDataSetFromQuestionnaire(q.Questionnaire, context);
+                                    string path = CreateQuestionnaire(ds, SaveFormat.Docx, true, q.SubQuestionnaireID.Value);
+                                    if (path != string.Empty)
+                                    {
+                                        DataRow nar = dtAnswers.NewRow();
+                                        nar["QuestionID"] = q.ID;
+                                        nar["QuestionaiirePath"] = path;
+                                        dtAnswers.Rows.Add(nar);
+                                    }
+                                }
+                                //Create Questionnaire.
+                                break;
+                            }
+
+                        case (int)eCalculationModels.TimeSinceARecordedDate:
+                            {
+                                DataRow nar = dtAnswers.NewRow();
+                                nar["QuestionID"] = q.ID;
+                                // nar["ImagePath"] = settings.FirstOrDefault(x => x.Name == "Image_DateTime").Value;
+                                dtAnswers.Rows.Add(nar);
+                                break;
+                            }
+
+                        case (int)eCalculationModels.ManualEntry:
+                            {
+                                DataRow nar = dtAnswers.NewRow();
+                                nar["QuestionID"] = q.ID;
+                                //nar["ImagePath"] = settings.FirstOrDefault(x => x.Name == "Image_Manual").Value;
+                                dtAnswers.Rows.Add(nar);
+                                break;
+                            }
+                        case (int)eCalculationModels.YesNo:
+                            {
+                                foreach (Answer ans in q.Answers.Where(x => x.Deleted == false))
+                                {
+                                    DataRow nar = dtAnswers.NewRow();
+                                    nar["QuestionID"] = q.ID;
+                                    //nar["ImagePath"] = settings.FirstOrDefault(x => x.Name == "Image_DropDownList").Value;
+                                    nar["Description"] = ans.Description;
+                                    dtAnswers.Rows.Add(nar);
+                                }
+                                break;
+                            }
+                    }
                 }
             }
         }
@@ -3616,99 +4169,99 @@ namespace SITSAS.Controllers
 
 
 
-    public ActionResult FrequencyProfiles()
-    {
-        using (SITSASEntities context = new SITSASEntities())
+        public ActionResult FrequencyProfiles()
         {
-        
-            FrequencyProfileModel model = new FrequencyProfileModel();
-            model.rights = ContextModel.DetermineAccess();
-            List<FrequencyProfile> tempFrequencyProfileColl = context.FrequencyProfiles.Where(x => x.Deleted == false).ToList();
+            using (SITSASEntities context = new SITSASEntities())
+            {
+
+                FrequencyProfileModel model = new FrequencyProfileModel();
+                model.rights = ContextModel.DetermineAccess();
+                List<FrequencyProfile> tempFrequencyProfileColl = context.FrequencyProfiles.Where(x => x.Deleted == false).ToList();
 
                 model.ExistingFrequencyProfiles = new List<FrequencyProfile>();
-            foreach (FrequencyProfile count in tempFrequencyProfileColl)
-            {
-               
+                foreach (FrequencyProfile count in tempFrequencyProfileColl)
+                {
+
                     model.ExistingFrequencyProfiles.Add(count);
-               
-            }
-            return View(model);
-        }
-    }
 
-    public ActionResult CreateUpdateFrequencyProfile(Guid? ID, bool IsPart = false)
-    {
-        CreateUpdateFrequencyProfileModel model = new CreateUpdateFrequencyProfileModel();
-        model.rights = ContextModel.DetermineAccess();
-        model.FrequencyProfileExists = false;
-
-        using (SITSASEntities context = new SITSASEntities())
-        {
-            if (ID.HasValue)
-            {
-                FrequencyProfile FrequencyProfile = context.FrequencyProfiles.Where(x => x.ID == ID.Value).FirstOrDefault();
-                if (FrequencyProfile != null)
-                {
-                    model.ExistingFrequencyProfile = FrequencyProfile;
-                    model.FrequencyProfileExists = true;
                 }
-
+                return View(model);
             }
         }
-        if (IsPart)
-        {
-            return PartialView(model);
-        }
-        else
-        {
-            return View(model);
-        }
 
-    }
-
-    public ActionResult DeleteFrequencyProfile(Guid? ID)
-    {
-        using (SITSASEntities context = new SITSASEntities())
+        public ActionResult CreateUpdateFrequencyProfile(Guid? ID, bool IsPart = false)
         {
-            if (ID.HasValue)
+            CreateUpdateFrequencyProfileModel model = new CreateUpdateFrequencyProfileModel();
+            model.rights = ContextModel.DetermineAccess();
+            model.FrequencyProfileExists = false;
+
+            using (SITSASEntities context = new SITSASEntities())
             {
-                FrequencyProfile FrequencyProfile = context.FrequencyProfiles.Where(x => x.ID == ID.Value).FirstOrDefault();
-                if (FrequencyProfile != null)
+                if (ID.HasValue)
                 {
-                    FrequencyProfile.Deleted = true;
-                    context.SaveChanges();
+                    FrequencyProfile FrequencyProfile = context.FrequencyProfiles.Where(x => x.ID == ID.Value).FirstOrDefault();
+                    if (FrequencyProfile != null)
+                    {
+                        model.ExistingFrequencyProfile = FrequencyProfile;
+                        model.FrequencyProfileExists = true;
+                    }
+
                 }
             }
-        }
-        return RedirectToAction("FrequencyProfiles");
-    }
-    public ActionResult SaveFrequencyProfile(FormCollection form)
-    {
-        using (SITSASEntities context = new SITSASEntities())
-        {
-            string strID = form["ExistingFrequencyProfileID"];
-            Guid ID = new Guid();
-            Guid.TryParse(strID, out ID);
-            FrequencyProfile cty = null;
-            if (ID != new Guid())
+            if (IsPart)
             {
-                cty = context.FrequencyProfiles.Where(x => x.ID == ID).FirstOrDefault();
-                //AddToAudit("FrequencyProfile Updated " + CTY.full_name);
+                return PartialView(model);
             }
             else
             {
-                cty = new FrequencyProfile();
-                cty.ID = Guid.NewGuid();
+                return View(model);
             }
-            cty.Name = form["Name"];
-            cty.eDateUnit = SITMVCFormHelper.GetIntegerFromForm(form, "Unit");
-            cty.StartDate = SITMVCFormHelper.GetDateTimeFromForm(form, "StartDate");
+
+        }
+
+        public ActionResult DeleteFrequencyProfile(Guid? ID)
+        {
+            using (SITSASEntities context = new SITSASEntities())
+            {
+                if (ID.HasValue)
+                {
+                    FrequencyProfile FrequencyProfile = context.FrequencyProfiles.Where(x => x.ID == ID.Value).FirstOrDefault();
+                    if (FrequencyProfile != null)
+                    {
+                        FrequencyProfile.Deleted = true;
+                        context.SaveChanges();
+                    }
+                }
+            }
+            return RedirectToAction("FrequencyProfiles");
+        }
+        public ActionResult SaveFrequencyProfile(FormCollection form)
+        {
+            using (SITSASEntities context = new SITSASEntities())
+            {
+                string strID = form["ExistingFrequencyProfileID"];
+                Guid ID = new Guid();
+                Guid.TryParse(strID, out ID);
+                FrequencyProfile cty = null;
+                if (ID != new Guid())
+                {
+                    cty = context.FrequencyProfiles.Where(x => x.ID == ID).FirstOrDefault();
+                    //AddToAudit("FrequencyProfile Updated " + CTY.full_name);
+                }
+                else
+                {
+                    cty = new FrequencyProfile();
+                    cty.ID = Guid.NewGuid();
+                }
+                cty.Name = form["Name"];
+                cty.eDateUnit = SITMVCFormHelper.GetIntegerFromForm(form, "Unit");
+                cty.StartDate = SITMVCFormHelper.GetDateTimeFromForm(form, "StartDate");
                 int Frequency = 0;
                 int.TryParse(form["Frequency"], out Frequency);
                 cty.Frequency = Frequency;
-        
-            if (ID == new Guid())
-            {
+
+                if (ID == new Guid())
+                {
                     if (cty.StartDate < DateTime.Now)
                     {
                         switch ((eDateUnit)cty.eDateUnit)
@@ -3736,20 +4289,20 @@ namespace SITSAS.Controllers
 
                                 }
                         }
-                        }
+                    }
                     else
                     {
                         cty.NextDateToComplete = cty.StartDate;
                     }
-                   
-                context.FrequencyProfiles.Add(cty);
 
+                    context.FrequencyProfiles.Add(cty);
+
+                }
+
+                context.SaveChanges();
             }
-
-            context.SaveChanges();
+            return RedirectToAction("FrequencyProfiles");
         }
-        return RedirectToAction("FrequencyProfiles");
-    }
         public ActionResult Tasks()
         {
             using (SITSASEntities context = new SITSASEntities())
@@ -3762,30 +4315,68 @@ namespace SITSAS.Controllers
                 model.ExistingTasks = new SortedList<Guid, string>();
                 foreach (Task count in tempTaskColl)
                 {
-                        model.ExistingTasks.Add(count.ID, count.Title);
+                    model.ExistingTasks.Add(count.ID, count.Title);
                 }
                 return View(model);
             }
         }
 
-        public ActionResult CreateUpdateTask(Guid? ID, bool IsPart = false, bool IsFromQuestionnaire = false)
+        public ActionResult CreateUpdateTask(Guid? ID, bool IsPart = false, bool IsFromQuestionnaire = false, Guid? HeaderID = null)
         {
             CreateUpdateTaskModel model = new CreateUpdateTaskModel();
             model.rights = ContextModel.DetermineAccess();
             model.TaskExists = false;
             model.IsPart = IsPart;
             model.IsFromQuestionnaire = IsFromQuestionnaire;
+            if (HeaderID.HasValue)
+            {
+                model.HeaderID = HeaderID.Value;
+            }
+
             using (SITSASEntities context = new SITSASEntities())
             {
                 model.AllUsers = ContextModel.GetUsersFromActiveDirectory(context);
                 model.AllTaskStatuses = context.TaskStatus.ToList();
+                model.AssignedUsers = new List<string>();
                 if (ID.HasValue)
                 {
                     Task Task = context.Tasks.Where(x => x.ID == ID.Value).FirstOrDefault();
                     if (Task != null)
                     {
+                        List<DataMapping> dMaps = context.DataMappings.Where(x => x.PrimaryID == ID.Value.ToString() && x.DataMappingType.eNumMapping == (int)eDataMappingType.TaskToUser).ToList();
+
+                        foreach (DataMapping dMap in dMaps)
+                        {
+                            model.AssignedUsers.Add(dMap.SecondaryID);
+                        }
+
                         model.ExistingTask = Task;
                         model.TaskExists = true;
+
+                        if (Task.HeaderID != null)
+                        {
+                            Result_Headers header = context.Result_Headers.FirstOrDefault(x => x.ID == Task.HeaderID);
+                            if (header != null)
+                            {
+                                model.CreatedFrom = header.Location.Name + " | " + header.Questionnaire.Name + " | " + header.SelectedDate.ToString("dd/MM/yy");
+                            }
+                            else
+                            {
+                                Result_Headers_Fixings fixheader = context.Result_Headers_Fixings.FirstOrDefault(x => x.ID == Task.HeaderID);
+                                if (fixheader != null)
+                                {
+                                    model.CreatedFrom = fixheader.Location.Name + " | " + fixheader.Questionnaire.Name + " | " + fixheader.SelectedDate.ToString("dd/MM/yy");
+                                }
+                                else
+                                {
+                                    model.CreatedFrom = "No Assessment";
+                                }
+                            }
+                        }
+                        else
+                        {
+                            model.CreatedFrom = "No Assessment";
+                        }
                     }
 
                 }
@@ -3822,24 +4413,38 @@ namespace SITSAS.Controllers
             using (SITSASEntities context = new SITSASEntities())
             {
                 GetTasksModel model = new GetTasksModel();
-                List<Task> tasks = context.Tasks.Where(x => x.Deleted == false).ToList();
+                string myID = ContextModel.GetCurrentUserSID();
+                List<DataMapping> dMaps = context.DataMappings.Where(x => x.SecondaryID == myID && x.DataMappingType.eNumMapping == (int)eDataMappingType.TaskToUser).ToList();
+
+                List<Task> tasks = new List<Task>();
+                foreach (DataMapping dMap in dMaps)
+                {
+                    Guid taskID = new Guid(dMap.PrimaryID);
+                    Task t = context.Tasks.FirstOrDefault(x => x.ID == taskID && x.Deleted == false);
+                    if (t != null)
+                    {
+                        tasks.Add(t);
+                    }
+
+                }
                 DateTime now = DateTime.Now;
                 switch (Status)
                 {
                     case "Overdue":
                         {
-                         
-                            model.Tasks = tasks.Where(x => x.DueDate < now && x.AssignedTo == ContextModel.GetCurrentUserSID() && x.CompletedDate == null).ToList();
+
+
+                            model.Tasks = tasks.Where(x => x.DueDate < now && x.CompletedDate == null).ToList();
                             break;
                         }
                     case "DueSoon":
                         {
-                            model.Tasks = tasks.Where(x => x.DueDate > now && x.AssignedTo == ContextModel.GetCurrentUserSID() && x.CompletedDate == null).ToList();
+                            model.Tasks = tasks.Where(x => x.DueDate > now && x.CompletedDate == null).ToList();
                             break;
                         }
                     case "Completed":
                         {
-                            model.Tasks = tasks.Where(x => x.CompletedDate < now && x.AssignedTo == ContextModel.GetCurrentUserSID()).ToList();
+                            model.Tasks = tasks.Where(x => x.CompletedDate < now).ToList();
                             break;
                         }
                     case "Created":
@@ -3848,9 +4453,88 @@ namespace SITSAS.Controllers
                             break;
                         }
                 }
+                model.Headers = new List<Result_Headers>();
+                model.FixedHeaders = new List<Result_Headers_Fixings>();
+                foreach (Task task in model.Tasks)
+                {
+                    if (task.HeaderID != null)
+                    {
+                        Result_Headers header = context.Result_Headers.Include("Questionnaire").Include("Location").FirstOrDefault(x => x.ID == task.HeaderID);
+                        if (header != null)
+                        {
+                            model.Headers.Add(header);
+                        }
+                        else
+                        {
+                            Result_Headers_Fixings fixheader = context.Result_Headers_Fixings.Include("Questionnaire").Include("Location").FirstOrDefault(x => x.ID == task.HeaderID);
+                            if (fixheader != null)
+                            {
+                                model.FixedHeaders.Add(fixheader);
+                            }
+                        }
+                    }
+                }
                 return PartialView(model);
             }
         }
+
+        public ActionResult TaskStatuses()
+        {
+            List<MyTasksModel> statuses = new List<MyTasksModel>();
+            using (SITSASEntities context = new SITSASEntities())
+            {
+                string MyID = ContextModel.GetCurrentUserSID();
+                List<DataMapping> dMaps = context.DataMappings.Where(x => x.SecondaryID == MyID && x.DataMappingType.eNumMapping == (int)eDataMappingType.TaskToUser).ToList();
+
+                List<Task> tasks = new List<Task>();
+                List<Task> recentlyCompletedTasks = new List<Task>();
+                foreach (DataMapping dMap in dMaps)
+                {
+                    Guid taskID = new Guid(dMap.PrimaryID);
+                    Task t = context.Tasks.FirstOrDefault(x => x.ID == taskID && x.Deleted == false);
+                    if (t != null)
+                    {
+                        if (t.CompletedDate == null)
+                        {
+                            tasks.Add(t);
+                        }
+                        else
+                        {
+                            DateTime TwoDaysAgo = DateTime.Now.Date.AddDays(-2);
+                            DateTime now = DateTime.Now;
+                            if (t.CompletedDate < now && t.CompletedDate > TwoDaysAgo)
+                            {
+                                recentlyCompletedTasks.Add(t);
+                            }
+                        }
+
+                    }
+
+                }
+
+                MyTasksModel green = new MyTasksModel();
+                MyTasksModel orange = new MyTasksModel();
+                MyTasksModel red = new MyTasksModel();
+                DateTime today = DateTime.Now;
+
+                green.Colour = "#19841a";
+
+                orange.Colour = "#f87626";
+                red.Colour = "#e00039";
+                red.NumberOfTasks = tasks.Where(x => x.DueDate < today).ToList().Count;
+                orange.NumberOfTasks = tasks.Where(x => x.DueDate > today).ToList().Count;
+
+                green.NumberOfTasks = recentlyCompletedTasks.Count;
+
+
+                statuses.Add(green);
+                statuses.Add(orange);
+                statuses.Add(red);
+            }
+
+            return PartialView(statuses);
+        }
+
         public ActionResult MyTasks()
         {
             //green: 19841a
@@ -3859,9 +4543,24 @@ namespace SITSAS.Controllers
             MyTasksModel model = new MyTasksModel();
             using (SITSASEntities context = new SITSASEntities())
             {
-           
+
                 string MyID = ContextModel.GetCurrentUserSID();
-                List<Task> tasks = context.Tasks.Where(x => x.AssignedTo == MyID && x.Deleted == false && x.CompletedDate == null).ToList();
+                List<DataMapping> dMaps = context.DataMappings.Where(x => x.SecondaryID == MyID && x.DataMappingType.eNumMapping == (int)eDataMappingType.TaskToUser).ToList();
+
+                List<Task> tasks = new List<Task>();
+                foreach (DataMapping dMap in dMaps)
+                {
+                    Guid taskID = new Guid(dMap.PrimaryID);
+                    Task t = context.Tasks.FirstOrDefault(x => x.ID == taskID && x.Deleted == false);
+                    if (t != null)
+                    {
+                        if (t.CompletedDate == null)
+                        {
+                            tasks.Add(t);
+                        }
+                    }
+
+                }
                 model.NumberOfTasks = tasks.Count;
                 DateTime today = DateTime.Now;
                 if (tasks.Where(x => x.DueDate < today).ToList().Count > 0)
@@ -3881,9 +4580,10 @@ namespace SITSAS.Controllers
                 }
             }
 
-         
-         
+
+
             return PartialView("partMyTasks", model);
+
         }
         public ActionResult SaveTask(FormCollection form)
         {
@@ -3906,10 +4606,32 @@ namespace SITSAS.Controllers
                 }
                 cty.Title = form["Title"];
                 cty.Description = form["Description"];
+                cty.Comments = form["Comments"];
                 cty.DueDate = SITMVCFormHelper.GetDateTimeFromForm(form, "DueDate");
-                cty.AssignedTo = form["AssignedTo"];
+                //cty.AssignedTo = form["AssignedTo"];
+
+
+                List<string> lgEmployeeIDs = SITMVCFormHelper.GetStringCollectionFromForm(form, "AssignedTo");
+
+                List<DataMapping> dMaps = context.DataMappings.Where(x => x.PrimaryID == cty.ID.ToString() && x.DataMappingType.eNumMapping == (int)eDataMappingType.TaskToUser).ToList();
+                context.DataMappings.RemoveRange(dMaps);
+
+                foreach (string lgEmployeeID in lgEmployeeIDs)
+                {
+                    DataMapping userToTask = new DataMapping();
+                    userToTask.ID = Guid.NewGuid();
+                    userToTask.SecondaryID = lgEmployeeID;
+                    userToTask.PrimaryID = cty.ID.ToString();
+                    userToTask.DataMappingTypeID = context.DataMappingTypes.Where(x => x.eNumMapping == (int)eDataMappingType.TaskToUser).FirstOrDefault().ID;
+                    context.DataMappings.Add(userToTask);
+                }
+
                 cty.CreatedBy = ContextModel.GetCurrentUserSID();
                 cty.Status = SITMVCFormHelper.GetGuidFromForm(form, "Status");
+                if (form.AllKeys.Contains("HeaderID"))
+                {
+                    cty.HeaderID = SITMVCFormHelper.GetGuidFromForm(form, "HeaderID");
+                }
                 if (cty.Status == new Guid("15C81B29-E3D6-4F41-994E-C6E11AB1BE20"))
                 {
                     cty.CompletedDate = DateTime.Now;
@@ -3990,26 +4712,26 @@ namespace SITSAS.Controllers
             model.Roles = new List<RolePermission>();
             using (SITSASEntities context = new SITSASEntities())
             {
-                 List<Role> roles = context.Roles.ToList();
-              
-                    foreach (Role role in roles)
+                List<Role> roles = context.Roles.ToList();
+
+                foreach (Role role in roles)
+                {
+                    RolePermission rPerm = new RolePermission();
+                    rPerm.Role = role;
+                    rPerm.Mapping = context.Page_Role_Mappings.Where(x => x.RoleID == role.RoleID.ToString() && x.PageID == PageID).FirstOrDefault();
+                    if (rPerm.Mapping == null)
                     {
-                        RolePermission rPerm = new RolePermission();
-                        rPerm.Role = role;
-                        rPerm.Mapping = context.Page_Role_Mappings.Where(x => x.RoleID == role.RoleID.ToString() && x.PageID == PageID).FirstOrDefault();
-                        if (rPerm.Mapping == null)
-                        {
-                            rPerm.Mapping = new Page_Role_Mappings();
-                            rPerm.Mapping.RoleID = rPerm.Role.RoleID.ToString();
-                            rPerm.Mapping.PageID = PageID;
-                            rPerm.Mapping.CanCreate = false;
-                            rPerm.Mapping.CanView = false;
-                            rPerm.Mapping.CanUpdate = false;
-                            rPerm.Mapping.CanDelete = false;
-                        }
-                        model.Roles.Add(rPerm);
+                        rPerm.Mapping = new Page_Role_Mappings();
+                        rPerm.Mapping.RoleID = rPerm.Role.RoleID.ToString();
+                        rPerm.Mapping.PageID = PageID;
+                        rPerm.Mapping.CanCreate = false;
+                        rPerm.Mapping.CanView = false;
+                        rPerm.Mapping.CanUpdate = false;
+                        rPerm.Mapping.CanDelete = false;
                     }
-               
+                    model.Roles.Add(rPerm);
+                }
+
 
             }
 
@@ -4076,10 +4798,10 @@ namespace SITSAS.Controllers
                         context.Page_Role_Mappings.Add(existingmap);
                     }
 
-           
-                context.SaveChanges();
 
-            }
+                    context.SaveChanges();
+
+                }
             }
             return RedirectToAction("Permissions");
         }
@@ -4116,39 +4838,39 @@ namespace SITSAS.Controllers
             }
             using (SITSASEntities context = new SITSASEntities())
             {
-   
-                    List<Page> pages = context.Pages.Where(x => x.Link != "").ToList();
-                    List<Role> AllRoles = context.Roles.ToList();
+
+                List<Page> pages = context.Pages.Where(x => x.Link != "").ToList();
+                List<Role> AllRoles = context.Roles.ToList();
                 List<Role_User_PermissionMapping> ListOfMappings = new List<Role_User_PermissionMapping>();
                 ListOfMappings = context.Role_User_PermissionMapping.Where(x => x.ObjectSID == ID).ToList();
                 foreach (Role_User_PermissionMapping role in ListOfMappings)
+                {
+                    Role vgRole = AllRoles.FirstOrDefault(x => x.RoleID == role.RoleID);
+                    if (vgRole != null)
                     {
-                        Role vgRole = AllRoles.FirstOrDefault(x => x.RoleID == role.RoleID);
-                        if (vgRole != null)
+                        List<Page_Role_Mappings> mappings = context.Page_Role_Mappings.Where(x => x.RoleID == vgRole.RoleID.ToString() && x.CanView == true).ToList();
+                        foreach (Page_Role_Mappings mapping in mappings)
                         {
-                            List<Page_Role_Mappings> mappings = context.Page_Role_Mappings.Where(x => x.RoleID == vgRole.RoleID.ToString() && x.CanView == true).ToList();
-                            foreach (Page_Role_Mappings mapping in mappings)
+                            if (model.Count == pages.Count)
                             {
-                                if (model.Count == pages.Count)
+                                break;
+                            }
+                            else
+                            {
+                                if (model.Where(x => x.ID == mapping.PageID).ToList().Count == 0)
                                 {
-                                    break;
-                                }
-                                else
-                                {
-                                    if (model.Where(x => x.ID == mapping.PageID).ToList().Count == 0)
+                                    Page page = pages.FirstOrDefault(x => x.ID == mapping.PageID);
+                                    if (page != null)
                                     {
-                                        Page page = pages.FirstOrDefault(x => x.ID == mapping.PageID);
-                                        if (page != null)
-                                        {
-                                            model.Add(page);
-                                        }
+                                        model.Add(page);
                                     }
                                 }
                             }
                         }
                     }
-                    return PartialView(model);
                 }
+                return PartialView(model);
+            }
         }
 
         public ActionResult SaveRole(FormCollection form)
@@ -4231,7 +4953,7 @@ namespace SITSAS.Controllers
 
                 //if (ID != new Guid())
                 //{
-                  
+
                 //    Role_Permissions existingPermission = context.Role_Permissions.Where(x => x.RoleID == cty.RoleID).FirstOrDefault();
                 //    bool NewPermissionRequired = false;
                 //    if (existingPermission == null)
@@ -4259,7 +4981,7 @@ namespace SITSAS.Controllers
                 //    newPermission.CanAdd = booladd;
                 //    newPermission.CanDelete = boolDelete;
                 //    newPermission.CanView = boolView;
-                   
+
                 //    context.Role_Permissions.Add(newPermission);
                 //}
 

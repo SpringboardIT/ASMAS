@@ -38,5 +38,6 @@ namespace SITSAS.Models
     {
         public int DisplayOrder { get; set; }
         public Question Question { get; set; }
+        public Result_Answers PreviousAnswer { get; set; }
     }
 }

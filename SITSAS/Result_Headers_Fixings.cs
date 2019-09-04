@@ -29,6 +29,7 @@ namespace SITSAS
         public System.Guid QuestionnaireID { get; set; }
         public Nullable<System.Guid> ParentID { get; set; }
         public Nullable<System.Guid> IncidentTypeID { get; set; }
+        public byte[] PDFDocument { get; set; }
     
         public virtual IncidentType IncidentType { get; set; }
         public virtual Location Location { get; set; }

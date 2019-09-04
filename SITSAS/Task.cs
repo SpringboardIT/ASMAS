@@ -15,16 +15,16 @@ namespace SITSAS
     public partial class Task
     {
         public System.Guid ID { get; set; }
-        public string AssignedTo { get; set; }
         public System.DateTime DueDate { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public string CreatedBy { get; set; }
         public System.DateTime CreatedDate { get; set; }
         public System.Guid Status { get; set; }
-        public Nullable<System.Guid> ResultLineID { get; set; }
+        public Nullable<System.Guid> HeaderID { get; set; }
         public bool Deleted { get; set; }
         public Nullable<System.DateTime> CompletedDate { get; set; }
+        public string Comments { get; set; }
     
         public virtual TaskStatu TaskStatu { get; set; }
     }

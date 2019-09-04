@@ -9,46 +9,40 @@
                 type: 'post',
                 data: $('#taskForm').serialize(),
                 success: function () {
-                   metroDialog.close('#popUpTwo');
+                    location.reload();
                     }
             });
         }
     </script>
-    <button class="image-button warning" onclick="SubForm();"><span class="icon mif-floppy-disk"></span> Save</button>
+    <button class="image-button warning" onclick="SubForm();">
+        <span class="mif-floppy-disk icon"></span>
+        <span class="caption">Save</span>
+    </button>
 }
 else
 {
-    <button class="image-button warning" onclick="$('#submittask').click();"><span class="icon mif-floppy-disk"></span> Save</button>
+    <button class="image-button warning" onclick="$('#submittask').click();">
+        <span class="mif-floppy-disk icon"></span>
+        <span class="caption">Save</span>
+    </button>
 }
 
 @if (Model.TaskExists)
 {
-    <a class="image-button warning" href="~/Home/DeleteTask?ID=@Model.ExistingTask.ID" onclick="return confirm('Are you sure you want to delete this item?')"><span class="icon mif-bin"></span> Delete</a>
+    <button class="image-button warning" onclick="if (confirm('Are you sure you want to delete this item?') == true) { window.location.href = '/Home/DeleteTask?ID=@Model.ExistingTask.ID'; }">
+        <span class="mif-bin icon"></span>
+        <span class="caption">Delete</span>
+    </button>
 }
 <hr class="thin bg-grayLighter">
-
-<div class="panel">
-    <div class="heading" style="background-color:#36CAB2;">
-        <span class="icon mif-location-city" style="background-color:#1F1C53;"></span>
-
-        @if (Model.TaskExists)
-        {
-            <span class="title">Update Task</span>
-
-        }
-        else
-        {
-            <span class="title">Create New Task</span>
-        }
-
-
-    </div>
-    <div class="content" style="background-color:#d7f4ef;">
+    <div class="content" style="background-color:#d7f4ef;padding:10px;">
 
         <form id="taskForm" action="/Home/SaveTask" method="post">
             <input type="submit" id="submittask" style="display:none;" />
-            <br />
-            <br />
+            @if (Model.HeaderID != null)
+            {
+                <input type="hidden" name="HeaderID" value="@Model.HeaderID" />
+            }
             <table style="width: 80%;" align="center">
                 <tr>
                     <td style="width: 100%;">
@@ -57,16 +51,16 @@ else
                             @if (Model.TaskExists)
                             {
 
-                                <select name="AssignedTo">
+                                <select data-role="select" name="AssignedTo" multiple>
                                     @foreach (SITSAS.Models.DirectoryUser usr in Model.AllUsers.OrderBy(x => x.Name).ToList())
                                     {
-                                        if (Model.ExistingTask.AssignedTo == usr.SN)
+                                        if (Model.AssignedUsers.Contains(usr.SN))
                                         {
                                             <option value="@usr.SN" selected>@usr.Name</option>
                                         }
                                         else
                                         {
-                                        <option value="@usr.SN">@usr.Name</option>
+                                            <option value="@usr.SN">@usr.Name</option>
                                         }
                                     }
 
@@ -75,7 +69,7 @@ else
                             }
                             else
                             {
-                                <select name="AssignedTo">
+                                <select data-role="select" name="AssignedTo" multiple>
                                     @foreach (SITSAS.Models.DirectoryUser usr in Model.AllUsers.OrderBy(x => x.Name).ToList())
                                     {
                                         <option value="@usr.SN">@usr.Name</option>
@@ -124,22 +118,37 @@ else
                 </tr>
                 <tr>
                     <td style="width: 100%;">
+                        <label>Comments</label>
+                        <div class="input-control text" style="width:100%;">
+                            @if (Model.TaskExists)
+                            {
+
+                                <input type="text" name="Comments" id="Comments" value="@Model.ExistingTask.Comments" style="width: 100%;"  />
+
+                            }
+                            else
+                            {
+                                <input type="text" name="Comments" id="Comments" style="width: 100%;"  />
+                            }
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 100%;">
                         <label>Due Date</label>
                         <div class="input-control text" style="width:100%;">
                             @if (Model.TaskExists)
                             {
 
-                                <div class="input-control text" data-role="datepicker" data-format="d mmmm yy">
-                                    <input type="text" name="DueDate" id="DueDate" value="@Model.ExistingTask.DueDate.ToString("d MMM yy")" style="width: 100%;" />
-                                    <button class="button"><span class="mif-calendar"></span></button>
+                                <div class="input-control" >
+                                    <input type="text" name="DueDate" id="DueDate" data-role="calendarpicker" value="@Model.ExistingTask.DueDate.ToString("yyyy/MM/dd")" style="width: 100%;"  data-dialog-mode="true" data-format="%d %b %Y"/>
                                 </div>
 
                             }
                             else
                             {
-                                <div class="input-control text" data-role="datepicker" data-format="d mmmm yy">
-                                    <input type="text" name="DueDate" id="DueDate" value="@DateTime.Now.ToString("d MMM yy")" style="width: 100%;" />
-                                    <button class="button"><span class="mif-calendar"></span></button>
+                                <div class="input-control">
+                                    <input type="text" name="DueDate" id="DueDate" data-role="calendarpicker" value="@DateTime.Now.ToString("yyyy/MM/dd")" style="width: 100%;" data-dialog-mode="true" data-format="%d %b %Y" />
                                 </div>
                             }
                         </div>
@@ -189,11 +198,18 @@ else
                         </div>
                     </td>
                 </tr>
+                @if (!string.IsNullOrEmpty(Model.CreatedFrom))
+                {
+                <tr>
+                    <td>
+                        <label>Associated Assessment</label>
+                        <div class="input-control text" style="width:100%;">
+                               <input type="text" value="@Model.CreatedFrom" style="width: 100%;" disabled/>
+                        </div>
+                    </td>
+                </tr>
+                }
             </table>
 
         </form>
-        <br />
-        <br />
-
     </div>
-</div>
