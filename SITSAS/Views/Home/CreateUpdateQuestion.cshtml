@@ -51,14 +51,14 @@
                     <div class="input-control text" style="width:100%;">
                         @if (Model.QuestionExists)
                         {
-                            if (AllowSave)
-                            {
+                            //if (AllowSave)
+                            //{
                                 <input type="text" name="Name" id="Name" value="@Model.ExistingQuestion.Name" style="width: 100%;" required />
-                            }
+                            @*}
                             else
                             {
                                 <input type="text" name="Name" id="Name" value="@Model.ExistingQuestion.Name" style="width: 100%;" required disabled />
-                            }
+                            }*@
 
                             <input type="hidden" name="ExistingQuestionID" id="ExistingQuestionID" value="@Model.ExistingQuestion.ID" />
 
@@ -67,6 +67,21 @@
                         {
                             <input type="text" name="Name" id="Name" style="width: 100%;" required />
                                 <input type="hidden" name="ExistingQuestionID" id="ExistingQuestionID" value="0" />
+                        }
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 100%;">
+                    <label>Description</label>
+                    <div class="input-control text" style="width:100%;">
+                        @if (Model.QuestionExists)
+                        {
+                            <input type="text" name="ToolTipDescription" id="ToolTipDescription" value="@Model.ExistingQuestion.ToolTipDescription" style="width: 100%;" />
+                        }
+                        else
+                        {
+                            <input type="text" name="ToolTipDescription" id="ToolTipDescription" style="width: 100%;" required />
                         }
                     </div>
                 </td>
@@ -600,6 +615,7 @@
                         @if (AllowSave)
                         {
                             <select name="PreviousQuestionID" style="width: 100%;">
+                                <option value="" disabled>Please Select...</option>
                                 @foreach (var rCategory in Model.RetiredQuestions.OrderBy(x => x.Name))
                                 {
                                     if (Model.QuestionExists)
@@ -625,6 +641,7 @@
                         else
                         {
                             <select name="PreviousQuestionID" style="width: 100%;" disabled>
+                                <option value="" disabled>Please Select...</option>
                                 @foreach (var rCategory in Model.RetiredQuestions.OrderBy(x => x.Name))
                                 {
                                     if (Model.QuestionExists)

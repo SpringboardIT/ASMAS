@@ -14,7 +14,7 @@ namespace SITSAS.Models
         {
             get
             {
-                return "S-1-5-21-1083592461-3398942700-284682878-1108";
+                return "S-1-5-21-1199947781-3238188910-400929352-4882";
                 //return "SNTest";
             }
         }
@@ -27,13 +27,14 @@ namespace SITSAS.Models
         public static List<DirectoryUser> GetUsersFromActiveDirectory(SITSASEntities Context)
         {
             List<DirectoryUser> Model = new List<DirectoryUser>();
-            string DomainName = GetDomain(Context);
+
+                        string DomainName = GetDomain(Context);
             if (DomainName == "Test")
             {
                 DirectoryUser Dentry = new DirectoryUser();
 
                 Dentry.Name = "GivenName";
-                Dentry.SN = "S-1-5-21-1083592461-3398942700-284682878-1108";
+                Dentry.SN = "S-1-5-21-1199947781-3238188910-400929352-4882";
                 Dentry.SamAccountName = "samAccountName";
                 Dentry.UserPrincipalName = "userPrincipalName";
                 Model.Add(Dentry);
@@ -79,9 +80,10 @@ namespace SITSAS.Models
                                     Dentry.UserPrincipalName = de.Properties["userPrincipalName"].Value as string;
                                 }
 
-
-                                Model.Add(Dentry);
-
+                                if (!string.IsNullOrEmpty(Dentry.Name.Trim()))
+                                {
+                                    Model.Add(Dentry);
+                                }
 
                             }
 

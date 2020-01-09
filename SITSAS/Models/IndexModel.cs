@@ -11,5 +11,6 @@ namespace SITSAS.Models
         public List<Questionnaire> questionnaires { get; set; }
         public Guid SelectedQuestionnaire { get; set; }
         public FrequencyProfile freqProfile { get; set; }
+        public List<FrequencyProfile_Dates> fpDates { get; set; }
     }
 }

@@ -36,6 +36,7 @@
             <td style="width: 65%" class="sortable-column">Next Date To Complete</td>
             <td style="width: 7.5%"></td>
             <td style="width: 7.5%"></td>
+            <td style="width: 7.5%"></td>
         </tr>
     </thead>
     <tbody>
@@ -77,6 +78,15 @@
                             <button class="image-button warning" onclick="window.location.href = '/Home/QuestionnaireQuestions?ID=@rCategories.ID';">
                                 <span class="mif-pencil icon"></span>
                                 <span class="caption"> Questions</span>
+                            </button>
+                        }
+                    </td>
+                    <td>
+                        @if (Model.rights.CanEdit)
+                    {
+                            <button class="image-button warning" onclick="window.location.href = '/Home/QuestionnaireLocations?ID=@rCategories.ID';">
+                                <span class="mif-pencil icon"></span>
+                                <span class="caption"> Locations</span>
                             </button>
                         }
                     </td>

@@ -33,7 +33,12 @@ namespace SITSAS.Models
         public List<QuestionWithOrder> ExistingMapQuestions { get; set; }
         public AccessRights rights { get; set; }
     }
-
+    public class QuestionnaireLocationsModel
+    {
+        public Questionnaire Questionnaire { get; set; }
+        public List<Location> AllLocations { get; set; }
+        public List<DataMapping> QuestionnaireLocationMappings { get; set; }
+    }
     public class QuestionWithOrder
     {
         public int DisplayOrder { get; set; }

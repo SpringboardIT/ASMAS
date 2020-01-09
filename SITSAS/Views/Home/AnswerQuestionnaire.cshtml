@@ -376,6 +376,8 @@
                                                                             break;
                                                                         }
                                                                 }
+                                                                <br />
+                                                                <h5><small><small>@question.Question.ToolTipDescription</small></small></h5>
                                                                 @Html.Raw("</td>")
                                                                 @if (question.Question.CalculationModel.eNumMapping != (int)SITSAS.Models.eCalculationModels.QuestionnaireResult)
                                                                 {
@@ -384,20 +386,20 @@
                                                                         @*<div id="NOTES_@question.Question.ID" class="input-control text" style="width:100%;display:none;">*@
                                                                         @if (Model.ExistingAnswers != null)
                                                                         {
-                                                                            if (Model.ExistingAnswers.Where(x => x.Answer.QuestionID == question.Question.ID).ToList().Count > 0)
+                                                                            if (Model.ExistingAnswers.Where(x => x.Answer != null).ToList().Where(x => x.Answer.QuestionID == question.Question.ID).ToList().Count > 0)
                                                                             {
-                                                                                <textarea id="NOTES_@question.Question.ID" name="@question.Question.ID-NOTES" type="text" class="text-small" style="word-break: break-word;height: 62px; width: 250px;width:100%;">@Model.ExistingAnswers.FirstOrDefault(x => x.Answer.QuestionID == question.Question.ID).Comments</textarea>
+                                                                                <textarea placeholder="Comments..." id="NOTES_@question.Question.ID" name="@question.Question.ID-NOTES" type="text" class="text-small" style="word-break: break-word;height: 62px; width: 250px;width:100%;">@Model.ExistingAnswers.Where(x => x.Answer != null).ToList().FirstOrDefault(x => x.Answer.QuestionID == question.Question.ID).Comments</textarea>
 
                                                                             }
                                                                             else
                                                                             {
-                                                                                <textarea id="NOTES_@question.Question.ID" name="@question.Question.ID-NOTES" type="text" class="text-small" style="word-break: break-word;height: 62px; width: 250px;width:100%;"></textarea>
+                                                                                <textarea placeholder="Comments..." id="NOTES_@question.Question.ID" name="@question.Question.ID-NOTES" type="text" class="text-small" style="word-break: break-word;height: 62px; width: 250px;width:100%;"></textarea>
 
                                                                             }
                                                                         }
                                                                         else
                                                                         {
-                                                                            <textarea id="NOTES_@question.Question.ID" name="@question.Question.ID-NOTES" type="text" class="text-small" style="word-break: break-word;height: 62px; width: 250px;width:100%;"></textarea>
+                                                                            <textarea placeholder="Comments..." id="NOTES_@question.Question.ID" name="@question.Question.ID-NOTES" type="text" class="text-small" style="word-break: break-word;height: 62px; width: 250px;width:100%;"></textarea>
                                                                         }
                                                                         @*</div>*@
                                                                         @*<label id="btnNOTES_@question.Question.ID" class="image-button success" onclick="$('#NOTES_@question.Question.ID').toggle(); $('#btnNOTES_@question.Question.ID').toggle();"><span class="icon mif-quote"></span>+</label>*@
@@ -406,7 +408,7 @@
 
                                                                     <td style="width:250px;padding:10px;text-align:center;">
 
-                                                                        @if (question.Question.CanBeNA)
+                                                                        @if (question.Question.CanBeNA && question.Question.CalculationModel.eNumMapping != (int)SITSAS.Models.eCalculationModels.DropDownLists)
                                                                         {
                                                                             <label>Not Applicable </label><br /><br />
                                                                             <label class="switch-original">
@@ -444,7 +446,7 @@
                                                                     <td style="width:250px;padding:10px;text-align:center;">
                                                                         @if (Model.ExistingHeader != null)
                                                                         {
-                                                                            <button class="image-button warning" onclick="CreateTask('@question.Question.ID', '@Model.ExistingHeader.ID');">
+                                                                            <button class="image-button warning" onclick="CreateTask('@question.Question.ID', '@Model.ExistingHeader.ID'); return false;">
                                                                                 <span class="mif-clipboard icon"></span>
                                                                                 <span class="caption">Create Task</span>
                                                                             </button>
@@ -452,7 +454,7 @@
                                                                         }
                                                                         else
                                                                         {
-                                                                            <button class="image-button warning" onclick="CreateTask('@question.Question.ID', '@Model.NewID');">
+                                                                            <button class="image-button warning" onclick="CreateTask('@question.Question.ID', '@Model.NewID');  return false;">
                                                                                 <span class="mif-clipboard icon"></span>
                                                                                 <span class="caption">Create Task</span>
                                                                             </button>

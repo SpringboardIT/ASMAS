@@ -9,7 +9,6 @@
         <EntityTypeShape EntityType="SITSASModel.Answer_ScoreMappings" Width="1.5" PointX="7.5" PointY="5.75" />
         <EntityTypeShape EntityType="SITSASModel.Answer" Width="1.5" PointX="5.25" PointY="5.5" />
         <EntityTypeShape EntityType="SITSASModel.CalculationModel" Width="1.5" PointX="0.75" PointY="13" />
-        <EntityTypeShape EntityType="SITSASModel.Category" Width="1.5" PointX="1.5" PointY="19.5" />
         <EntityTypeShape EntityType="SITSASModel.DataMapping" Width="1.5" PointX="13" PointY="12.125" />
         <EntityTypeShape EntityType="SITSASModel.DataMappingType" Width="1.5" PointX="10.75" PointY="12.375" />
         <EntityTypeShape EntityType="SITSASModel.IncidentType" Width="1.5" PointX="3" PointY="12.875" />
@@ -34,7 +33,6 @@
         <AssociationConnector Association="SITSASModel.FK_Result_Answers_Answers" />
         <AssociationConnector Association="SITSASModel.FK_Result_Answers_Fixings_Answers" />
         <AssociationConnector Association="SITSASModel.FK_Questions_CalculationModels" />
-        <AssociationConnector Association="SITSASModel.FK_DashboardCategories_AssessedRiskCategories" />
         <AssociationConnector Association="SITSASModel.FK_DataMappings_DataMappingTypes" />
         <AssociationConnector Association="SITSASModel.FK_IncidentTypes_Questionnaires" />
         <AssociationConnector Association="SITSASModel.FK_Result_Headers_Fixings_IncidentTypes" />
@@ -67,6 +65,8 @@
         <AssociationConnector Association="SITSASModel.FK_Tasks_TaskStatus" />
         <EntityTypeShape EntityType="SITSASModel.Location_PermissionGroupTemplate" Width="1.5" PointX="7.5" PointY="19.625" />
         <AssociationConnector Association="SITSASModel.FK_PermissionGroup_Location_PermissionGroupTemplate" />
+        <EntityTypeShape EntityType="SITSASModel.Category" Width="1.5" PointX="1.125" PointY="27.5" />
+        <AssociationConnector Association="SITSASModel.FK_DashboardCategories_AssessedRiskCategories" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

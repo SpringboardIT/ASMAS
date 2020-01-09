@@ -40,12 +40,13 @@
             <td style="width: 46.25%" class="sortable-column">Name</td>
             <td style="width: 46.25%" class="sortable-column">Display Name</td>
             <td style="width: 7.5%" class="sortable-column"></td>
+            <td style="width: 7.5%" class="sortable-column"></td>
         </tr>
     </thead>
     <tbody>
         @if (Model.rights.CanView)
         {
-            foreach (var rCategories in Model.ExistingCategories)
+            foreach (var rCategories in Model.ExistingCategories.OrderBy(x => x.DisplayOrder))
             {
                 <tr>
                     <td>@rCategories.Name</td>
@@ -59,6 +60,18 @@
                             </button>
                         }
                         @*<a class="image-button alert"><span class="icon mif-bin"></span> Delete</a>*@
+                    </td>
+                    <td>
+                        <p class="fg-black" style="width:50px;  display:block;  word-break: break-word;white-space:normal;line-height:20px;">
+                            <button class="image-button warning" onclick="window.location.href = '/Home/SortOrderCategory?ID=@rCategories.ID.ToString()&Direction=Up';">
+                                <span class="mif-arrow-up icon"></span>
+                                <span class="caption"> </span>
+                            </button>
+                            <button class="image-button warning" onclick="window.location.href = '/Home/SortOrderCategory?ID=@rCategories.ID.ToString()&Direction=Down';">
+                                <span class="mif-arrow-down icon"></span>
+                                <span class="caption"> </span>
+                            </button>
+                        </p>
                     </td>
                 </tr>
             }

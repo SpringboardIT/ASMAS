@@ -20,7 +20,7 @@
 <div class="input-control text" style="width: 100%;">
     <select id="YearSelection" name="YearSelection" style="width:100%;" class="text-small" onchange="LoadMonthDropdown();" required>
         <option value="" disabled="disabled" selected="selected">Please select...</option>
-        @foreach (var option in Model.DropdownOptions.OrderBy(x => x).ToList())
+        @foreach (var option in Model.DropdownOptions.OrderBy(x => x.Value).ToList())
         {
             if (Model.SelectedValue == option.Value)
             {

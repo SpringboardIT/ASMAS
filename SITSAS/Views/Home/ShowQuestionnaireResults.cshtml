@@ -37,7 +37,7 @@
                 <td>Question</td>
                 <td>Raw Answer</td>
                 <td>Raw Score</td>
-                <td>Weighted Score</td>
+                @*<td>Weighted Score</td>*@
                 <td>Comments</td>
                 @*<td>Staleness Score</td>*@
                 @*<td></td>*@
@@ -60,10 +60,10 @@
                         <td>
                             @answer.RawScore
                         </td>
-                        <td>
+                        @*<td>
                             @{decimal res = 0; res = (answer.RawScore.Value * answer.WeightedScore.Value);}
                             @res
-                        </td>
+                        </td>*@
                         <td>@answer.Comments</td>
                         @*<td>
                                 @{decimal res2 = 0; res2 = (answer.RawScore.Value * answer.StalenessScore.Value);}

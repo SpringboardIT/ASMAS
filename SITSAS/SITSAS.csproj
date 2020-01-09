@@ -564,6 +564,7 @@
     <Content Include="Views\Shared\partMonthSelection.cshtml" />
     <Content Include="Views\Shared\TaskStatuses.cshtml" />
     <Content Include="Views\Home\ReassignTasks.cshtml" />
+    <Content Include="Views\Home\QuestionnaireLocations.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

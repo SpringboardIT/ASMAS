@@ -1,0 +1,60 @@
+﻿@model SITSAS.Models.QuestionnaireLocationsModel
+<script>
+            function toggle(source) {
+                var inputs = document.getElementsByTagName('input');
+
+                for (var i = 0; i < inputs.length; i++) {
+                    if (inputs[i].type.toLowerCase() == 'checkbox') {
+                        inputs[i].checked = source.checked;
+                    }
+                }
+            }
+</script>
+<h1>Locations able to answer @Model.Questionnaire.Name</h1>
+
+<form id="form1" action="/Home/SaveQuestionnaireLocations" method="post">
+    <input type="hidden" name="QuestionnaireID" value="@Model.Questionnaire.ID" />
+    <button class="image-button warning">
+        <span class="mif-floppy-disk icon"></span>
+        <span class="caption">Save</span>
+    </button>
+
+
+    <label class="input-control checkbox small-check" style="padding-left:15px;">
+        <input type="checkbox" onClick="toggle(this)" /> Toggle All
+        <span class="check"></span>
+    </label>
+    <br />
+    <br />
+    <br />
+    <table id="jobDataTable" class="table striped table-border mt-4" data-rows="-1" data-show-table-info="false" data-role="table" data-auto-width="false" style="width:100%;" data-show-rows-steps="false" data-show-pagination="false">
+        <thead>
+            <tr>
+                <td style="width: 7.5%"></td>
+                <td style="width: 46.25%" class="sortable-column">Name</td>
+            </tr>
+        </thead>
+        <tbody>
+                @foreach (var location in Model.AllLocations.OrderBy(x => x.Name))
+                {
+                    <tr>
+                        <td>
+                            <label class="input-control checkbox small-check">
+                                @if (Model.QuestionnaireLocationMappings.FirstOrDefault(x => x.PrimaryID == location.ID.ToString()) != null)
+                                {
+                                    <input name="@location.ID" type="checkbox" checked>
+                                }
+                                else
+                                {
+                                    <input name="@location.ID" type="checkbox">       
+                                }
+                            <span class="check"></span>
+                            </label>
+                        </td>
+                        <td>@location.Name</td>
+                    </tr>
+                }
+        </tbody>
+    </table>
+
+</form>

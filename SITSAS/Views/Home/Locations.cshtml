@@ -10,12 +10,25 @@
         @Html.Raw("$.ajax({ url: '/Home/CreateUpdateLocation?', data: 'json', type: 'GET', data: 'ID=' + id + '&IsPart=true', cache: false, success: function (result) { $('#popUpContent').empty().append(result); }});")
             @Html.Raw("Metro.dialog.open('#popUp');")
     }
+    function RefreshActiveDirectory() {
+        var url = window.location.href;
+        if (url.indexOf('?') > -1) {
+            url += '&ForceRefreshDirectoryUsers=true'
+        } else {
+            url += '?ForceRefreshDirectoryUsers=true'
+        }
+        window.location.href = url;
+    }
 </script>
 <h1 class="text-light">Locations<span class="mif-location place-left" style="padding-right:5px;"></span></h1>
 <hr class="thin bg-grayLighter">
 <button class="image-button warning" onclick="NewLocation();">
     <span class="mif-clipboard icon"></span>
     <span class="caption">Create</span>
+</button>
+<button class="image-button warning" onclick="RefreshActiveDirectory();">
+    <span class="mif-clipboard icon"></span>
+    <span class="caption">Refresh Active Directory List</span>
 </button>
 <hr class="thin bg-grayLighter">
 <hr class="thin bg-grayLighter">

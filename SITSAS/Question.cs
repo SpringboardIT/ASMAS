@@ -35,6 +35,7 @@ namespace SITSAS
         public int DefaultValue { get; set; }
         public bool CanBeNotAnswered { get; set; }
         public Nullable<System.Guid> PreviousQuestionID { get; set; }
+        public string ToolTipDescription { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Answer> Answers { get; set; }

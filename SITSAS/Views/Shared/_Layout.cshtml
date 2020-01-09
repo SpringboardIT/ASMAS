@@ -8,7 +8,7 @@
     <meta name="keywords" content="HTML, CSS, JS, JavaScript, framework, metro, front-end, frontend, web development">
     <meta name="author" content="Sergey Pimenov and Metro UI CSS contributors">
     <link rel='shortcut icon' type='image/x-icon' href='../favicon.ico' />
-    <title>Milestones Trust: SAS</title>
+    <title>Self Assessment System</title>
     <link href="~/css/main.css" rel="stylesheet" />
     <link href="~/css/metro-all.css" rel="stylesheet" />
     @*<link href="~/css/metro-icons.css" rel="stylesheet">
@@ -40,11 +40,11 @@
 </head>
 <body class="bg-white">
     <div class="app-bar fixed-top darcula" data-role="appbar" style="background-color:#1e1b52;">
-        <a class="branding  no-responsive-future" href="~/"><img src="~/images/MilestonesTrust.PNG" style="height:81px; margin-right:16px;" /></a>
+        <a class="branding  no-responsive-future" href="~/"><img src="~/images/MilestonesTrust.PNG" style="height:90px; margin-right:16px;" /></a>
         <span class="app-bar-divider" style="padding-right: 50px;background-color:#1e1b52;"></span>
         <a href="#" class="app-bar-item" style="color:#fff;">@{Html.RenderAction("TaskStatuses", "Home"); }</a>
 
-        <a href="#" class="app-bar-item" style="color:#fff;position:absolute;right:0;">
+        <a href="#" class="app-bar-item" style="color:#fff;position:absolute;right:0;top:0;">
             @if (Request.IsAuthenticated)
             {
                 <div style="padding-right:50px;padding-bottom:5px;color:#ffffff;">Current user: @User.Identity.Name.Substring(User.Identity.Name.LastIndexOf(@"\") + 1, (User.Identity.Name.Length - User.Identity.Name.LastIndexOf(@"\")) - 1)</div>
@@ -70,24 +70,14 @@
                 <div class="cell bg-white" id="cell-content" style="padding-top:10px;overflow-y:scroll;max-height:850px;">
                     @RenderBody()
 
-                    <div class="pos-fixed pos-center" data-role="dialog" data-close-button="false" id="popUpTwo" data-width="1000" style="width:1200px;">
-                        <div class="dialog-title"></div>
-                        <div id="popUpTwoContent" class="dialog-content" style="max-height: 800px; overflow:auto">
-                            <img src="~/Images/loading.gif" />
-
-                        </div>
-                        <div class="dialog-actions" style="display:none;"></div>
-                        <span class="button square closer js-dialog-close" style="position:absolute;top:8px;right:16px;" onClick="window.location.reload();">X</span>
-                    </div>
-
-                    <div class="pos-fixed pos-center" data-role="dialog" data-close-button="false" id="popUpLarge" data-width="1700" style="width:1900px;">
+                  <div class="pos-fixed pos-center" data-role="dialog" data-close-button="false" id="popUpLarge" data-width="1700" style="width:1900px;">
                         <div class="dialog-title"></div>
                         <div id="popUpLargeContent" class="dialog-content" style="max-height: 800px; overflow:auto">
                             <img src="~/Images/loading.gif" />
 
                         </div>
                         <div class="dialog-actions" style="display:none;"></div>
-                        <span class="button square closer js-dialog-close" style="position:absolute;top:8px;right:16px;" onClick="window.location.reload();">X</span>
+                        <span id="popUpLargeClose" class="button square closer js-dialog-close" style="position:absolute;top:8px;right:16px;" onClick="window.location.reload();">X</span>
                     </div>
                     <div class="pos-fixed pos-center" data-role="dialog" data-close-button="false" id="popUp" data-width="1400" style="width:1600px;min-height:600px;">
                         <div class="dialog-title"></div>
@@ -96,7 +86,16 @@
 
                         </div>
                         <div class="dialog-actions" style="display:none;"></div>
-                        <span class="button square closer js-dialog-close" style="position:absolute;top:8px;right:16px;" onClick="window.location.reload();">X</span>
+                        <span id="popUpClose" class="button square closer js-dialog-close" style="position:absolute;top:8px;right:16px;" onClick="window.location.reload();">X</span>
+                    </div>
+                    <div class="pos-fixed pos-center" data-role="dialog" data-close-button="false" id="popUpTwo" data-width="1000" style="width:1200px;">
+                        <div class="dialog-title"></div>
+                        <div id="popUpTwoContent" class="dialog-content" style="max-height: 800px; overflow:auto">
+                            <img src="~/Images/loading.gif" />
+
+                        </div>
+                        <div class="dialog-actions" style="display:none;"></div>
+                        <span id="popUpTwoClose" class="button square closer js-dialog-close" style="position:absolute;top:8px;right:16px;">X</span>
                     </div>
                 </div>
             </div>

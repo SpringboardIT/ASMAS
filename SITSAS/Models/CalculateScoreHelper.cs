@@ -50,30 +50,40 @@ namespace SITSAS.Models
                         int.TryParse(RawAnswer, out liAnswer);
                         if (question.Answers.Count > 0)
                         {
-                            foreach (Answer ans in question.Answers.Where(x => x.Deleted == false).ToList().OrderBy(x => x.Answer_ScoreMappings.FirstOrDefault().Value)) //SCORE
-                            {
-                                bool MeetsCritera = false;
-                                if (ans.Answer_ScoreMappings.Count > 0)
+                            //try
+                            //{
+                                if (question.Answers.Where(x => x.Deleted == false && x.Answer_ScoreMappings.Count > 0).ToList().Count > 0)
                                 {
-                                    foreach (Answer_ScoreMappings scoreMap in ans.Answer_ScoreMappings.OrderBy(x => x.Value)) //COMPONENT
+                                    foreach (Answer ans in question.Answers.Where(x => x.Deleted == false && x.Answer_ScoreMappings != null).ToList().Where(x => x.Answer_ScoreMappings.Count > 0).OrderBy(x => x.Answer_ScoreMappings.FirstOrDefault().Value)) //SCORE
                                     {
-                                        MeetsCritera = CheckCritera(liAnswer, scoreMap);
-                                    }
-                                }
-                                if (MeetsCritera)
-                                {
-                                    if (IsFixing)
-                                    {
-                                        franswer.AnswerID = ans.ID;
-                                    }
-                                    else
-                                    {
-                                        ranswer.AnswerID = ans.ID;
-                                    }
-                                    return ans.Score;
-                                }
+                                        bool MeetsCritera = false;
+                                        if (ans.Answer_ScoreMappings.Count > 0)
+                                        {
+                                            foreach (Answer_ScoreMappings scoreMap in ans.Answer_ScoreMappings.OrderBy(x => x.Value)) //COMPONENT
+                                            {
+                                                MeetsCritera = CheckCritera(liAnswer, scoreMap);
+                                            }
+                                        }
+                                        if (MeetsCritera)
+                                        {
+                                            if (IsFixing)
+                                            {
+                                                franswer.AnswerID = ans.ID;
+                                            }
+                                            else
+                                            {
+                                                ranswer.AnswerID = ans.ID;
+                                            }
+                                            return ans.Score;
+                                        }
 
-                            }
+                                    }
+                                }
+                            //}
+                            //catch(Exception ex)
+                            //{
+                            //    throw new Exception(question.ID.ToString());
+                            //}
                         }
                         break;
                     }

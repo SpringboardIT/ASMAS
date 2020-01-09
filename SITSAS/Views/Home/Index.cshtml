@@ -34,11 +34,15 @@
     <thead>
         <tr>
             <td>Location</td>
-            @{ DateTime now = DateTime.Now.Date.AddMonths(1);
-                DateTime SixMonths = DateTime.Now.Date.AddMonths(-10); }
-            @foreach (FrequencyProfile_Dates date in Model.freqProfile.FrequencyProfile_Dates.Where(x => x.StartDate > SixMonths && x.EndDate < now && x.LocationID == Model.locations.FirstOrDefault().ID).OrderBy(x => x.StartDate))
+            @{List<DateTime> datesAdded = new List<DateTime>();}
+            
+            @foreach (FrequencyProfile_Dates date in Model.fpDates.Where(x => x.LocationID == Model.locations.FirstOrDefault().ID).OrderBy(x => x.StartDate))
             {
-                <td>@date.EndDate.ToString("MM yyyy")</td>
+                if (!datesAdded.Contains(date.EndDate))
+                {
+                    <td>@date.EndDate.ToString("MM yyyy")</td>
+                    datesAdded.Add(date.EndDate);
+                }
             }
         </tr>
     </thead>
@@ -48,22 +52,27 @@
             <tr>
 
                 <td>@location.Name</td>
-                @foreach (FrequencyProfile_Dates date in Model.freqProfile.FrequencyProfile_Dates.Where(x => x.StartDate > SixMonths && x.EndDate < now && x.LocationID == Model.locations.FirstOrDefault().ID).OrderBy(x => x.StartDate))
+                @{datesAdded = new List<DateTime>();}
+                @foreach (FrequencyProfile_Dates date in Model.fpDates.Where(x => x.LocationID == Model.locations.FirstOrDefault().ID).OrderBy(x => x.StartDate))
                 {
-                    if (Model.questionnaires.FirstOrDefault(x => x.ID == Model.SelectedQuestionnaire).Result_Headers.Where(x => x.LocationID == location.ID && x.Submitted == true && x.SelectedDate >= date.StartDate && x.SelectedDate <= date.EndDate).ToList().Count > 0)
+                    if (!datesAdded.Contains(date.EndDate))
                     {
-                        <td style="background-color:#19841a;border:solid;border-color:#e4e4e4;"></td>
-                    }
-                    else
-                    {
-                        if (Model.questionnaires.FirstOrDefault(x => x.ID == Model.SelectedQuestionnaire).Result_Headers.Where(x => x.LocationID == location.ID && x.Submitted == false && x.SelectedDate >= date.StartDate && x.SelectedDate <= date.EndDate).ToList().Count > 0)
+                        if (Model.questionnaires.FirstOrDefault(x => x.ID == Model.SelectedQuestionnaire).Result_Headers.Where(x => x.LocationID == location.ID && x.Submitted == true && x.SelectedDate >= date.StartDate && x.SelectedDate <= date.EndDate).ToList().Count > 0)
                         {
-                            <td style="background-color:#f87626;border:solid;border-color:#e4e4e4;"></td>
+                        <td style="background-color:#19841a;border:solid;border-color:#e4e4e4;"></td>
                         }
                         else
                         {
+                            if (Model.questionnaires.FirstOrDefault(x => x.ID == Model.SelectedQuestionnaire).Result_Headers.Where(x => x.LocationID == location.ID && x.Submitted == false && x.SelectedDate >= date.StartDate && x.SelectedDate <= date.EndDate).ToList().Count > 0)
+                            {
+                            <td style="background-color:#f87626;border:solid;border-color:#e4e4e4;"></td>
+                            }
+                            else
+                            {
                             <td style="background-color:#e00039;border:solid;border-color:#e4e4e4;"></td>
+                            }
                         }
+                        datesAdded.Add(date.EndDate);
                     }
 
                 }

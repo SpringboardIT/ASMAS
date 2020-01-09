@@ -29,9 +29,26 @@ namespace SITSAS.Controllers
                 {
                     model.SelectedQuestionnaire = model.questionnaires.OrderBy(x => x.Name).FirstOrDefault().ID;
                 }
-                Guid FrequencyProfileID = model.questionnaires.FirstOrDefault(x => x.ID == model.SelectedQuestionnaire).FrequencyProfileID.Value;
 
-                model.freqProfile = context.FrequencyProfiles.Include("FrequencyProfile_Dates").FirstOrDefault(x => x.ID == FrequencyProfileID);
+                List<Location> tempLocations = new List<Location>();
+                tempLocations.AddRange(model.locations);
+                List<DataMapping> existingDataMappings = context.DataMappings.Where(x => x.DataMappingType.eNumMapping == (int)eDataMappingType.LocationToQuestionnaire && x.SecondaryID == model.SelectedQuestionnaire.ToString()).ToList();
+                foreach (var location in tempLocations)
+                {
+                    if (existingDataMappings.FirstOrDefault(x => x.PrimaryID == location.ID.ToString()) == null)
+                    {
+                        model.locations.Remove(location);
+                    }
+                }
+
+                
+                Guid FrequencyProfileID = model.questionnaires.FirstOrDefault(x => x.ID == model.SelectedQuestionnaire).FrequencyProfileID.Value;
+           
+                DateTime StartDate = new DateTime(DateTime.Now.Year, 1,1);
+                DateTime EndDate = StartDate.AddYears(1);
+                model.freqProfile = context.FrequencyProfiles.FirstOrDefault(x => x.ID == FrequencyProfileID);
+                model.fpDates = context.FrequencyProfile_Dates.Where(x => x.FrequencyID == model.freqProfile.ID && x.StartDate < EndDate && x.EndDate > StartDate).ToList();
+
                 return View(model);
 
             }
@@ -83,7 +100,17 @@ namespace SITSAS.Controllers
         {
             using (SITSASEntities context = new SITSASEntities())
             {
-                List<DirectoryUser> usrs = ContextModel.GetUsersFromActiveDirectory(context);
+                List<DirectoryUser> usrs = null;
+                if (HttpContext.Session["DirectoryUsers"] != null)
+                {
+                    usrs = (List<DirectoryUser>)HttpContext.Session["DirectoryUsers"];
+                }
+                else
+                {
+                    usrs = ContextModel.GetUsersFromActiveDirectory(context);
+                    HttpContext.Session["DirectoryUsers"] = usrs;
+                }
+
                 return View(usrs);
             }
         }
@@ -414,7 +441,7 @@ namespace SITSAS.Controllers
                         //if a question in this category has been answered.
                         if (model.ExistingCategory.SubCategories.Where(x => x.Questions.Where(q => q.Answers.Where(a => a.Result_Answers.ToList().Count > 0).ToList().Count > 0).ToList().Count > 0).ToList().Count > 0)
                         {
-                            model.AllowEdit = false;
+                            model.rights.CanDelete = false;
                         }
                     }
 
@@ -620,7 +647,7 @@ namespace SITSAS.Controllers
         #endregion
 
         #region Locations
-        public ActionResult Locations()
+        public ActionResult Locations(bool ForceRefreshDirectoryUsers = false)
         {
             LocationsModel model = new LocationsModel();
             model.rights = ContextModel.DetermineAccess();
@@ -630,7 +657,16 @@ namespace SITSAS.Controllers
                 model.ExistingLocations = new List<LocationItem>();
                 model.AllLocationPermissionGroups = context.Location_PermissionGroupTemplate.ToList();
                 List<Location> locations = GetLocationsWhereAreaIsLive(context, true);
-                List<DirectoryUser> usrs = ContextModel.GetUsersFromActiveDirectory(context);
+                List<DirectoryUser> usrs = null;
+                if (HttpContext.Session["DirectoryUsers"] != null && ForceRefreshDirectoryUsers == false)
+                {
+                    usrs = (List<DirectoryUser>)HttpContext.Session["DirectoryUsers"];
+                }
+                else
+                {
+                    usrs = ContextModel.GetUsersFromActiveDirectory(context);
+                    HttpContext.Session["DirectoryUsers"] = usrs;
+                }
                 foreach (Location location in locations)
                 {
                     LocationItem lItem = new LocationItem();
@@ -695,7 +731,16 @@ namespace SITSAS.Controllers
 
             using (SITSASEntities context = new SITSASEntities())
             {
-                List<DirectoryUser> usrs = ContextModel.GetUsersFromActiveDirectory(context);
+                List<DirectoryUser> usrs = null;
+                if (HttpContext.Session["DirectoryUsers"] != null)
+                {
+                    usrs = (List<DirectoryUser>)HttpContext.Session["DirectoryUsers"];
+                }
+                else
+                {
+                    usrs = ContextModel.GetUsersFromActiveDirectory(context);
+                    HttpContext.Session["DirectoryUsers"] = usrs;
+                }
                 model.AllLocationPermissionGroups = context.Location_PermissionGroupTemplate.ToList();
                 model.PermissionGroupToUsername = new SortedList<Guid, List<string>>();
                 if (ID.HasValue)
@@ -737,7 +782,16 @@ namespace SITSAS.Controllers
             using (SITSASEntities context = new SITSASEntities())
             {
                 model.AllAreas = context.Areas.ToList();
-                model.AllUsers = ContextModel.GetUsersFromActiveDirectory(context);
+
+                if (HttpContext.Session["DirectoryUsers"] != null)
+                {
+                    model.AllUsers = (List<DirectoryUser>)HttpContext.Session["DirectoryUsers"];
+                }
+                else
+                {
+                    model.AllUsers = ContextModel.GetUsersFromActiveDirectory(context);
+                    HttpContext.Session["DirectoryUsers"] = model.AllUsers;
+                }
             }
             if (IsPart)
             {
@@ -1035,7 +1089,48 @@ namespace SITSAS.Controllers
             }
             return View(model);
         }
+        public ActionResult QuestionnaireLocations(Guid ID)
+        {
+            QuestionnaireLocationsModel model = new QuestionnaireLocationsModel();
+            using (SITSASEntities context = new SITSASEntities())
+            {
+               model.AllLocations = GetLocationsWhereAreaIsLive(context, true);
+               model.Questionnaire = context.Questionnaires.Where(x => x.ID == ID).FirstOrDefault();
+               model.QuestionnaireLocationMappings = context.DataMappings.Where(x => x.DataMappingType.eNumMapping == (int)eDataMappingType.LocationToQuestionnaire && x.SecondaryID == ID.ToString()).ToList();
 
+            }
+            return View(model);
+        }
+        public ActionResult SaveQuestionnaireLocations(FormCollection form)
+        {
+            using (SITSASEntities context = new SITSASEntities())
+            {
+                string ID = form["QuestionnaireID"];
+                List<DataMapping> existingDataMappings = context.DataMappings.Where(x => x.DataMappingType.eNumMapping == (int)eDataMappingType.LocationToQuestionnaire && x.SecondaryID == ID.ToString()).ToList();
+                context.DataMappings.RemoveRange(existingDataMappings);
+
+                foreach(string key in form.AllKeys)
+                {
+                    if (key != "QuestionnaireID")
+                    {
+                        string lsLocationID = key;
+                        Guid lgLocationID = new Guid();
+                        if (Guid.TryParse(lsLocationID, out lgLocationID))
+                        {
+                            DataMapping dMap = new DataMapping();
+                            dMap.ID = Guid.NewGuid();
+                            dMap.SecondaryID = ID;
+                            dMap.PrimaryID = lgLocationID.ToString();
+                            dMap.OverrideAll = false;
+                            dMap.DataMappingTypeID = context.DataMappingTypes.FirstOrDefault(x => x.eNumMapping == (int)eDataMappingType.LocationToQuestionnaire).ID;
+                            context.DataMappings.Add(dMap);
+                        }
+                    }
+                }
+                context.SaveChanges();
+                return RedirectToAction("Questionnaires");
+            }
+        }
         public ActionResult QuestionnaireQuestions(Guid ID)
         {
             QuestionnaireQuestionsModel model = new QuestionnaireQuestionsModel();
@@ -1043,7 +1138,7 @@ namespace SITSAS.Controllers
             using (SITSASEntities context = new SITSASEntities())
             {
                 DateTime ldNow = DateTime.Now;
-                model.AllQuestions = context.Questions.Include("CalculationModel").Include("SubCategory").Where(x => x.Deleted == false && x.StartDate < ldNow && x.EndDate > ldNow).ToList();
+                model.AllQuestions = context.Questions.Include("CalculationModel").Include("SubCategory").Include("SubCategory.Category").Where(x => x.Deleted == false && x.StartDate < ldNow && x.EndDate > ldNow).ToList();
                 model.Questionnaire = context.Questionnaires.Where(x => x.ID == ID).FirstOrDefault();
                 model.ExistingMapQuestions = new List<QuestionWithOrder>();
 
@@ -1081,7 +1176,52 @@ namespace SITSAS.Controllers
             }
             return View(model);
         }
+        public ActionResult SortOrderCategory(Guid ID, string Direction)
+        {
+            using (SITSASEntities context = new SITSASEntities())
+            {
+                List<DataMapping> dataMaps = null;
 
+                Guid PreviousDisplayOrderID = new Guid();
+                int PreviousDisplayOrder = 0;
+                DateTime ldNow = DateTime.Now;
+                List<Category> categories = null;
+                if (Direction == "Up")
+                {
+                    categories = context.Categories.Where(x => x.Deleted == false && x.StartDate < ldNow && x.EndDate > ldNow).ToList().OrderBy(x => x.DisplayOrder).ToList();
+                }
+                else
+                {
+                    categories = context.Categories.Where(x => x.Deleted == false && x.StartDate < ldNow && x.EndDate > ldNow).ToList().OrderByDescending(x => x.DisplayOrder).ToList();
+                }
+                foreach (Category category in categories)
+                {
+                    if (category.ID == ID)
+                        {
+                            if (PreviousDisplayOrder > 0) //not the first item
+                            {
+                                int CurrentDisplayOrder = category.DisplayOrder;
+                                category.DisplayOrder = PreviousDisplayOrder;
+                            categories.FirstOrDefault(x => x.ID == PreviousDisplayOrderID).DisplayOrder = CurrentDisplayOrder;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            PreviousDisplayOrder = category.DisplayOrder;
+                            PreviousDisplayOrderID = category.ID;
+                        }
+                   
+                }
+
+
+                context.SaveChanges();
+            }
+            return RedirectToAction("Categories");
+        }
         public ActionResult SortOrderQuestionInQuestionnaire(Guid QuestionID, Guid QuestionnaireID, string Direction)
         {
             using (SITSASEntities context = new SITSASEntities())
@@ -1548,10 +1688,21 @@ namespace SITSAS.Controllers
                 if (HeaderID != null)
                 {
                     model.ExistingHeader = context.Result_Headers.FirstOrDefault(x => x.ID == HeaderID);
-                    model.ExistingAnswers = context.Result_Answers.Include("Answer").Where(x => x.HeaderID == HeaderID).ToList();
+                    model.ExistingAnswers = context.Result_Answers.Include("Answer").Where(x => x.HeaderID == HeaderID && x.Answer != null).ToList();
                 }
 
                 model.NewID = Guid.NewGuid();
+                List<Location> tempTwoLocations = new List<Location>();
+                tempTwoLocations.AddRange(model.AllLocations);
+                List<DataMapping> existingDataMappings = context.DataMappings.Where(x => x.DataMappingType.eNumMapping == (int)eDataMappingType.LocationToQuestionnaire && x.SecondaryID == ID.ToString()).ToList();
+                foreach (var location in tempTwoLocations)
+                {
+                    if (existingDataMappings.FirstOrDefault(x => x.PrimaryID == location.ID.ToString()) == null)
+                    {
+                        model.AllLocations.Remove(location);
+                    }
+                }
+
             }
             if (IsSub || IsPart)
             {
@@ -1628,11 +1779,14 @@ namespace SITSAS.Controllers
                         ranswer.RawAnswer = lsAnswer;
                         if (string.IsNullOrEmpty(lsAnswer) || (form.AllKeys.Contains("NAns_" + question.ID)))
                         {
-                            ranswer.AnswerID = question.Answers.FirstOrDefault().ID; //this is only used to link the Not Answered back to a question. 
-                            ranswer.RawAnswer = "Not Answered";
-                            ranswer.RawScore = question.DefaultValue;
-                            ranswer.WeightedScore = 1;
-                            ranswer.StalenessScore = 1;
+                            if (question.Answers.Count > 0)
+                            {
+                                ranswer.AnswerID = question.Answers.FirstOrDefault().ID; //this is only used to link the Not Answered back to a question. 
+                                ranswer.RawAnswer = "Not Answered";
+                                ranswer.RawScore = question.DefaultValue;
+                                ranswer.WeightedScore = 1;
+                                ranswer.StalenessScore = 1;
+                            }
                         }
                         else
                         {
@@ -2555,21 +2709,16 @@ namespace SITSAS.Controllers
                 if (form.AllKeys.Contains("Name"))
                 {
                     question.Name = form["Name"];
+                    question.ToolTipDescription = form["ToolTipDescription"];
 
-                    if (form.AllKeys.Contains("CanBeNA"))
-                    {
-                        question.CanBeNA = true;
-                    }
-                    else
-                    {
-                        question.CanBeNA = false;
-                    }
                     if (form.AllKeys.Contains("CanBeNAns"))
                     {
+
                         question.CanBeNotAnswered = true;
                     }
                     else
                     {
+
                         question.CanBeNotAnswered = false;
                     }
                 }
@@ -2579,6 +2728,50 @@ namespace SITSAS.Controllers
                     Guid.TryParse(form["CalculationModelID"], out lgCalModelID);
                     question.CalculationModelID = lgCalModelID;
                     CalculationModel cM = context.CalculationModels.Where(x => x.ID == lgCalModelID).FirstOrDefault();
+                    if (form.AllKeys.Contains("CanBeNA"))
+                    {
+                        if (!question.CanBeNA) //just changed
+                        {
+                            if (cM.eNumMapping == (int)eCalculationModels.DropDownLists)
+                            {
+                                Answer ans = context.Answers.Where(x => x.QuestionID == question.ID && x.Description == "N/A").FirstOrDefault();
+                                if (ans != null)
+                                {
+                                    ans.Deleted = false;
+                                }
+                                else
+                                {
+                                    Answer newAns = new Answer();
+                                    newAns.ID = Guid.NewGuid();
+                                    newAns.QuestionID = question.ID;
+                                    newAns.Score = 0;
+                                    newAns.Deleted = true;
+
+                                    newAns.Description = "N/A";
+                                    context.Answers.Add(newAns);
+                                }
+                            }
+                            question.CanBeNA = true;
+                        }
+
+                    }
+                    else
+                    {
+                        if (question.CanBeNA)
+                        {
+                            if (cM.eNumMapping == (int)eCalculationModels.DropDownLists)
+                            {
+                                //remove answer
+                                Answer ans = context.Answers.Where(x => x.QuestionID == question.ID && x.Description == "N/A").FirstOrDefault();
+                                if (ans != null)
+                                {
+                                    ans.Deleted = true;
+                                }
+                            }
+                            question.CanBeNA = false;
+                        }
+
+                    }
                     if (cM.eNumMapping == (int)eCalculationModels.QuestionnaireResult)
                     {
                         Guid subQID = new Guid();
@@ -2757,7 +2950,7 @@ namespace SITSAS.Controllers
         {
             get
             {
-                return "S-1-5-21-1083592461-3398942700-284682878-1108";
+                return "S-1-5-21-1199947781-3238188910-400929352-4882";
                 //return "SNTest";
             }
         }
@@ -2877,9 +3070,13 @@ namespace SITSAS.Controllers
                     {
                         if (model.ExistingAnswers.ToList().Count > 1)
                         {
-                            model.Operators.Add(model.ExistingAnswers.Where(x => x.CatchAll == false).FirstOrDefault().Answer_ScoreMappings.FirstOrDefault().Answer_Operators);
+                            if (model.ExistingAnswers.Where(x => x.CatchAll == false).FirstOrDefault().Answer_ScoreMappings.Count > 0)
+                            {
+                                model.Operators.Add(model.ExistingAnswers.Where(x => x.CatchAll == false).FirstOrDefault().Answer_ScoreMappings.FirstOrDefault().Answer_Operators);
+                            }
                         }
-                        else
+
+                        if (model.Operators.Count == 0)
                         {
                             model.Operators = context.Answer_Operators.ToList();
                         }
@@ -2897,70 +3094,74 @@ namespace SITSAS.Controllers
                         int i = 1;
                         if (model.ExistingAnswers.Where(x => x.CatchAll == false).ToList().Count > 0)
                         {
-                            eOperator mainOperator = (eOperator)model.ExistingAnswers.FirstOrDefault(x => x.CatchAll == false).Answer_ScoreMappings.FirstOrDefault().Answer_Operators.eNumMapping;
-                            List<Answer> answers = null;
-                            switch (mainOperator)
+                            if (model.ExistingAnswers.Where(x => x.CatchAll == false).FirstOrDefault().Answer_ScoreMappings.Count > 0)
                             {
-                                case eOperator.LessThan:
-                                case eOperator.LessThanOrEqualTo:
-                                    {
-                                        answers = model.ExistingAnswers.OrderBy(x => x.Score).ToList();
-                                        break;
-                                    }
-                                case eOperator.GreaterThan:
-                                case eOperator.GreaterThanorEqualTo:
-                                    {
-                                        answers = model.ExistingAnswers.OrderByDescending(x => x.Score).ToList();
-                                        break;
-                                    }
-                            }
-                            foreach (var ans in answers)
-                            {
-                                if (i == model.ExistingAnswers.ToList().Count)
+                                eOperator mainOperator = (eOperator)model.ExistingAnswers.FirstOrDefault(x => x.CatchAll == false).Answer_ScoreMappings.FirstOrDefault().Answer_Operators.eNumMapping;
+                                List<Answer> answers = null;
+                                switch (mainOperator)
                                 {
-                                    model.AnswerDescriptions.Add(ans.ID, ans.Answer_ScoreMappings.FirstOrDefault().Answer_Operators.Operator + " " + ans.Answer_ScoreMappings.FirstOrDefault().Value);
+                                    case eOperator.LessThan:
+                                    case eOperator.LessThanOrEqualTo:
+                                        {
+                                            answers = model.ExistingAnswers.OrderBy(x => x.Score).ToList();
+                                            break;
+                                        }
+                                    case eOperator.GreaterThan:
+                                    case eOperator.GreaterThanorEqualTo:
+                                        {
+                                            answers = model.ExistingAnswers.OrderByDescending(x => x.Score).ToList();
+                                            break;
+                                        }
                                 }
-                                else
+
+                                foreach (var ans in answers)
                                 {
-                                    if (FirstItem)
+                                    if (i == model.ExistingAnswers.ToList().Count)
                                     {
-                                        PreviousValue = (int)ans.Answer_ScoreMappings.FirstOrDefault().Value;
-                                        FirstItem = false;
                                         model.AnswerDescriptions.Add(ans.ID, ans.Answer_ScoreMappings.FirstOrDefault().Answer_Operators.Operator + " " + ans.Answer_ScoreMappings.FirstOrDefault().Value);
                                     }
                                     else
                                     {
-                                        switch (mainOperator)
+                                        if (FirstItem)
                                         {
-                                            case eOperator.LessThan:
-                                                {
-                                                    model.AnswerDescriptions.Add(ans.ID, PreviousValue + " - " + ((int)ans.Answer_ScoreMappings.FirstOrDefault().Value - 1));
-                                                    PreviousValue = (int)ans.Answer_ScoreMappings.FirstOrDefault().Value;
-                                                    break;
-                                                }
-                                            case eOperator.GreaterThan:
-                                                {
-                                                    model.AnswerDescriptions.Add(ans.ID, ((int)ans.Answer_ScoreMappings.FirstOrDefault().Value) + " - " + PreviousValue);
-                                                    PreviousValue = (int)ans.Answer_ScoreMappings.FirstOrDefault().Value;
-                                                    break;
-                                                }
-                                            case eOperator.LessThanOrEqualTo:
-                                                {
-                                                    model.AnswerDescriptions.Add(ans.ID, (PreviousValue + 1) + " - " + ((int)ans.Answer_ScoreMappings.FirstOrDefault().Value));
-                                                    PreviousValue = (int)ans.Answer_ScoreMappings.FirstOrDefault().Value;
-                                                    break;
-                                                }
-                                            case eOperator.GreaterThanorEqualTo:
-                                                {
-                                                    model.AnswerDescriptions.Add(ans.ID, (((int)ans.Answer_ScoreMappings.FirstOrDefault().Value)) + " - " + (PreviousValue - 1));
-                                                    PreviousValue = (int)ans.Answer_ScoreMappings.FirstOrDefault().Value;
-                                                    break;
-                                                }
+                                            PreviousValue = (int)ans.Answer_ScoreMappings.FirstOrDefault().Value;
+                                            FirstItem = false;
+                                            model.AnswerDescriptions.Add(ans.ID, ans.Answer_ScoreMappings.FirstOrDefault().Answer_Operators.Operator + " " + ans.Answer_ScoreMappings.FirstOrDefault().Value);
                                         }
+                                        else
+                                        {
+                                            switch (mainOperator)
+                                            {
+                                                case eOperator.LessThan:
+                                                    {
+                                                        model.AnswerDescriptions.Add(ans.ID, PreviousValue + " - " + ((int)ans.Answer_ScoreMappings.FirstOrDefault().Value - 1));
+                                                        PreviousValue = (int)ans.Answer_ScoreMappings.FirstOrDefault().Value;
+                                                        break;
+                                                    }
+                                                case eOperator.GreaterThan:
+                                                    {
+                                                        model.AnswerDescriptions.Add(ans.ID, ((int)ans.Answer_ScoreMappings.FirstOrDefault().Value) + " - " + PreviousValue);
+                                                        PreviousValue = (int)ans.Answer_ScoreMappings.FirstOrDefault().Value;
+                                                        break;
+                                                    }
+                                                case eOperator.LessThanOrEqualTo:
+                                                    {
+                                                        model.AnswerDescriptions.Add(ans.ID, (PreviousValue + 1) + " - " + ((int)ans.Answer_ScoreMappings.FirstOrDefault().Value));
+                                                        PreviousValue = (int)ans.Answer_ScoreMappings.FirstOrDefault().Value;
+                                                        break;
+                                                    }
+                                                case eOperator.GreaterThanorEqualTo:
+                                                    {
+                                                        model.AnswerDescriptions.Add(ans.ID, (((int)ans.Answer_ScoreMappings.FirstOrDefault().Value)) + " - " + (PreviousValue - 1));
+                                                        PreviousValue = (int)ans.Answer_ScoreMappings.FirstOrDefault().Value;
+                                                        break;
+                                                    }
+                                            }
 
+                                        }
                                     }
+                                    i++;
                                 }
-                                i++;
                             }
                         }
 
@@ -3158,35 +3359,37 @@ namespace SITSAS.Controllers
                                 }
                             }
 
-
-                            catchans.Answer_ScoreMappings.FirstOrDefault().OperatorID = CatchAllOperator.ID;
-                            switch (CatchAllOperator.Operator.Trim())
+                            if (catchans.Answer_ScoreMappings.Count > 0)
                             {
-                                case ">":
-                                    {
+                                catchans.Answer_ScoreMappings.FirstOrDefault().OperatorID = CatchAllOperator.ID;
+                                switch (CatchAllOperator.Operator.Trim())
+                                {
+                                    case ">":
+                                        {
 
-                                        catchans.Answer_ScoreMappings.FirstOrDefault().Value = liHighestValue + 1;
+                                            catchans.Answer_ScoreMappings.FirstOrDefault().Value = liHighestValue + 1;
 
 
-                                        break;
-                                    }
-                                case ">=":
-                                    {
-                                        catchans.Answer_ScoreMappings.FirstOrDefault().Value = liHighestValue;
-                                        break;
-                                    }
-                                case "<":
-                                    {
-                                        catchans.Answer_ScoreMappings.FirstOrDefault().Value = lilowestValue - 1;
-                                        break;
-                                    }
-                                case "<=":
-                                    {
-                                        catchans.Answer_ScoreMappings.FirstOrDefault().Value = lilowestValue;
-                                        break;
-                                    }
+                                            break;
+                                        }
+                                    case ">=":
+                                        {
+                                            catchans.Answer_ScoreMappings.FirstOrDefault().Value = liHighestValue;
+                                            break;
+                                        }
+                                    case "<":
+                                        {
+                                            catchans.Answer_ScoreMappings.FirstOrDefault().Value = lilowestValue - 1;
+                                            break;
+                                        }
+                                    case "<=":
+                                        {
+                                            catchans.Answer_ScoreMappings.FirstOrDefault().Value = lilowestValue;
+                                            break;
+                                        }
+                                }
+                                catchans.Description = "Is " + CatchAllOperator.OperatorDescription + " " + catchans.Answer_ScoreMappings.FirstOrDefault().Value;
                             }
-                            catchans.Description = "Is " + CatchAllOperator.OperatorDescription + " " + catchans.Answer_ScoreMappings.FirstOrDefault().Value;
                         }
 
 
@@ -3396,67 +3599,79 @@ namespace SITSAS.Controllers
                     Answer_Operators CatchAllOperator = null;
                     if (lowestValue == null)
                     {
-                        CatchAllOperator = context.Answer_Operators.Where(x => x.Operator.Trim() == ">").FirstOrDefault();
-                        catchans.Answer_ScoreMappings.FirstOrDefault().Value = 0;
-                        catchans.Description = "Is " + CatchAllOperator.OperatorDescription + " " + 0;
+                        if (catchans != null)
+                        {
+                            CatchAllOperator = context.Answer_Operators.Where(x => x.Operator.Trim() == ">").FirstOrDefault();
+                            if (catchans.Answer_ScoreMappings.Count > 0)
+                            {
+                                catchans.Answer_ScoreMappings.FirstOrDefault().Value = 0;
+                                catchans.Description = "Is " + CatchAllOperator.OperatorDescription + " " + 0;
+                            }
+                        }
                     }
                     else
                     {
-                        long liHighestValue = highestValue.Answer_ScoreMappings.FirstOrDefault().Value;
-                        long lilowestValue = lowestValue.Answer_ScoreMappings.FirstOrDefault().Value;
-
-
-                        switch (ans.Answer_ScoreMappings.FirstOrDefault().Answer_Operators.Operator.Trim())
+                        if (catchans != null)
                         {
-                            case "<":
+                            if (highestValue.Answer_ScoreMappings.Count > 0)
+                            {
+                                long liHighestValue = highestValue.Answer_ScoreMappings.FirstOrDefault().Value;
+                                long lilowestValue = lowestValue.Answer_ScoreMappings.FirstOrDefault().Value;
+
+
+                                switch (ans.Answer_ScoreMappings.FirstOrDefault().Answer_Operators.Operator.Trim())
                                 {
-                                    CatchAllOperator = context.Answer_Operators.Where(x => x.Operator.Trim() == ">=").FirstOrDefault();
-                                    break;
+                                    case "<":
+                                        {
+                                            CatchAllOperator = context.Answer_Operators.Where(x => x.Operator.Trim() == ">=").FirstOrDefault();
+                                            break;
+                                        }
+                                    case ">":
+                                        {
+                                            CatchAllOperator = context.Answer_Operators.Where(x => x.Operator.Trim() == "<=").FirstOrDefault();
+                                            break;
+                                        }
+                                    case ">=":
+                                        {
+                                            CatchAllOperator = context.Answer_Operators.Where(x => x.Operator.Trim() == "<").FirstOrDefault();
+                                            break;
+                                        }
+                                    case "<=":
+                                        {
+                                            CatchAllOperator = context.Answer_Operators.Where(x => x.Operator.Trim() == ">").FirstOrDefault();
+                                            break;
+                                        }
                                 }
-                            case ">":
+                                catchans.Answer_ScoreMappings.FirstOrDefault().OperatorID = CatchAllOperator.ID;
+                                switch (CatchAllOperator.Operator.Trim())
                                 {
-                                    CatchAllOperator = context.Answer_Operators.Where(x => x.Operator.Trim() == "<=").FirstOrDefault();
-                                    break;
+                                    case ">":
+                                        {
+
+                                            catchans.Answer_ScoreMappings.FirstOrDefault().Value = liHighestValue + 1;
+
+
+                                            break;
+                                        }
+                                    case ">=":
+                                        {
+                                            catchans.Answer_ScoreMappings.FirstOrDefault().Value = liHighestValue;
+                                            break;
+                                        }
+                                    case "<":
+                                        {
+                                            catchans.Answer_ScoreMappings.FirstOrDefault().Value = lilowestValue - 1;
+                                            break;
+                                        }
+                                    case "<=":
+                                        {
+                                            catchans.Answer_ScoreMappings.FirstOrDefault().Value = lilowestValue;
+                                            break;
+                                        }
                                 }
-                            case ">=":
-                                {
-                                    CatchAllOperator = context.Answer_Operators.Where(x => x.Operator.Trim() == "<").FirstOrDefault();
-                                    break;
-                                }
-                            case "<=":
-                                {
-                                    CatchAllOperator = context.Answer_Operators.Where(x => x.Operator.Trim() == ">").FirstOrDefault();
-                                    break;
-                                }
+                                catchans.Description = "Is " + CatchAllOperator.OperatorDescription + " " + catchans.Answer_ScoreMappings.FirstOrDefault().Value;
+                            }
                         }
-                        catchans.Answer_ScoreMappings.FirstOrDefault().OperatorID = CatchAllOperator.ID;
-                        switch (CatchAllOperator.Operator.Trim())
-                        {
-                            case ">":
-                                {
-
-                                    catchans.Answer_ScoreMappings.FirstOrDefault().Value = liHighestValue + 1;
-
-
-                                    break;
-                                }
-                            case ">=":
-                                {
-                                    catchans.Answer_ScoreMappings.FirstOrDefault().Value = liHighestValue;
-                                    break;
-                                }
-                            case "<":
-                                {
-                                    catchans.Answer_ScoreMappings.FirstOrDefault().Value = lilowestValue - 1;
-                                    break;
-                                }
-                            case "<=":
-                                {
-                                    catchans.Answer_ScoreMappings.FirstOrDefault().Value = lilowestValue;
-                                    break;
-                                }
-                        }
-                        catchans.Description = "Is " + CatchAllOperator.OperatorDescription + " " + catchans.Answer_ScoreMappings.FirstOrDefault().Value;
                     }
 
                 }
@@ -3660,25 +3875,35 @@ namespace SITSAS.Controllers
                 Question q = context.Questions.Where(x => x.ID == new Guid(dataMap.PrimaryID) && x.Deleted == false && x.StartDate < ldNow && x.EndDate > ldNow && x.SubCategory.Category.StartDate < ldNow && x.SubCategory.Category.EndDate > ldNow).FirstOrDefault();
                 if (q != null)
                 {
-                    DataRow qRow = dtQuestion.NewRow();
-                    qRow["QuestionID"] = q.ID;
-                    qRow["Name"] = q.Name;
-                    if (header != null)
+                    string find = "QuestionID = '" + q.ID + "'";
+                    DataRow qRow = null;
+                   DataRow[] foundRows = dtQuestion.Select(find);
+                    if (foundRows.Count() == 0)
                     {
-                        Result_Answers answer = header.Result_Answers.FirstOrDefault(x => x.Answer.QuestionID == q.ID);
-                        if (answer != null)
+                        qRow = dtQuestion.NewRow();
+                        qRow["QuestionID"] = q.ID;
+                        qRow["Name"] = q.Name;
+                        if (header != null)
                         {
-                            if (!string.IsNullOrEmpty(answer.RawAnswer))
+                            Result_Answers answer = header.Result_Answers.FirstOrDefault(x => x.Answer.QuestionID == q.ID);
+                            if (answer != null)
                             {
-                                qRow["RawAnswer"] = answer.RawAnswer;
-                            }
-                            if (!string.IsNullOrEmpty(answer.Comments))
-                            {
-                                qRow["Comments"] = answer.Comments;
+                                if (!string.IsNullOrEmpty(answer.RawAnswer))
+                                {
+                                    qRow["RawAnswer"] = answer.RawAnswer;
+                                }
+                                if (!string.IsNullOrEmpty(answer.Comments))
+                                {
+                                    qRow["Comments"] = answer.Comments;
+                                }
+
                             }
 
                         }
-
+                    }
+                    else
+                    {
+                        qRow = foundRows[0];
                     }
 
                     if (!dashCatIDs.Contains(q.SubCategory.ID))
@@ -3704,8 +3929,11 @@ namespace SITSAS.Controllers
                     }
 
                     qRow["SubCategoryID"] = q.SubCategoryID;
-                    dtQuestion.Rows.Add(qRow);
-                    List<SystemSetting> settings = context.SystemSettings.ToList();
+                    if (foundRows.Count() == 0)
+                    {
+                        dtQuestion.Rows.Add(qRow);
+                    }
+                        List<SystemSetting> settings = context.SystemSettings.ToList();
                     switch (q.CalculationModel.eNumMapping)
                     {
                         case (int)eCalculationModels.DropDownLists:
@@ -4335,7 +4563,15 @@ namespace SITSAS.Controllers
 
             using (SITSASEntities context = new SITSASEntities())
             {
-                model.AllUsers = ContextModel.GetUsersFromActiveDirectory(context);
+                if (HttpContext.Session["DirectoryUsers"] != null)
+                {
+                    model.AllUsers = (List<DirectoryUser>)HttpContext.Session["DirectoryUsers"];
+                }
+                else
+                {
+                    model.AllUsers = ContextModel.GetUsersFromActiveDirectory(context);
+                    HttpContext.Session["DirectoryUsers"] = model.AllUsers;
+                }
                 model.AllTaskStatuses = context.TaskStatus.ToList();
                 model.AssignedUsers = new List<string>();
                 if (ID.HasValue)

@@ -105,7 +105,7 @@
 
 
                                     <input type="hidden" name="QuestionID" value="@Model.question.ID" />
-                                    <select name="ImportFromID" style="width: 75%;">
+                                    <select  data-role="select" name="ImportFromID" style="width: 75%;">
                                         @foreach (var q in Model.Questions.ToList())
                                         {
                                             <option value="@q.ID">@q.Name</option>
@@ -298,10 +298,10 @@
                                         {
                                             if (answers.CatchAll == false)
                                             {
-                                            <button class="image-button warning" onclick="$('#submit').trigger('click');">
-                                                <span class="mif-plus icon"></span>
-                                                <span class="caption">Add Answer</span>
-                                            </button>
+                                                <button class="image-button warning" onclick="window.location.href = '/Home/RemoveAnswer?ID=@answers.ID&qID=@Model.question.ID';">
+                                                    <span class="mif-bin icon"></span>
+                                                    <span class="caption">Delete</span>
+                                                </button>
                                             }
                                         }
                                         else
@@ -309,8 +309,8 @@
                                             if (answers.CatchAll == false)
                                             {
                                             <button class="image-button" onclick="alert('Unable to amend answers, this question has been answered'); return false;">
-                                                <span class="mif-plus icon"></span>
-                                                <span class="caption">Add Answer</span>
+                                                <span class="mif-bin icon"></span>
+                                                <span class="caption">Delete</span>
                                             </button>
                                             }
                                         }

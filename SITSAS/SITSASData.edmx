@@ -58,8 +58,8 @@
           </Key>
           <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Name" Type="nvarchar(max)" />
-          <Property Name="StartDate" Type="datetime" />
-          <Property Name="EndDate" Type="datetime" />
+          <Property Name="StartDate" Type="datetime2" Precision="7" />
+          <Property Name="EndDate" Type="datetime2" Precision="7" />
           <Property Name="SpecialCase" Type="bit" Nullable="false" />
           <Property Name="Deleted" Type="bit" Nullable="false" />
           <Property Name="DisplayOrder" Type="int" Nullable="false" />
@@ -212,6 +212,7 @@
           <Property Name="DefaultValue" Type="int" Nullable="false" />
           <Property Name="CanBeNotAnswered" Type="bit" Nullable="false" />
           <Property Name="PreviousQuestionID" Type="uniqueidentifier" />
+          <Property Name="ToolTipDescription" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Result_Answers">
           <Key>
@@ -907,7 +908,6 @@
           <EntitySet Name="Answer_ScoreMappings" EntityType="SITSASModel.Answer_ScoreMappings" />
           <EntitySet Name="Answers" EntityType="SITSASModel.Answer" />
           <EntitySet Name="CalculationModels" EntityType="SITSASModel.CalculationModel" />
-          <EntitySet Name="Categories" EntityType="SITSASModel.Category" />
           <EntitySet Name="DataMappings" EntityType="SITSASModel.DataMapping" />
           <EntitySet Name="DataMappingTypes" EntityType="SITSASModel.DataMappingType" />
           <EntitySet Name="IncidentTypes" EntityType="SITSASModel.IncidentType" />
@@ -949,10 +949,6 @@
           <AssociationSet Name="FK_Questions_CalculationModels" Association="SITSASModel.FK_Questions_CalculationModels">
             <End Role="CalculationModel" EntitySet="CalculationModels" />
             <End Role="Question" EntitySet="Questions" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DashboardCategories_AssessedRiskCategories" Association="SITSASModel.FK_DashboardCategories_AssessedRiskCategories">
-            <End Role="Category" EntitySet="Categories" />
-            <End Role="SubCategory" EntitySet="SubCategories" />
           </AssociationSet>
           <AssociationSet Name="FK_DataMappings_DataMappingTypes" Association="SITSASModel.FK_DataMappings_DataMappingTypes">
             <End Role="DataMappingType" EntitySet="DataMappingTypes" />
@@ -1061,6 +1057,11 @@
             <End Role="Location_PermissionGroupTemplate" EntitySet="Location_PermissionGroupTemplate" />
             <End Role="PermissionGroup" EntitySet="PermissionGroups" />
           </AssociationSet>
+          <EntitySet Name="Categories" EntityType="SITSASModel.Category" />
+          <AssociationSet Name="FK_DashboardCategories_AssessedRiskCategories" Association="SITSASModel.FK_DashboardCategories_AssessedRiskCategories">
+            <End Role="Category" EntitySet="Categories" />
+            <End Role="SubCategory" EntitySet="SubCategories" />
+          </AssociationSet>
           </EntityContainer>
         <ComplexType Name="GetQuestionnairesForUser_Result">
           <Property Type="Guid" Name="ID" Nullable="false" />
@@ -1124,20 +1125,6 @@
           <Property Name="eNumMapping" Type="Int32" />
           <NavigationProperty Name="Questions" Relationship="SITSASModel.FK_Questions_CalculationModels" FromRole="CalculationModel" ToRole="Question" />
           <Property Name="Deleted" Type="Boolean" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Category">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Guid" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="StartDate" Type="DateTime" Precision="3" />
-          <Property Name="EndDate" Type="DateTime" Precision="3" />
-          <Property Name="SpecialCase" Type="Boolean" Nullable="false" />
-          <Property Name="Deleted" Type="Boolean" Nullable="false" />
-          <Property Name="DisplayOrder" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="SubCategories" Relationship="SITSASModel.FK_DashboardCategories_AssessedRiskCategories" FromRole="Category" ToRole="SubCategory" />
-          <Property Name="DisplayName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="DataMapping">
           <Key>
@@ -1256,6 +1243,7 @@
           <NavigationProperty Name="SubCategory" Relationship="SITSASModel.FK_Questions_DashboardCategories" FromRole="Question" ToRole="SubCategory" />
           <NavigationProperty Name="StalenessProfile" Relationship="SITSASModel.FK_Questions_StalenessProfile" FromRole="Question" ToRole="StalenessProfile" />
           <Property Name="PreviousQuestionID" Type="Guid" />
+          <Property Name="ToolTipDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Result_Answers">
           <Key>
@@ -1357,9 +1345,9 @@
           <Property Name="CategoryID" Type="Guid" />
           <Property Name="Deleted" Type="Boolean" Nullable="false" />
           <Property Name="DisplayOrder" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Category" Relationship="SITSASModel.FK_DashboardCategories_AssessedRiskCategories" FromRole="SubCategory" ToRole="Category" />
           <NavigationProperty Name="Questions" Relationship="SITSASModel.FK_Questions_DashboardCategories" FromRole="SubCategory" ToRole="Question" />
           <Property Name="DisplayName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Category" Relationship="SITSASModel.FK_DashboardCategories_AssessedRiskCategories" FromRole="SubCategory" ToRole="Category" />
         </EntityType>
         <EntityType Name="SystemSetting">
           <Key>
@@ -1438,18 +1426,6 @@
             </Principal>
             <Dependent Role="Question">
               <PropertyRef Name="CalculationModelID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DashboardCategories_AssessedRiskCategories">
-          <End Type="SITSASModel.Category" Role="Category" Multiplicity="0..1" />
-          <End Type="SITSASModel.SubCategory" Role="SubCategory" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Category">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="SubCategory">
-              <PropertyRef Name="CategoryID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1842,6 +1818,32 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="StartDate" Type="DateTime" Precision="7" />
+          <Property Name="EndDate" Type="DateTime" Precision="7" />
+          <Property Name="SpecialCase" Type="Boolean" Nullable="false" />
+          <Property Name="Deleted" Type="Boolean" Nullable="false" />
+          <Property Name="DisplayOrder" Type="Int32" Nullable="false" />
+          <Property Name="DisplayName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="SubCategories" Relationship="SITSASModel.FK_DashboardCategories_AssessedRiskCategories" FromRole="Category" ToRole="SubCategory" />
+        </EntityType>
+        <Association Name="FK_DashboardCategories_AssessedRiskCategories">
+          <End Type="SITSASModel.Category" Role="Category" Multiplicity="0..1" />
+          <End Type="SITSASModel.SubCategory" Role="SubCategory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SubCategory">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1892,20 +1894,6 @@
               <MappingFragment StoreEntitySet="CalculationModels">
                 <ScalarProperty Name="Deleted" ColumnName="Deleted" />
                 <ScalarProperty Name="eNumMapping" ColumnName="eNumMapping" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Categories">
-            <EntityTypeMapping TypeName="SITSASModel.Category">
-              <MappingFragment StoreEntitySet="Categories">
-                <ScalarProperty Name="DisplayName" ColumnName="DisplayName" />
-                <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
-                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
-                <ScalarProperty Name="SpecialCase" ColumnName="SpecialCase" />
-                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
-                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
@@ -1997,6 +1985,7 @@
           <EntitySetMapping Name="Questions">
             <EntityTypeMapping TypeName="SITSASModel.Question">
               <MappingFragment StoreEntitySet="Questions">
+                <ScalarProperty Name="ToolTipDescription" ColumnName="ToolTipDescription" />
                 <ScalarProperty Name="PreviousQuestionID" ColumnName="PreviousQuestionID" />
                 <ScalarProperty Name="CanBeNotAnswered" ColumnName="CanBeNotAnswered" />
                 <ScalarProperty Name="DefaultValue" ColumnName="DefaultValue" />
@@ -2227,6 +2216,20 @@
           <EntitySetMapping Name="Location_PermissionGroupTemplate">
             <EntityTypeMapping TypeName="SITSASModel.Location_PermissionGroupTemplate">
               <MappingFragment StoreEntitySet="Location_PermissionGroupTemplate">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Categories">
+            <EntityTypeMapping TypeName="SITSASModel.Category">
+              <MappingFragment StoreEntitySet="Categories">
+                <ScalarProperty Name="DisplayName" ColumnName="DisplayName" />
+                <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+                <ScalarProperty Name="SpecialCase" ColumnName="SpecialCase" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>

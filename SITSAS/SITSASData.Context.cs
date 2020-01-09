@@ -31,7 +31,6 @@ namespace SITSAS
         public virtual DbSet<Answer_ScoreMappings> Answer_ScoreMappings { get; set; }
         public virtual DbSet<Answer> Answers { get; set; }
         public virtual DbSet<CalculationModel> CalculationModels { get; set; }
-        public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<DataMapping> DataMappings { get; set; }
         public virtual DbSet<DataMappingType> DataMappingTypes { get; set; }
         public virtual DbSet<IncidentType> IncidentTypes { get; set; }
@@ -59,6 +58,7 @@ namespace SITSAS
         public virtual DbSet<Result_Headers> Result_Headers { get; set; }
         public virtual DbSet<Task> Tasks { get; set; }
         public virtual DbSet<Location_PermissionGroupTemplate> Location_PermissionGroupTemplate { get; set; }
+        public virtual DbSet<Category> Categories { get; set; }
     
         public virtual ObjectResult<Questionnaire> GetQuestionnairesForUser(string userID, Nullable<bool> includeDeleted)
         {
@@ -121,7 +121,7 @@ namespace SITSAS
             var includeDeletedParameter = includeDeleted.HasValue ?
                 new ObjectParameter("IncludeDeleted", includeDeleted) :
                 new ObjectParameter("IncludeDeleted", typeof(bool));
-    
+            ((IObjectContextAdapter)this).ObjectContext.CommandTimeout = 240;
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Location>("GetLocationsForUser", userIDParameter, includeDeletedParameter);
         }
     

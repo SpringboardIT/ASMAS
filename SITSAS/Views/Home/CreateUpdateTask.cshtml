@@ -9,7 +9,7 @@
                 type: 'post',
                 data: $('#taskForm').serialize(),
                 success: function () {
-                    location.reload();
+                    $('#popUpTwoClose').trigger("click");
                     }
             });
         }

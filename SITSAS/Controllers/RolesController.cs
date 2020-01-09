@@ -568,7 +568,16 @@ namespace SITSAS.Controllers
                     AccessRights Rights = ContextModel.DetermineAccess();
                     UserToGroupModel model = new UserToGroupModel();
                     model.Group = context.PermissionGroups.Where(x => x.ID == GroupID).FirstOrDefault();
-                    model.AllUsers = ContextModel.GetUsersFromActiveDirectory(context);
+                    if (HttpContext.Session["DirectoryUsers"] != null)
+                    {
+                        model.AllUsers = (List<DirectoryUser>)HttpContext.Session["DirectoryUsers"];
+                    }
+                    else
+                    {
+                        model.AllUsers = ContextModel.GetUsersFromActiveDirectory(context);
+                        HttpContext.Session["DirectoryUsers"] = model.AllUsers;
+
+                    }
                     List<PermissionGroup_User_Mapping> Mappings = context.PermissionGroup_User_Mapping.Where(x => x.GroupID == GroupID).ToList();
                     model.GroupUsers = new List<DirectoryUser>();
                     foreach (PermissionGroup_User_Mapping mapping in Mappings)
@@ -626,7 +635,15 @@ namespace SITSAS.Controllers
                         AccessRights Rights = ContextModel.DetermineAccess();
                         UserToRoleModel model = new UserToRoleModel();
                         model.Role = veracontext.Roles.Where(x => x.RoleID == RoleID).FirstOrDefault();
-                        model.AllUsers = ContextModel.GetUsersFromActiveDirectory(context);
+                        if (HttpContext.Session["DirectoryUsers"] != null)
+                        {
+                            model.AllUsers = (List<DirectoryUser>)HttpContext.Session["DirectoryUsers"];
+                        }
+                        else
+                        {
+                            model.AllUsers = ContextModel.GetUsersFromActiveDirectory(context);
+                            HttpContext.Session["DirectoryUsers"] = model.AllUsers;
+                        }
                         List<Role_User_PermissionMapping> Mappings = context.Role_User_PermissionMapping.Where(x => x.RoleID == RoleID).ToList();
                         model.RoleUsers = new List<DirectoryUser>();
                         foreach (Role_User_PermissionMapping mapping in Mappings)

@@ -5,7 +5,7 @@
 </button>
 @if (Model.CategoryExists)
 {
-    if (Model.AllowEdit)
+    if (Model.rights.CanDelete)
     {
         <button class="image-button warning" onclick="if (confirm('Are you sure you want to delete this item?') == true) { window.location.href = '/Home/DeleteCategory?ID=@Model.ExistingCategory.ID'; }">
             <span class="mif-bin icon"></span>

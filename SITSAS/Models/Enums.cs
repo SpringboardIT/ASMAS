@@ -22,7 +22,8 @@ namespace SITSAS.Models
         GroupToArea = 4,
         QuestionToQuestionnaire = 5,
         RoleToPage = 6,
-        TaskToUser = 7
+        TaskToUser = 7,
+        LocationToQuestionnaire = 8
     }
     public enum eOperator
     {
