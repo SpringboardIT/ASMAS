@@ -35,13 +35,24 @@
         <tr>
             <td>Location</td>
             @{List<DateTime> datesAdded = new List<DateTime>();}
-            
-            @foreach (FrequencyProfile_Dates date in Model.fpDates.Where(x => x.LocationID == Model.locations.FirstOrDefault().ID).OrderBy(x => x.StartDate))
+            @if (Model.fpDates != null)
             {
-                if (!datesAdded.Contains(date.EndDate))
+                if (Model.locations != null)
                 {
+                    if (Model.locations.FirstOrDefault() != null)
+                    {
+                        if (Model.fpDates.Where(x => x.LocationID == Model.locations.FirstOrDefault().ID).ToList().Count > 0)
+                        {
+                            foreach (FrequencyProfile_Dates date in Model.fpDates.Where(x => x.LocationID == Model.locations.FirstOrDefault().ID).OrderBy(x => x.StartDate))
+                            {
+                                if (!datesAdded.Contains(date.EndDate))
+                                {
                     <td>@date.EndDate.ToString("MM yyyy")</td>
-                    datesAdded.Add(date.EndDate);
+                                    datesAdded.Add(date.EndDate);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         </tr>

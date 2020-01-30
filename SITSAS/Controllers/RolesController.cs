@@ -635,11 +635,22 @@ namespace SITSAS.Controllers
                         AccessRights Rights = ContextModel.DetermineAccess();
                         UserToRoleModel model = new UserToRoleModel();
                         model.Role = veracontext.Roles.Where(x => x.RoleID == RoleID).FirstOrDefault();
+
+                        bool loadFromActiveDirectory = false;
+
                         if (HttpContext.Session["DirectoryUsers"] != null)
                         {
                             model.AllUsers = (List<DirectoryUser>)HttpContext.Session["DirectoryUsers"];
+                            if (model.AllUsers.Count == 0)
+                            {
+                                loadFromActiveDirectory = true;
+                            }
                         }
                         else
+                        {
+                            loadFromActiveDirectory = true;
+                        }
+                        if (loadFromActiveDirectory)
                         {
                             model.AllUsers = ContextModel.GetUsersFromActiveDirectory(context);
                             HttpContext.Session["DirectoryUsers"] = model.AllUsers;
@@ -652,7 +663,7 @@ namespace SITSAS.Controllers
                             if (user != null)
                             {
                                 model.RoleUsers.Add(user);
-                                model.AllUsers.Remove(user);
+                                //model.AllUsers.Remove(user);
                             }
                         }
                         var tuple = new Tuple<UserToRoleModel, AccessRights>(model, Rights);

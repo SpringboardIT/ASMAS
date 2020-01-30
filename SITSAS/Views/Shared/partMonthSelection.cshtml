@@ -7,11 +7,11 @@
 {
     if (Model.SelectedValue == option.Value)
     {
-                <option value="@option.Value" selected>@option.Value</option>
+                <option value="@option.Value" selected>@option.StrValue</option>
             }
             else
             {
-                <option value="@option.Value" @if (option.Disabled) { @Html.Raw("disabled")  }>@option.Value</option>
+                <option value="@option.Value" @if (option.Disabled) { @Html.Raw("disabled")  }>@option.StrValue</option>
             }
         }
     </select>

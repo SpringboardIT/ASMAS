@@ -99,7 +99,10 @@
                         <select name="UserID">
                             @foreach (SITSAS.Models.DirectoryUser usr in Model.Item1.AllUsers.OrderBy(x => x.Name).ToList())
                             {
+                                if (Model.Item1.RoleUsers.FirstOrDefault(x => x.SN == usr.SN) == null)
+                                {
                                 <option value="@usr.SN">@usr.Name</option>
+                                }
                             }
 
                         </select>

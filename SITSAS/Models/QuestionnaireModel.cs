@@ -17,6 +17,7 @@ namespace SITSAS.Models
     public class QuestionnaireDropDown
     {
         public int Value { get; set; }
+        public string StrValue { get; set; }
         public bool Disabled { get; set; }
     }
     public class QuestionnairesModel

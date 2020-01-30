@@ -187,12 +187,13 @@ namespace SITSAS.Controllers
 
                 model.DropdownOptions = new List<QuestionnaireDropDown>();
 
-                int StartYear = 2019;
+                int StartYear = 2020;
                 int CurrentYear = DateTime.Now.Year;
                 for (int i = StartYear; i <= CurrentYear; i++)
                 {
                     QuestionnaireDropDown qDD = new QuestionnaireDropDown();
                     qDD.Value = i;
+                    qDD.StrValue = i.ToString();
                     if (processedYears.ContainsKey(i))
                     {
                         if (processedYears[i] >= 12)
@@ -259,6 +260,8 @@ namespace SITSAS.Controllers
                 {
                     QuestionnaireDropDown qDD = new QuestionnaireDropDown();
                     qDD.Value = i;
+                    string fullMonthName = new DateTime(2020, i, 1).ToString("MMMM", CultureInfo.CreateSpecificCulture("en-GB"));
+                    qDD.StrValue = fullMonthName;
                     if (processedMonths.Contains(i))
                     {
                         qDD.Disabled = true;
